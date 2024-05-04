@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import CustomTable from '../Table/customTable'
-import { useLocation } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import PatientDetails from './patientDetails'
 import SearchField from '../Table/customSearch'
 
@@ -58,6 +58,7 @@ const columns =[
 // const rows =[]
 const AppointmentsList = () => {
     const location = useLocation()
+    const navigate = useNavigate()
     // const data = location.state?.cleanData 
     // console.log(data)
     const [searchValue, setSearchValue] = useState("");
@@ -70,6 +71,10 @@ const AppointmentsList = () => {
       console.log("Searching for:", searchValue);
     };
 
+    const handleRemove=()=>{
+        navigate('/signIn')
+    }
+
     const rows =[
         {
             sl_no :1,
@@ -79,7 +84,7 @@ const AppointmentsList = () => {
             gender:"female",
             date:'24-04-2024',
             time:'17:50',
-            action:<Button variant='contained' size='small' disableElevation color='error'>Delete</Button>
+            action:<Button variant='contained' size='small' disableElevation color='error' onClick={handleRemove}>Delete</Button>
         },
         {
             sl_no :2,
@@ -89,7 +94,7 @@ const AppointmentsList = () => {
             gender:"male",
             date:'24-04-2024',
             time:'1:50',
-            action:<Button variant='contained' size='small' disableElevation color='error'>Delete</Button>
+            action:<Button variant='contained' size='small' disableElevation color='error' onClick={handleRemove}>Delete</Button>
         },
         {
             sl_no :3,
@@ -99,7 +104,7 @@ const AppointmentsList = () => {
             gender:"male",
             date:'24-04-2024',
             time:'11:50',
-            action:<Button variant='contained' size='small' disableElevation color='error'>Delete</Button>
+            action:<Button variant='contained' size='small' disableElevation color='error' onClick={handleRemove}>Delete</Button>
         },
 
     ]

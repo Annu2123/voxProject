@@ -73,12 +73,12 @@ const SignIn = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          mt: -14,
+          mt: {xs:-24,md:-14},
         }}
       >
         <Card
           sx={{
-            width: { xs: "55%", md: "30%", lg: "25%" },
+            width: { xs: "80%", md: "30%", lg: "25%" },
             p: 2,
             borderRadius: "8px",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",

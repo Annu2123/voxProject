@@ -1,0 +1,299 @@
+import React from "react";
+import {
+  Box,
+  Button,
+  Card,
+  Divider,
+  MenuItem,
+  TextField,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+} from "@mui/material";
+import Switch from "@mui/material/Switch";
+import DialpadIcon from "@mui/icons-material/Dialpad";
+import Consultation from "../Consultation/consultation";
+
+const ConnectPatient = () => {
+  const [checked, setChecked] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [phoneNumber, setPhoneNumber] = React.useState("");
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleNumberClick = (number) => {
+    setPhoneNumber((prevPhoneNumber) => prevPhoneNumber + number);
+  };
+
+  const handleClear = () => {
+    setPhoneNumber("");
+  };
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
+  return (
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          gap: 2,
+          justifyContent: "center",
+          mb:2,
+          flexDirection:{xs:'column',md:'row'}
+        }}
+      >
+        <Card
+          sx={{ borderTop: "1px solid blue", width: {sm:'100%',md:"20%"}, minHeight: "100px" }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "30px",
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              sx={{
+                display: "flex",
+                backgroundColor: checked ? "#00b4d8" : "red",
+                fontWeight: "bold",
+                width: "60px",
+                borderRadius: "8px",
+                justifyContent: "center",
+                mt: 1,
+                color: "white",
+              }}
+            >
+              {checked ? "Online" : "Offline"}
+            </Typography>
+          </Box>
+          <Divider sx={{ mt: 1 }} />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 1,
+            }}
+          >
+            <Typography variant="subtitle2" fontWeight={"bold"}>
+              Offline
+            </Typography>
+            <Switch
+              checked={checked}
+              onChange={handleChange}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+            <Typography variant="subtitle2" fontWeight={"bold"}>
+              Online
+            </Typography>
+          </Box>
+        </Card>
+
+        <Card
+          sx={{ borderTop: "1px solid blue", width: {xs:'100%',md:'30%'}, minHeight: "100px" }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "30px",
+              flexDirection:{xs:'column',md:'row'}
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              sx={{
+                display: "flex",
+                fontWeight: "bold",
+                width: "60px",
+                borderRadius: "8px",
+                justifyContent: "center",
+                mt: 1,
+              }}
+            >
+              Search
+            </Typography>
+          </Box>
+          <Divider sx={{ mt: 1 }} />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 1,
+              p: 1,
+              gap: 2,
+              flexDirection:{xs:'column',sm:'row'}
+            }}
+          >
+            <TextField
+              select
+              size="small"
+              sx={{ width: {xs:"100%",sm:'50%'} }}
+              defaultValue={"none"}
+            >
+              <MenuItem value="none">none</MenuItem>
+              <MenuItem value="patientID">Patient ID</MenuItem>
+              <MenuItem value="phone">Phone</MenuItem>
+            </TextField>
+
+            <TextField
+              placeholder="Provide related data"
+              size="small"
+              fullWidth
+            />
+
+            <Button size="small" variant="contained" color="success">
+              Find
+            </Button>
+          </Box>
+        </Card>
+
+        <Card
+          sx={{ borderTop: "1px solid blue", width: {sm:'100%',md:'24%'}, minHeight: "100px" }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "30px",
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              sx={{
+                display: "flex",
+                fontWeight: "bold",
+                width: "60px",
+                borderRadius: "8px",
+                justifyContent: "center",
+                mt: 1,
+              }}
+            >
+              Dial
+            </Typography>
+          </Box>
+          <Divider sx={{ mt: 1 }} />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 1,
+              p: 1,
+              gap: 2,
+            }}
+          >
+            <Button variant="contained" onClick={handleOpen}>
+              <DialpadIcon />
+            </Button>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>Enter Phone Number</DialogTitle>
+              <Divider />
+              <DialogContent>
+                <Grid
+                  container
+                  spacing={1}
+                  justifyContent="center"
+                >
+                  <Grid item xs={8}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      size="small"
+                      label="Phone Number"
+                      type="number"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                  </Grid>
+
+                  <Box sx={{display:"flex",justifyContent:"center",alignItems:"center",ml:1}}>
+                    <Button color="success" size="small" disableElevation variant="contained">Dial</Button>
+                  </Box>
+
+                  <Grid item xs={12}>
+                    <Grid container spacing={1} justifyContent="center">
+                      {[...Array(9).keys()]
+                        .reduce(
+                          (rows, key, index) =>
+                            (index % 3 === 0
+                              ? rows.push([key])
+                              : rows[rows.length - 1].push(key)) && rows,
+                          []
+                        )
+                        .map((row, rowIndex) => (
+                          <Grid
+                            item
+                            container
+                            key={rowIndex}
+                            justifyContent="center"
+                            spacing={1}
+                          >
+                            {row.map((i) => (
+                              <Grid item key={i}>
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  onClick={() => handleNumberClick(i + 1)}
+                                >
+                                  {i + 1}
+                                </Button>
+                              </Grid>
+                            ))}
+                          </Grid>
+                        ))}
+
+                      <Grid item>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => handleNumberClick(0)}
+                        >
+                          0
+                        </Button>
+                      </Grid>
+                      <Grid item xs={12} gap={2} display={'flex'} justifyContent={"center"} alignItems={'center'}>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={handleClear}
+                          color="warning"
+                        >
+                          Clear
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </DialogContent>
+            </Dialog>
+          </Box>
+        </Card>
+      </Box>
+
+      {/* <PatientDetails /> */}
+      <Box sx={{mt:1}}>
+        <Consultation/>
+      </Box>
+      
+    </Box>
+  );
+};
+
+export default ConnectPatient;

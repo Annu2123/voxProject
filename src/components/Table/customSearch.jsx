@@ -1,21 +1,8 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import { Grid, } from '@mui/material';
+import { Grid,TextField } from '@mui/material';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  textField: {
-    marginRight: theme.spacing(2),
-    backgroundColor:'white'
-  },
-}));
 
 const SearchField = ({ value, onChange, onSearch }) => {
-  const classes = useStyles();
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -24,10 +11,9 @@ const SearchField = ({ value, onChange, onSearch }) => {
   };
 
   return (
-    <Grid className={classes.root} >
+    <Grid>
       <TextField
-        
-        className={classes.textField}
+        sx={{backgroundColor:'white'}}
         placeholder="Search"
         variant="outlined"
         size='small'

@@ -1,9 +1,11 @@
 import { Box, Button, Card, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import CustomTable from "../Table/customTable";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { startGetDoctorList } from "../../actions/Doctor/doctor";
 
 const doctorList = [
   {
@@ -57,6 +59,7 @@ const doctorAppointment = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const handleNavigate = () => {
     navigate("/appointment_list");
   };
@@ -128,6 +131,15 @@ const Dashboard = () => {
       ),
     },
   ];
+
+  useEffect(()=>{
+    dispatch(startGetDoctorList())
+  },[])
+
+  const data = useSelector((state)=> {
+    return state.doctorSlice?.list
+  })
+
   return (
     <Box sx={{}}>
       <Box

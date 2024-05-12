@@ -93,7 +93,7 @@ const navbarItems = [
   {
     icon: <DashboardIcon sx={{ color: "black" }} />,
     title: "Dashboard",
-    route: "dashboard",
+    route: "",
   },
   {
     icon: <HealthAndSafetyIcon sx={{ color: "black" }} />,

@@ -16,6 +16,9 @@ import voxpro from "../../assets/01.png";
 import google from "../../assets/google.png";
 import facebook from "../../assets/facebook.jpg";
 import apple from "../../assets/apple.png";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { startLoginUser } from "../../actions/Auth/user";
 
 const loginAvatars = [
   {
@@ -33,17 +36,30 @@ const loginAvatars = [
 ];
 
 const SignIn = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSignIn = () => {
+  const handleSignIn = async (e) => {
     if (!email || !password) {
       setError("Please enter both email and password.");
     } else {
-      console.log("Signing in...");
       setError(null);
+      e.preventDefault();
+      const formData = {
+        email: email,
+        password: password,
+      };
+      console.log(formData);
+      try {
+        await dispatch(startLoginUser(formData));
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -73,7 +89,7 @@ const SignIn = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          mt: {xs:-24,md:-14},
+          mt: { xs: -24, md: -14 },
         }}
       >
         <Card

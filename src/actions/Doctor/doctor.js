@@ -3,7 +3,7 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 
-export const startGetDoctorList = createAsyncThunk("login", async () => {
+export const startGetDoctorList = createAsyncThunk("docList", async () => {
   const Api = "https://dev.voxprosolutions.com/api/doctor_lists";
   const headers = {
     Accept: "application/json",

@@ -13,6 +13,7 @@ import EditManageLeads from "./components/ManageLeads/editManageLeads.jsx";
 import SignIn from "./components/SignIn/signIn.jsx";
 import { Provider } from "react-redux";
 import store from "./store/index.js";
+import { Toaster } from "react-hot-toast";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <RouterProvider router={router}>
         <App />
+        <Toaster/>
       </RouterProvider>
     </Provider>
   </React.StrictMode>

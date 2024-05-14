@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import voxpro from "../../assets/01.png";
@@ -70,6 +70,17 @@ const SignIn = () => {
   const handleSign = () => {
     console.log("Signing in...");
   };
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token === null) {
+      navigate("/signIn");
+    } else {
+      navigate("/");
+    } 
+  }, []);
+  
   return (
     <Box sx={{ height: "100vh", width: "100%" }}>
       <Box

@@ -21,6 +21,12 @@ const doctorList = [
     label: "Doctor Name",
   },
   {
+    id: "dcotor_dept",
+    align: "center",
+    disablePadding: false,
+    label: "Department",
+  },
+  {
     id: "action",
     align: "center",
     disablePadding: false,

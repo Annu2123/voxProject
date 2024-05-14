@@ -15,6 +15,9 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import { TimePicker } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import SlotBooking from "./slots";
 
 const AddDoctor = () => {
@@ -25,6 +28,12 @@ const AddDoctor = () => {
     minute: "",
     ampm: "",
   });
+
+  const [selectedTime, setSelectedTime] = useState(null);
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+  };
 
   const [toDate, setToDate] = useState({
     hour: "",
@@ -212,133 +221,20 @@ const AddDoctor = () => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             width: "100%",
             gap: 2,
           }}
         >
-          <Box
-            sx={{
-              width: "50%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "end",
-              gap: 1,
-            }}
-          >
-            <Box
-              sx={{
-                width: "50%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="subtitle1">From Time</Typography>
-            </Box>
-            <TextField
-              label="Hour"
-              select
-              value={fromDate.hour}
-              onChange={(e) => handleDateChange(e, "fromDate", "hour")}
-              sx={{ width: "50%" }}
-              size="small"
-            >
-              {[...Array(12)].map((_, i) => (
-                <MenuItem key={i} value={String(i + 1)}>
-                  {String(i + 1)}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <TextField
-              label="Minute"
-              select
-              value={fromDate.minute}
-              onChange={(e) => handleDateChange(e, "fromDate", "minute")}
-              sx={{ width: "50%" }}
-              size="small"
-            >
-              {Array.from({ length: 60 }, (_, i) => i).map((num) => (
-                <MenuItem key={num} value={String(num)}>
-                  {num < 10 ? `0${num}` : num}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="AM/PM"
-              select
-              value={fromDate.ampm}
-              onChange={(e) => handleDateChange(e, "fromDate", "ampm")}
-              sx={{ width: "50%" }}
-              size="small"
-            >
-              <MenuItem value="AM">AM</MenuItem>
-              <MenuItem value="PM">PM</MenuItem>
-            </TextField>
-          </Box>
-
-          <Box
-            sx={{
-              width: "50%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "start",
-              gap: 1,
-            }}
-          >
-            <Box
-              sx={{
-                width: "50%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="subtitle1">To Time</Typography>
-            </Box>
-            <TextField
-              label="Hour"
-              select
-              value={toDate.hour}
-              onChange={(e) => handleDateChange(e, "toDate", "hour")}
-              sx={{ width: "50%" }}
-              size="small"
-            >
-              {[...Array(12)].map((_, i) => (
-                <MenuItem key={i} value={String(i + 1)}>
-                  {String(i + 1)}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="Minute"
-              select
-              value={toDate.minute}
-              onChange={(e) => handleDateChange(e, "toDate", "minute")}
-              sx={{ width: "50%" }}
-              size="small"
-            >
-              {Array.from({ length: 60 }, (_, i) => i).map((num) => (
-                <MenuItem key={num} value={String(num)}>
-                  {num < 10 ? `0${num}` : num}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="AM/PM"
-              select
-              value={toDate.ampm}
-              onChange={(e) => handleDateChange(e, "toDate", "ampm")}
-              sx={{ width: "50%" }}
-              size="small"
-            >
-              <MenuItem value="AM">AM</MenuItem>
-              <MenuItem value="PM">PM</MenuItem>
-            </TextField>
-          </Box>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <TimePicker
+        label="Select Time"
+        value={selectedTime}
+        onChange={handleTimeChange}
+        renderInput={(props) => <TextField {...props} />}
+      />
+    </LocalizationProvider>
+          
         </Box>
       )}
 

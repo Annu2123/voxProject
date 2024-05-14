@@ -15,9 +15,9 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { TimePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+// import { TimePicker } from '@mui/lab';
+// import AdapterDateFns from '@mui/lab/AdapterDateFns';
+// import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import SlotBooking from "./slots";
 
 const AddDoctor = () => {
@@ -226,14 +226,15 @@ const AddDoctor = () => {
             gap: 2,
           }}
         >
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <Typography>Time picker</Typography>
+              {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
       <TimePicker
         label="Select Time"
         value={selectedTime}
         onChange={handleTimeChange}
         renderInput={(props) => <TextField {...props} />}
       />
-    </LocalizationProvider>
+    </LocalizationProvider> */}
           
         </Box>
       )}

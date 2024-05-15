@@ -8,16 +8,16 @@ function App() {
   const token = localStorage.getItem("token");
   // console.log(token)
 
-  // useEffect(() => {
-  //   if (token === null) {
-  //     navigate("/signIn");
-  //   } else {
-  //     navigate("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (token === null) {
+      navigate("/signIn");
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   return (
-    <Box sx={{ width: "100%", height: "100vh" }}>{ <Navbar />}
+    <Box sx={{ width: "100%", height: "100vh" }}>{token && <Navbar />}  
     </Box>
   );
 }

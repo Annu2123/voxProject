@@ -1,16 +1,18 @@
 import { Box, Button, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CustomTable from '../Table/customTable'
 import { useLocation, useNavigate } from 'react-router'
 import PatientDetails from './patientDetails'
 import SearchField from '../Table/customSearch'
+import { useDispatch, useSelector } from 'react-redux'
+import { appointmentDelete, appointmentDetails } from '../../actions/Appointment/appointment'
 
 const columns =[
     {
-        id: "sl_no",
+        id: "doc_id",
         align: "center",
         disablePadding: false,
-        label: "SL No",
+        label: "DOC ID",
     },
     {
         id: "doc_name",
@@ -59,8 +61,10 @@ const columns =[
 const AppointmentsList = () => {
     const location = useLocation()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     // const data = location.state?.cleanData 
     // console.log(data)
+    const { state } = location;
     const [searchValue, setSearchValue] = useState("");
 
     const handleSearchChange = (event) => {
@@ -71,43 +75,36 @@ const AppointmentsList = () => {
       console.log("Searching for:", searchValue);
     };
 
-    const handleRemove=()=>{
-        navigate('/signIn')
+    const handleRemove=(id)=>{
+       const formData = {
+        id:id
+       }
+        dispatch(appointmentDelete(formData)).then((resultAction) => {
+            if (resultAction.meta.requestStatus === "fulfilled") {
+              dispatch(appointmentDetails(state));
+            }
+          });
     }
 
-    const rows =[
-        {
-            sl_no :1,
-            doc_name:'Dr. Manju',
-            patientName:'Bhagya',
-            age:28,
-            gender:"female",
-            date:'24-04-2024',
-            time:'17:50',
-            action:<Button variant='contained' size='small' disableElevation color='error' onClick={handleRemove}>Delete</Button>
-        },
-        {
-            sl_no :2,
-            doc_name:'Dr. Madhu',
-            patientName:'Ramesh Bhai',
-            age:30,
-            gender:"male",
-            date:'24-04-2024',
-            time:'1:50',
-            action:<Button variant='contained' size='small' disableElevation color='error' onClick={handleRemove}>Delete</Button>
-        },
-        {
-            sl_no :3,
-            doc_name:'Dr. Shashank',
-            patientName:'Sanjay',
-            age:21,
-            gender:"male",
-            date:'24-04-2024',
-            time:'11:50',
-            action:<Button variant='contained' size='small' disableElevation color='error' onClick={handleRemove}>Delete</Button>
-        },
+    useEffect(()=>{
+        dispatch(appointmentDetails(state))
+    },[state])
 
-    ]
+    const data = useSelector((state)=>{
+        return state.appointmentSlice?.details
+    })
+
+    console.log(data)
+
+    const detials = data?.map((data)=>({
+        age:data.age,
+        date:data.date,
+        doc_id:data.doctor_id,
+        gender:data.gender,
+        patientName:data.patient_name,
+        time:data.time,
+        action:<Button variant='contained' size='small' disableElevation color='error' onClick={()=>handleRemove(data.id)}>Delete</Button>
+    }))
 
   return (
     <Box sx={{width:"100%",border:'1px soild red',backgroundColor:"white",minHeight:"80vh",borderRadius:"9px"}}>
@@ -123,7 +120,7 @@ const AppointmentsList = () => {
         </Box>
 
         <Box sx={{mt:2,p:2}}>
-            <CustomTable columns={columns} rows={rows} />
+            <CustomTable columns={columns} rows={detials} />
         </Box>
     </Box>
   )

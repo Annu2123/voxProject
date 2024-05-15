@@ -23,6 +23,7 @@ const userSlice = createSlice({
       .addCase(startLoginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
+        toast.success('Checking Credential...');
       })
       .addCase(startLoginUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -33,7 +34,7 @@ const userSlice = createSlice({
         state.error = action.error.message;
         toast.error('Network Error',{
           position:'bottom-left',
-          duration:4000,
+          // duration:4000,
         });
         console.log(state.error);
       });

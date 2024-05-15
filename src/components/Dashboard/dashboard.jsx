@@ -1,18 +1,32 @@
-import { Box, Button, Card, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+  DialogActions,
+  TextField,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import CustomTable from "../Table/customTable";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { startGetDoctorList } from "../../actions/Doctor/doctor";
+import { removeDoctor, startGetDoctorList } from "../../actions/Doctor/doctor";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { startGetAppoinmentsList } from "../../actions/Appointment/appointment";
 
 const doctorList = [
   {
-    id: "sl_no",
+    id: "doc_id",
     align: "center",
     disablePadding: false,
-    label: "SL No",
+    label: "Doc ID",
   },
   {
     id: "dcotor_name",
@@ -38,10 +52,10 @@ const doctorRow = [];
 
 const doctorAppointment = [
   {
-    id: "sl_no",
+    id: "doc_id",
     align: "center",
     disablePadding: false,
-    label: "SL No",
+    label: "DOC ID",
   },
   {
     id: "doc_name",
@@ -63,88 +77,188 @@ const doctorAppointment = [
   },
 ];
 
+const cardData = [
+  { title: "WhatsApp", value: 200, unit: "msg" },
+  { title: "Call Volume", value: 1200, unit: "/day" },
+  { title: "Email", value: 1200, unit: "" },
+  { title: "Visiter", value: 1200, unit: "/day" },
+];
+
 const Dashboard = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+
   const handleNavigate = () => {
     navigate("/appointment_list");
   };
   const handleAddDoc = () => {
     navigate("/add_doctor");
   };
-  const handleDetails = () => {
-    navigate("/appointment_list");
+
+  const handleDetails = (list) => {
+    const formData = {
+      doctor_id : list.doctor_id,
+      date:date
+    }
+    navigate("/appointment_list",{state:formData});
   };
-  const doctorAppointmentRow = [
-    {
-      sl_no: 1,
-      doc_name: "Dr.Manju",
-      total: 2,
-      action: (
-        <Button
-          size="small"
-          variant="contained"
-          disableElevation
-          onClick={handleDetails}
-        >
-          Details
-        </Button>
-      ),
-    },
-    {
-      sl_no: 2,
-      doc_name: "Dr.Madhu",
-      total: 5,
-      action: (
-        <Button
-          size="small"
-          variant="contained"
-          disableElevation
-          onClick={handleDetails}
-        >
-          Details
-        </Button>
-      ),
-    },
-    {
-      sl_no: 3,
-      doc_name: "Dr.Shridhar",
-      total: 10,
-      action: (
-        <Button
-          size="small"
-          variant="contained"
-          disableElevation
-          onClick={handleDetails}
-        >
-          Details
-        </Button>
-      ),
-    },
-    {
-      sl_no: 4,
-      doc_name: "Dr.Shashank",
-      total: 20,
-      action: (
-        <Button
-          size="small"
-          variant="contained"
-          disableElevation
-          onClick={handleDetails}
-        >
-          Details
-        </Button>
-      ),
-    },
-  ];
+  // const doctorAppointmentRow = [
+  //   {
+  //     sl_no: 1,
+  //     doc_name: "Dr.Manju",
+  //     total: 2,
+  //     action: (
+  //       <Button
+  //         size="small"
+  //         variant="contained"
+  //         disableElevation
+  //         onClick={handleDetails}
+  //       >
+  //         Details
+  //       </Button>
+  //     ),
+  //   },
+  //   {
+  //     sl_no: 2,
+  //     doc_name: "Dr.Madhu",
+  //     total: 5,
+  //     action: (
+  //       <Button
+  //         size="small"
+  //         variant="contained"
+  //         disableElevation
+  //         onClick={handleDetails}
+  //       >
+  //         Details
+  //       </Button>
+  //     ),
+  //   },
+  //   {
+  //     sl_no: 3,
+  //     doc_name: "Dr.Shridhar",
+  //     total: 10,
+  //     action: (
+  //       <Button
+  //         size="small"
+  //         variant="contained"
+  //         disableElevation
+  //         onClick={handleDetails}
+  //       >
+  //         Details
+  //       </Button>
+  //     ),
+  //   },
+  //   {
+  //     sl_no: 4,
+  //     doc_name: "Dr.Shashank",
+  //     total: 20,
+  //     action: (
+  //       <Button
+  //         size="small"
+  //         variant="contained"
+  //         disableElevation
+  //         onClick={handleDetails}
+  //       >
+  //         Details
+  //       </Button>
+  //     ),
+  //   },
+  // ];
 
-  useEffect(()=>{
-    dispatch(startGetDoctorList())
-  },[])
+  useEffect(() => {
+    dispatch(startGetDoctorList());
+  }, []);
 
-  const data = useSelector((state)=> {
-    return state.doctorSlice?.list
-  })
+  const handleEditClick = (rowData) => {
+    navigate("edit_doctor", { state: rowData });
+  };
+
+  const data = useSelector((state) => {
+    return state?.doctorSlice?.list;
+  });
+
+  const docList = data?.map((docList, i) => ({
+    doc_id: docList.id,
+    dcotor_name: docList.name,
+    dcotor_dept: docList.department,
+    action: (
+      <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+        <Button
+          size="small"
+          disableElevation
+          color="warning"
+          variant="outlined"
+          onClick={() => handleEditClick(docList)}
+        >
+          <EditIcon fontSize="small" />
+        </Button>
+        <Button
+          size="small"
+          disableElevation
+          color="error"
+          variant="outlined"
+          onClick={() => handleDeleteConfirmationOpen(docList.id)}
+        >
+          <DeleteIcon fontSize="small" />
+        </Button>
+      </Box>
+    ),
+  }));
+
+  const handleDeleteConfirmationOpen = (rowData) => {
+    setSelectedRow(rowData);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const handleDeleteConfirmationClose = () => {
+    setDeleteConfirmationOpen(false);
+  };
+
+  const handleDeleteAction = () => {
+    const id = {
+      id: selectedRow,
+    };
+    dispatch(removeDoctor(id)).then((resultAction) => {
+      if (resultAction.meta.requestStatus === "fulfilled") {
+        dispatch(startGetDoctorList());
+      }
+    });
+    setDeleteConfirmationOpen(false);
+  };
+
+  const handleDateChange = (e) => {
+    setDate(e.target.value);
+  };
+
+  useEffect(() => {
+    const formData = {
+      date: date,
+    };
+    dispatch(startGetAppoinmentsList(formData));
+  }, [date]);
+
+  const appointmentData = useSelector((state) => {
+    return state.appointmentSlice?.appointment;
+  });
+  console.log(appointmentData);
+  const apnmtList = appointmentData?.map((list) => ({
+    doc_id: list.doctor_id,
+    doc_name: list.doctor_name,
+    total: list.appoint_count,
+    action: (
+      <Button
+        size="small"
+        variant="contained"
+        disableElevation
+        onClick={()=>handleDetails(list)}
+      >
+        Details
+      </Button>
+    ),
+  }));
 
   return (
     <Box sx={{}}>
@@ -175,8 +289,8 @@ const Dashboard = () => {
               <PersonAddIcon fontSize="small" />
             </Button>
           </Box>
-          <Box sx={{ minHeight: "240px", overflow: "auto" }}>
-            <CustomTable columns={doctorList} rows={doctorRow} />
+          <Box sx={{ height: "240px", overflow: "auto" }}>
+            <CustomTable columns={doctorList} rows={docList} />
           </Box>
         </Card>
         <Card sx={{ width: { xs: "100%", md: "50%" }, height: "300px" }}>
@@ -194,91 +308,96 @@ const Dashboard = () => {
             <Typography variant="subtitle1" color="#023e8a">
               <b>List of Appointments</b>
             </Typography>
-            <Button size="small" onClick={handleNavigate}>
-              <KeyboardDoubleArrowRightIcon fontSize="small" />
-            </Button>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <TextField
+                label="choose Date"
+                size="small"
+                type="date"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={date}
+                onChange={handleDateChange}
+              />
+              <Button size="small" onClick={handleNavigate}>
+                <KeyboardDoubleArrowRightIcon fontSize="small" />
+              </Button>
+            </Box>
           </Box>
           <Box sx={{ height: "240px", overflow: "auto" }}>
             <CustomTable
               columns={doctorAppointment}
-              rows={doctorAppointmentRow}
+              rows={apnmtList}
             />
           </Box>
         </Card>
       </Box>
 
-      <Box sx={{ display: "flex", mt: 2, gap: 3, borderRadius: "12px" }}>
-        <Card
-          sx={{
-            width: "240px",
-            height: "120px",
-            borderRadius: "12px", // Rounded corners
-            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Shadow effect
-          }}
-        >
-          <Box
+      <Box
+        sx={{
+          display: "flex",
+          mt: 2,
+          gap: 3,
+          borderRadius: "12px",
+          flexDirection: { xs: "column", md: "row" },
+        }}
+      >
+        {cardData.map((item, index) => (
+          <Card
+            key={index}
             sx={{
-              p: 1,
-              height: "40px",
-              backgroundColor: "#90e0ef",
-              borderTopLeftRadius: "12px",
-              borderTopRightRadius: "12px",
+              width: { xs: "100%", md: "240px" },
+              height: "120px",
+              borderRadius: "12px",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
             }}
           >
-            <Typography variant="subtitle1" fontWeight="bold" color="#023e8a">
-              WhatsApp
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              height: "80px",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h4">
-              200 <span>msg</span>{" "}
-            </Typography>
-          </Box>
-        </Card>
-
-        <Card
-          sx={{
-            width: "240px",
-            height: "120px",
-            backgroundColor: "#f8f9fa", // Light gray background
-            borderRadius: "12px", // Rounded corners
-            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Shadow effect
-          }}
-        >
-          <Box
-            sx={{
-              p: 1,
-              height: "40px",
-              backgroundColor: "#90e0ef",
-              borderTopLeftRadius: "12px",
-              borderTopRightRadius: "12px",
-            }}
-          >
-            <Typography variant="subtitle1" fontWeight="bold" color="#023e8a">
-              Call Volume
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              height: "80px",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h4">
-              1200<span>/day</span>{" "}
-            </Typography>
-          </Box>
-        </Card>
+            <Box
+              sx={{
+                p: 1,
+                height: "40px",
+                backgroundColor: "#90e0ef",
+                borderTopLeftRadius: "12px",
+                borderTopRightRadius: "12px",
+              }}
+            >
+              <Typography variant="subtitle1" fontWeight="bold" color="#023e8a">
+                {item.title}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                height: "80px",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h4">
+                {item.value} <span>{item.unit}</span>
+              </Typography>
+            </Box>
+          </Card>
+        ))}
       </Box>
+
+      <Dialog
+        open={deleteConfirmationOpen}
+        onClose={handleDeleteConfirmationClose}
+      >
+        <DialogTitle>Delete Confirmation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to remove the doctor?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteConfirmationClose}>Cancel</Button>
+          <Button onClick={handleDeleteAction} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

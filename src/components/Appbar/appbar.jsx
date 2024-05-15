@@ -20,6 +20,7 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import { Toaster } from 'react-hot-toast';
 import { Tooltip } from "@mui/material";
 
 const drawerWidth = 240;
@@ -229,6 +230,7 @@ export default function Navbar() {
         }}
       >
         <Outlet />
+        <Toaster/>
       </Box>
     </Box>
   );

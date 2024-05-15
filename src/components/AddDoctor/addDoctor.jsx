@@ -15,12 +15,38 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-// import { TimePicker } from '@mui/lab';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-// import LocalizationProvider from '@mui/lab/LocalizationProvider';
+
 import SlotBooking from "./slots";
+import { useDispatch } from "react-redux";
+import { createDoctor } from "../../actions/Doctor/doctor";
+import CustomFromToDate from "./customFromToDate";
+import { useNavigate } from "react-router";
+
+const docDept = [
+  "Dermatology",
+  "Emergency Medicine",
+  "General Medicine",
+  "General Surgery & Gastroenterology Surgery",
+  "Intensive Care Unit",
+  "Paediatrics",
+  "Nephrology",
+  "Neurosurgery",
+  "Neurology",
+  "Obstetrics and Gynaecology",
+  "Ophthalmology",
+  "Orthopaedic Surgery",
+  "Paediatrics Surgery",
+  "Plastic & Reconstructive Surgery",
+  "Psychiatry",
+  "Vascular Surgery",
+  "ENT",
+  "Fascio Maxillary Surgery",
+  "Urology",
+  "Orthopaedics",
+];
 
 const AddDoctor = () => {
+  const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState("");
   const [value, setValue] = useState("");
   const [fromDate, setFromDate] = useState({
@@ -28,6 +54,15 @@ const AddDoctor = () => {
     minute: "",
     ampm: "",
   });
+
+  const [fromTime, setFromTime] = useState();
+  const [toTime, setToTime] = useState();
+  const [docName, setDocName] = useState();
+  const [docEmail, setDocEmail] = useState();
+  const [docNumber, setDocNumber] = useState();
+  const [interval, setInterval] = useState();
+  const [consultaionFee, setConsultaionFee] = useState();
+  const dispatch = useDispatch();
 
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -42,17 +77,17 @@ const AddDoctor = () => {
   });
 
   const [docSlot, setDocSlot] = useState([]);
-  const [days, setDays] = useState({
-    Allday: 0,
-    Monday: 0,
-    Tuesday: 0,
-    Wednesday: 0,
-    Thursday: 0,
-    Friday: 0,
-    Saturday: 0,
-    Sunday: 0,
-    Reset: 0,
-  });
+  const [finalObj, setFinalObj] = useState({});
+
+  const days = [
+    "mon",
+    "tue",
+    "wed",
+    "thur",
+    "fri",
+    "sat",
+    "sun",
+  ];
 
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
@@ -79,46 +114,65 @@ const AddDoctor = () => {
       target: { value },
     } = event;
     setDocSlot(typeof value === "string" ? value.split(",") : value);
-    console.log(event.target)
-    if(value.includes("Reset")){
-      const newObj = Object.fromEntries(
-        Object.entries(days).map(([key, value]) => [
-          key,0
-        ])
-      );
-      setDays(newObj);
-      setDocSlot([])
+    const a = event.target.value;
+    console.log(a,typeof a)
+    const obj = {};
+    for (let i = 0; i < a.length; i++) {
+      obj[a[i]] = {
+        start_time: "00:00",
+        end_time: "00:00",
+      };
     }
-    else{
-      if (value.includes("Allday")) {
-        const newObj = Object.fromEntries(
-          Object.entries(days).map(([key, value]) => [
-            key,
-            key === "Allday" ? 0 : key=== 'Reset'?0:1,
-          ])
-        );
-        setDays(newObj);
-      } else {
-        const newObj = Object.fromEntries(
-          Object.entries(days).map(([key, a]) => [
-            key,
-            value.includes(key) ? 1 : 0,
-          ])
-        );
-        setDays(newObj);
-        console.log(newObj);
-      }
-    }
+    setFinalObj(obj);
 
+
+    // const newObj = Object.fromEntries(
+    //   Object.entries(days).map(([key, a]) => [
+    //     key,
+    //     value.includes(key) ? 1 : 0,
+    //   ])
+    // );
+    // setDays(newObj);
+    // console.log(newObj);
   };
   // console.log(typeof docSlot)
+
+  const handleAdd = () => {
+    console.log(value)
+    let timeSlotValue =  {}
+    if(value==='all_Day'){
+      timeSlotValue = {
+        all_Day: {
+          start_time: fromTime,
+          end_time: toTime,
+        },
+      }
+    }else{
+      timeSlotValue = finalObj
+    }
+    const formData = {
+      name: docName,
+      phone_num: docNumber,
+      email_id: docEmail,
+      consultation_interval: interval,
+      consultation_fee: consultaionFee,
+      time_slot: timeSlotValue ,
+    };
+    console.log(formData)
+    // dispatch(createDoctor(formData));
+    dispatch(createDoctor(formData)).then((resultAction) => {
+      if (resultAction.meta.requestStatus === 'fulfilled') {
+        navigate('/')
+      }
+    });
+  };
 
   return (
     <Box
       sx={{
         width: "100%",
         backgroundColor: "white",
-        minHeight: "80vh",
+        minHeight: "70vh",
         borderRadius: "9px",
       }}
     >
@@ -143,11 +197,28 @@ const AddDoctor = () => {
       <Grid container spacing={2} sx={{ p: 2 }}>
         <Grid item xs={6}>
           <TextField
+            label="Doctor Department"
+            fullWidth
+            size="small"
+            placeholder="Doctor Department"
+            select
+          >
+            {docDept.map((dept, i) => (
+              <MenuItem key={i} value={dept}>
+                {dept}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
             label="Doctor Name"
             fullWidth
             size="small"
             placeholder="Doctor Name"
             type="text"
+            value={docName}
+            onChange={(e) => setDocName(e.target.value)}
           />
         </Grid>
         <Grid item xs={6}>
@@ -157,6 +228,8 @@ const AddDoctor = () => {
             type="number"
             fullWidth
             size="small"
+            value={docNumber}
+            onChange={(e) => setDocNumber(e.target.value)}
           />
         </Grid>
         <Grid item xs={6}>
@@ -166,6 +239,8 @@ const AddDoctor = () => {
             type="email"
             fullWidth
             size="small"
+            value={docEmail}
+            onChange={(e) => setDocEmail(e.target.value)}
           />
         </Grid>
       </Grid>
@@ -179,6 +254,8 @@ const AddDoctor = () => {
             size="small"
             placeholder="Please Enter Time Interval"
             type="text"
+            value={interval}
+            onChange={(e) => setInterval(e.target.value)}
           />
         </Grid>
         <Grid item xs={6}>
@@ -188,6 +265,8 @@ const AddDoctor = () => {
             type="number"
             fullWidth
             size="small"
+            value={consultaionFee}
+            onChange={(e) => setConsultaionFee(e.target.value)}
           />
         </Grid>
       </Grid>
@@ -205,7 +284,7 @@ const AddDoctor = () => {
           onChange={handleChange}
         >
           <FormControlLabel
-            value="allDay"
+            value="all_Day"
             control={<Radio />}
             label="All Days"
           />
@@ -217,7 +296,7 @@ const AddDoctor = () => {
         </RadioGroup>
       </FormControl>
 
-      {value === "allDay" && (
+      {value === "all_Day" && (
         <Box
           sx={{
             display: "flex",
@@ -226,26 +305,66 @@ const AddDoctor = () => {
             gap: 2,
           }}
         >
-          <Typography>Time picker</Typography>
-              {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <TimePicker
-        label="Select Time"
-        value={selectedTime}
-        onChange={handleTimeChange}
-        renderInput={(props) => <TextField {...props} />}
-      />
-    </LocalizationProvider> */}
-          
+          <TextField
+            label="From Time"
+            type="time"
+            value={fromTime}
+            onChange={(e) => setFromTime(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              step: 300,
+            }}
+          />
+          <TextField
+            label="To Time"
+            type="time"
+            value={toTime}
+            onChange={(e) => setToTime(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              step: 300,
+            }}
+          />
         </Box>
       )}
 
       {value === "selectDay" && (
-        <Box>
-          <SlotBooking />
+        <Box sx={{display:"flex",justifyContent:"center",alignItems:"center",flexDirection:"column"}}>
+          <Select
+            label="Select Day"
+            size="small"
+            multiple
+            sx={{width:"50%"}}
+            value={docSlot}
+            onChange={(e) => handeDocSlotChange(e)}
+          >
+            {days.map((day, i) => (
+              <MenuItem
+                key={i}
+                id={day}
+                value={day}
+                // disabled={days[day] == 1 ? true : false}
+                // sx={{
+                //   color: day === "Reset" ? "red" : "black",
+                //   fontSize: day === "Reset" && "12px",
+                // }}
+              >
+                {day}
+              </MenuItem>
+            ))}
+          </Select>
+          {Object.keys(finalObj).map((day, i) => (
+            // console.log(key,i)
+            <CustomFromToDate day={day} obj={finalObj[day]} setFinalObj={setFinalObj} finalObj={finalObj}/>
+          ))}
         </Box>
       )}
 
-      <Box sx={{ display: "flex" }}>
+      {/* <Box sx={{ display: "flex" }}>
         <Select
           label="Select Day"
           size="small"
@@ -255,18 +374,21 @@ const AddDoctor = () => {
           onChange={(e) => handeDocSlotChange(e)}
         >
           {Object.keys(days).map((day, i) => (
-              <MenuItem
-                key={i}
-                id={day}
-                value={day}
-                disabled={days[day] == 1 ? true : false}
-                sx={{ color: day === "Reset" ? "red" : "black",fontSize:day==='Reset'&& '12px' }}
-              >
-                {day}
-              </MenuItem>
+            <MenuItem
+              key={i}
+              id={day}
+              value={day}
+              disabled={days[day] == 1 ? true : false}
+              sx={{
+                color: day === "Reset" ? "red" : "black",
+                fontSize: day === "Reset" && "12px",
+              }}
+            >
+              {day}
+            </MenuItem>
           ))}
         </Select>
-      </Box>
+      </Box> */}
 
       <Box
         sx={{
@@ -276,11 +398,16 @@ const AddDoctor = () => {
           mt: 2,
         }}
       >
-        <Button variant="contained" color="success" size="small">
+        <Button
+          variant="contained"
+          color="success"
+          size="small"
+          onClick={handleAdd}
+        >
           Submit
         </Button>
       </Box>
-      <Divider sx={{ mt: 2 }} />
+      {/* <Divider sx={{ mt: 2 }} />
       <Box sx={{ display: "flex", p: 2, flexDirection: "column" }}>
         <Typography variant="subtitle1" fontWeight={"bold"}>
           Register New Doctor
@@ -296,7 +423,7 @@ const AddDoctor = () => {
             Send
           </Button>
         </Box>
-      </Box>
+      </Box> */}
     </Box>
   );
 };

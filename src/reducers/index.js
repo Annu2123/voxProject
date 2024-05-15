@@ -1,7 +1,8 @@
 import { combineReducers } from "redux";
 
 import user from "../actions/Auth/user";
-import doctor from "../actions/Doctor/doctor";
-const reducers = combineReducers({ user, doctor });
+import doctorSlice from "../actions/Doctor/doctor";
+import appointmentSlice from "../actions/Appointment/appointment";
+const reducers = combineReducers({ user, doctorSlice,appointmentSlice });
 
 export default reducers;

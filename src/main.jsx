@@ -14,6 +14,9 @@ import SignIn from "./components/SignIn/signIn.jsx";
 import { Provider } from "react-redux";
 import store from "./store/index.js";
 import { Toaster } from "react-hot-toast";
+import Whatsapp from "./components/Whatsapp/whatsapp.jsx";
+import Email from "./components/Email/email.jsx";
+import EditDoctor from "./components/AddDoctor/editDoctor.jsx";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +40,10 @@ const router = createBrowserRouter([
         element: <AddDoctor />,
       },
       {
+        path:"edit_doctor",
+        element:<EditDoctor/>
+      },
+      {
         path: "consultation",
         element: <ConnectPatient />,
       },
@@ -51,6 +58,14 @@ const router = createBrowserRouter([
       {
         path: "manage_leads/edit_leads",
         element: <EditManageLeads />,
+      },
+      {
+        path:"whatsapp",
+        element:<Whatsapp/>
+      },
+      {
+        path:"email",
+        element:<Email/>
       },
     ],
   },

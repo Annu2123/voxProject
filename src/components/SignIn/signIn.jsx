@@ -19,6 +19,7 @@ import apple from "../../assets/apple.png";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { startLoginUser } from "../../actions/Auth/user";
+import { Toaster } from "react-hot-toast";
 
 const loginAvatars = [
   {
@@ -197,6 +198,7 @@ const SignIn = () => {
           </Link>
         </Typography>
       </Box>
+      <Toaster/>
     </Box>
   );
 };

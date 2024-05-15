@@ -33,7 +33,7 @@ export default function CustomTable({ columns, rows }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.length > 0 ? (
+          {rows?.length > 0 ? (
             rows.map((row, index) => (
               <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                 {columns.map((column) => {

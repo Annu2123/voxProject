@@ -10,7 +10,18 @@ import {
 } from "@mui/material";
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import MailIcon from '@mui/icons-material/Mail';
+import { useNavigate } from "react-router";
 const Consultation = () => {
+  const navigate = useNavigate()
+
+  const handleWhatsapp =() =>{
+    navigate('/whatsapp')
+  }
+
+  const handleEmail =() =>{
+    navigate('/email')
+  }
+
   return (
     <Box
       sx={{
@@ -138,10 +149,10 @@ const Consultation = () => {
         <Button variant="contained" color="success" size="small">
           Submit
         </Button>
-        <Button variant="contained" sx={{color:"white",backgroundColor:'#38b000'}} size="small">
+        <Button variant="contained" sx={{color:"white",backgroundColor:'#38b000'}} size="small" onClick={handleWhatsapp}>
             <WhatsAppIcon/>
         </Button>
-        <Button variant="contained" color="success" size="small">
+        <Button variant="contained" color="success" size="small" onClick={handleEmail}>
           <MailIcon/>
         </Button>
       </Box>

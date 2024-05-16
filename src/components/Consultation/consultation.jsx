@@ -39,6 +39,15 @@ const Consultation = () => {
         </Typography>
       </Box>
       <Grid container xs={12} spacing={2} sx={{ p:1,mt:0.2 }}>
+      <Grid item xs={6} md={6}>
+          <TextField
+            label="Mobile Number"
+            fullWidth
+            size="small"
+            placeholder="Mobile Number"
+            type="number"
+          />
+        </Grid>
         <Grid item xs={6} md={6}>
           <TextField
             label="Patient Name"
@@ -50,31 +59,51 @@ const Consultation = () => {
         </Grid>
         <Grid item xs={6} md={6}>
           <TextField
-            label="Patient Email"
-            placeholder="Patient Email"
-            type="email"
+            label="Date of Birth"
+            fullWidth
+            size="small"
+            placeholder="Date of Birth"
+            type="date"
+          />
+        </Grid>
+        <Grid item xs={6} md={6}>
+          <TextField
+            label="Gender"
+            fullWidth
+            size="small"
+            placeholder="Gender"
+            select
+          >
+            <MenuItem value='Male'>Male</MenuItem>
+            <MenuItem value='Female'>Female</MenuItem>
+          </TextField>
+        </Grid>
+        <Grid item xs={6} md={6}>
+          <TextField
+            label="Father/Husband Name"
+            placeholder="Father/Husband Name"
+            type="text"
             fullWidth
             size="small"
           />
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={6}>
           <TextField
-            label="Patient Gender"
-            placeholder="Patient Gender"
-            select
+            label="Martel Status"
             fullWidth
             size="small"
+            placeholder="Martel Status"
+            select
           >
-            <MenuItem value='male'>Male</MenuItem>
-            <MenuItem value='female'>Female</MenuItem>
-            <MenuItem value='other'>Other</MenuItem>
+            <MenuItem value='married'>Married</MenuItem>
+            <MenuItem value='unMarried'>UnMarried</MenuItem>
           </TextField>
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={6}>
           <TextField
-            label="Patient Age"
-            placeholder="Patient Age"
-            type="number"
+            label="Patient Email"
+            placeholder="Patient Email"
+            type="email"
             fullWidth
             size="small"
           />
@@ -131,8 +160,44 @@ const Consultation = () => {
         </Grid>
         <Grid item xs={6}>
           <TextField
-            label="Apoointment Reason"
-            placeholder="Apoointment Reason"
+            label="Religion"
+            placeholder="Religion"
+            select
+            fullWidth
+            required
+            size="small"
+          >
+            <MenuItem value='none'>None</MenuItem>
+          </TextField>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Department"
+            placeholder="Department"
+            select
+            fullWidth
+            required
+            size="small"
+          >
+            <MenuItem value='none'>None</MenuItem>
+          </TextField>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Doctor Name"
+            placeholder="Doctor Name"
+            select
+            fullWidth
+            required
+            size="small"
+          >
+            <MenuItem value='none'>None</MenuItem>
+          </TextField>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Religion"
+            placeholder="Religion"
             select
             fullWidth
             required

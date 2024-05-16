@@ -47,6 +47,17 @@ export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id) => {
   return response.data;
 });
 
+export const updateDoc = createAsyncThunk("updateDoc", async (formData) => {
+  const Api = "https://dev.voxprosolutions.com/api/doctor_update";
+  const data = formData;
+  const response = await axios.post(Api, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+});
+
 const initialState = {
   loading: false,
   error: null,
@@ -112,6 +123,21 @@ const doctorSlice = createSlice({
         state.timeSlot = action.payload;
       })
       .addCase(getTimeSlot.rejected, (state, action) => {
+        state.loading = true;
+        state.error = action.error.message;
+      });
+
+      builder
+      .addCase(updateDoc.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateDoc.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.timeSlot = action.payload;
+        console.log('updated successfully');
+      })
+      .addCase(updateDoc.rejected, (state, action) => {
         state.loading = true;
         state.error = action.error.message;
       });

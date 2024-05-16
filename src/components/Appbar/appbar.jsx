@@ -21,7 +21,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { Toaster } from 'react-hot-toast';
-import { Tooltip } from "@mui/material";
+import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
+import Logout from "@mui/icons-material/Logout";
 
 const drawerWidth = 240;
 
@@ -113,8 +114,20 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const profileOpen = Boolean(anchorEl);
   const handleDrawerOpen = () => {
     setOpen(true);
+  };
+  const handleProfileClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/signIn");
   };
 
   const handleDrawerClose = () => {
@@ -152,7 +165,7 @@ export default function Navbar() {
           >
             <MenuIcon />
           </IconButton>
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               justifyContent: "flex-end",
@@ -168,7 +181,97 @@ export default function Navbar() {
             >
               VoxPro-Doc
             </Typography>
-          </Box>
+          </Box> */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+          <Tooltip title="Account settings"> 
+              <IconButton
+                onClick={handleProfileClick}
+                size="small"
+                // sx={{ ml: 2 }}
+                aria-controls={profileOpen ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={profileOpen ? "true" : undefined}
+              >
+                <Avatar
+                  alt="Voxpro solutions"
+                  src="/"
+                  sx={{ backgroundColor: "#f78888", cursor: "pointer" }}
+                />
+              </IconButton>
+              </Tooltip>
+              </Box>
+              <Menu
+            anchorEl={anchorEl}
+            id="account-menu"
+            open={profileOpen}
+            onClose={handleClose}
+            onClick={handleClose}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                overflow: "visible",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                mt: 1.5,
+                "& .MuiAvatar-root": {
+                  width: 55,
+                  height: 53,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                "&::before": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  bgcolor: "background.paper",
+                  transform: "translateY(-50%) rotate(45deg)",
+                  zIndex: 0,
+                },
+              },
+            }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <MenuItem>
+              <ListItemIcon>
+                <Avatar
+                  alt="Voxpro solutions"
+                  src="/"
+                  sx={{
+                    backgroundColor: "#f78888",
+                    cursor: "pointer",
+                    fontSize: "24px",
+                  }}
+                />
+              </ListItemIcon>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Typography sx={{ fontSize: "18px" }} fontWeight={650}>
+                  Voxpro Solutions
+                </Typography>
+                <Typography sx={{ fontSize: "12px" }}>
+                  voxprosolution@gmail.com
+                </Typography>
+              </Box>
+            </MenuItem>
+            <Divider /> 
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <Logout fontSize="13px" /> 
+              </ListItemIcon>
+              <Typography sx={{ fontSize: "13px" }}> Logout </Typography>
+            </MenuItem>
+          </Menu>
+           
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

@@ -105,80 +105,19 @@ const Dashboard = () => {
     }
     navigate("/appointment_list",{state:formData});
   };
-  // const doctorAppointmentRow = [
-  //   {
-  //     sl_no: 1,
-  //     doc_name: "Dr.Manju",
-  //     total: 2,
-  //     action: (
-  //       <Button
-  //         size="small"
-  //         variant="contained"
-  //         disableElevation
-  //         onClick={handleDetails}
-  //       >
-  //         Details
-  //       </Button>
-  //     ),
-  //   },
-  //   {
-  //     sl_no: 2,
-  //     doc_name: "Dr.Madhu",
-  //     total: 5,
-  //     action: (
-  //       <Button
-  //         size="small"
-  //         variant="contained"
-  //         disableElevation
-  //         onClick={handleDetails}
-  //       >
-  //         Details
-  //       </Button>
-  //     ),
-  //   },
-  //   {
-  //     sl_no: 3,
-  //     doc_name: "Dr.Shridhar",
-  //     total: 10,
-  //     action: (
-  //       <Button
-  //         size="small"
-  //         variant="contained"
-  //         disableElevation
-  //         onClick={handleDetails}
-  //       >
-  //         Details
-  //       </Button>
-  //     ),
-  //   },
-  //   {
-  //     sl_no: 4,
-  //     doc_name: "Dr.Shashank",
-  //     total: 20,
-  //     action: (
-  //       <Button
-  //         size="small"
-  //         variant="contained"
-  //         disableElevation
-  //         onClick={handleDetails}
-  //       >
-  //         Details
-  //       </Button>
-  //     ),
-  //   },
-  // ];
 
   useEffect(() => {
     dispatch(startGetDoctorList());
-  }, []);
+  }, [dispatch]);
 
   const handleEditClick = (rowData) => {
     navigate("edit_doctor", { state: rowData });
   };
 
   const data = useSelector((state) => {
-    return state?.doctorSlice?.list;
+    return state.doctorSlice?.list;
   });
+  console.log(data)
 
   const docList = data?.map((docList, i) => ({
     doc_id: docList.id,
@@ -243,7 +182,7 @@ const Dashboard = () => {
   const appointmentData = useSelector((state) => {
     return state.appointmentSlice?.appointment;
   });
-  console.log(appointmentData);
+  // console.log(appointmentData);
   const apnmtList = appointmentData?.map((list) => ({
     doc_id: list.doctor_id,
     doc_name: list.doctor_name,

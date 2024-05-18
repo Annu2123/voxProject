@@ -144,16 +144,45 @@ const EditDoctor = () => {
     navigate("/");
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
-    <Box
-      sx={{
-        width: "100%",
-        backgroundColor: "white",
-        minHeight: "70vh",
-        borderRadius: "9px",
-      }}
-    >
+    <Box>
       <Box
+        sx={{
+          width: "100%",
+          backgroundColor: "white",
+          minHeight: "70vh",
+          borderRadius: "9px",
+          mt: 2,
+          borderTop:"1px solid lightgray",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            p: 1.5,
+            borderRadius: 2,
+          }}
+        >
+          <Button
+            variant="contained"
+            size="small"
+            disableElevation
+            onClick={handleBack}
+            sx={{ mb: 1 }}
+          >
+            back
+          </Button>
+          <Typography variant="h6" sx={{ color: "#0077b6" }}>
+            <b> Edit Doctor </b>
+          </Typography>
+        </Box>
+        <Divider />
+        {/* <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -170,204 +199,444 @@ const EditDoctor = () => {
           onChange={handleSearchChange}
           onSearch={handleSearch}
         />
-      </Box>
+      </Box> */}
 
-      <Grid container spacing={2} sx={{ p: 2 }}>
-        <Grid item xs={6}>
-          <TextField
-            label="Doctor Id"
-            fullWidth
-            size="small"
-            placeholder="Doctor ID"
-            value={docId}
-            readOnly
-            sx={{ cursor: "not-allowed" }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Doctor Name"
-            fullWidth
-            size="small"
-            placeholder="Doctor Name"
-            type="text"
-            value={docName}
-            onChange={(e) => setDocName(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Doctor Mobile Number"
-            placeholder="Mobile Number"
-            type="number"
-            fullWidth
-            size="small"
-            value={docNumber}
-            onChange={(e) => setDocNumber(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Doctor Email ID"
-            placeholder="Email"
-            type="email"
-            fullWidth
-            size="small"
-            value={docEmail}
-            onChange={(e) => setDocEmail(e.target.value)}
-          />
-        </Grid>
-      </Grid>
-      <Divider width="100%" height="10px" sx={{ mt: 2 }} />
-
-      <Grid container spacing={2} sx={{ p: 2 }}>
-        <Grid item xs={6}>
-          <TextField
-            label="Time Interval(Ex : 30 mins)"
-            fullWidth
-            size="small"
-            placeholder="Please Enter Time Interval"
-            type="text"
-            value={interval}
-            onChange={(e) => setInterval(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Consultation Fee"
-            placeholder="please Enter Consultation Fee"
-            type="number"
-            fullWidth
-            size="small"
-            value={fee}
-            onChange={(e) => setFee(e.target.value)}
-          />
-        </Grid>
-      </Grid>
-
-      <Divider width="100%" height="10px" sx={{ mt: 2 }} />
-
-      <FormControl sx={{ p: 2 }}>
-        <FormLabel id="demo-controlled-radio-buttons-group">
-          Select Working Hours
-        </FormLabel>
-        <RadioGroup
-          row
-          aria-labelledby="demo-controlled-radio-buttons-group"
-          name="controlled-radio-buttons-group"
-          value={slotType}
-          onChange={(e) => setSlotType(e.target.value)}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            p: 1,
+            gap: 2,
+            flexDirection: { xs: "column", md: "row" },
+          }}
         >
-          <FormControlLabel
-            value="all_Day"
-            control={<Radio />}
-            label="All Days"
-          />
-          <FormControlLabel
-            value="selectDay"
-            control={<Radio />}
-            label="Select Days"
-          />
-        </RadioGroup>
-      </FormControl>
+          <Box
+            sx={{
+              minHeight: "100px",
+              width: { xs: "100%", md: "50%" },
+              backgroundColor: "#FAFAFA",
+              mt: 2,
+              borderRadius: "8px",
+              border: "1px solid lightgray",
+            }}
+          >
+            <Grid container spacing={2} sx={{ p: 2 }}>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                <TextField
+                  label="Doctor Id"
+                  sx={{width:"60%"}}
+                  size="small"
+                  placeholder="Doctor ID"
+                  value={docId}
+                  readOnly
+                />
+              </Grid>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                <TextField
+                  label="Doctor Name"
+                  sx={{width:"60%"}}
+                  size="small"
+                  placeholder="Doctor Name"
+                  type="text"
+                  value={docName}
+                  onChange={(e) => setDocName(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                <TextField
+                  label="Doctor Mobile Number"
+                  placeholder="Mobile Number"
+                  type="number"
+                  sx={{width:"60%"}}
+                  size="small"
+                  value={docNumber}
+                  onChange={(e) => setDocNumber(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                <TextField
+                  label="Doctor Email ID"
+                  placeholder="Email"
+                  type="email"
+                  sx={{width:"60%"}}
+                  size="small"
+                  value={docEmail}
+                  onChange={(e) => setDocEmail(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+            <Divider width="100%" height="10px" sx={{ mt: 2 }} />
 
-      {slotType === "all_Day" && (
+            <Grid container spacing={2} sx={{ p: 2 }}>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                <TextField
+                  label="Time Interval(Ex : 30 mins)"
+                  sx={{width:"60%"}}
+                  size="small"
+                  placeholder="Please Enter Time Interval"
+                  type="text"
+                  value={interval}
+                  onChange={(e) => setInterval(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                <TextField
+                  label="Consultation Fee"
+                  placeholder="please Enter Consultation Fee"
+                  type="number"
+                  sx={{width:"60%"}}
+                  size="small"
+                  value={fee}
+                  onChange={(e) => setFee(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+          <Box
+            sx={{
+              minHeight: "100px",
+              width: { xs: "100%", md: "50%" },
+              backgroundColor: "#FAFAFA",
+              mt: 2,
+              borderRadius: "8px",
+              border: "1px solid lightgray",
+            }}
+          >
+            <FormControl sx={{ p: 2 }}>
+              <FormLabel id="demo-controlled-radio-buttons-group">
+                Select Working Hours
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-controlled-radio-buttons-group"
+                name="controlled-radio-buttons-group"
+                value={slotType}
+                onChange={(e) => setSlotType(e.target.value)}
+              >
+                <FormControlLabel
+                  value="all_Day"
+                  control={<Radio />}
+                  label="All Days"
+                />
+                <FormControlLabel
+                  value="selectDay"
+                  control={<Radio />}
+                  label="Select Days"
+                />
+              </RadioGroup>
+            </FormControl>
+
+            {slotType === "all_Day" && (
+              <Box
+              sx={{
+                display: "flex",
+                // justifyContent: "center",
+                width: "100%",
+                flexDirection: "column",
+                gap: 1,
+                p: 2,
+                mt: -1,
+              }}
+            >
+              <Divider sx={{mt:-1}}/>
+                <Typography variant="body1">All Day</Typography>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <TextField
+                    label="Start Time"
+                    sx={{ width: "40%" }}
+                    size="small"
+                    placeholder="Start Time"
+                    type="time"
+                    value={timeSlot[0]["time_slot_start"]}
+                    readOnly
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <TextField
+                    label="End Time"
+                    sx={{ width: "40%" }}
+                    size="small"
+                    placeholder="End Time"
+                    type="time"
+                    value={timeSlot[0]["time_slot_end"]}
+                    readOnly
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+              </Box>
+              </Box>
+            )}
+
+            {slotType === "selectDay" && (
+              <Box sx={{ p: 2, mt: -2 }}>
+              <Divider sx={{mt:-1}}/>
+                <FormGroup>
+                  {daysOfWeek.map((day, index) => (
+                    <Grid container spacing={2} key={index}>
+                      <Grid item xs={2}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={Object.keys(selectedDays).includes(
+                                day.value
+                              )}
+                              onChange={handleDayChange}
+                              value={day.value}
+                            />
+                          }
+                          label={day.day}
+                        />
+                      </Grid>
+                      {Object.keys(selectedDays).includes(day.value) && (
+                        <Grid item container lg={8}
+                        md={12}
+                        spacing={1}
+                        sx={{ mt: { md: -2, lg: 0 } }}>
+                          <Grid item xs={6}>
+                            <TextField
+                              label="From time"
+                              type="time"
+                              fullWidth
+                              size="small"
+                              value={selectedDays[day.value]["start_time"]}
+                              onChange={handleTimeChange1(
+                                day.value,
+                                "start_time"
+                              )}
+                              InputLabelProps={{ shrink: true }}
+                              inputProps={{ step: 300 }}
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <TextField
+                              label="To time"
+                              type="time"
+                              fullWidth
+                              size="small"
+                              value={selectedDays[day.value]["end_time"]}
+                              onChange={handleTimeChange1(
+                                day.value,
+                                "end_time"
+                              )}
+                              InputLabelProps={{ shrink: true }}
+                              inputProps={{ step: 300 }}
+                            />
+                          </Grid>
+                        </Grid>
+                      )}
+                    </Grid>
+                  ))}
+                </FormGroup>
+              </Box>
+            )}
+          </Box>
+        </Box>
+
+        {/* <Grid container spacing={2} sx={{ p: 2 }}>
+          <Grid item xs={6}>
+            <TextField
+              label="Doctor Id"
+              fullWidth
+              size="small"
+              placeholder="Doctor ID"
+              value={docId}
+              readOnly
+              sx={{ cursor: "not-allowed" }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Doctor Name"
+              fullWidth
+              size="small"
+              placeholder="Doctor Name"
+              type="text"
+              value={docName}
+              onChange={(e) => setDocName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Doctor Mobile Number"
+              placeholder="Mobile Number"
+              type="number"
+              fullWidth
+              size="small"
+              value={docNumber}
+              onChange={(e) => setDocNumber(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Doctor Email ID"
+              placeholder="Email"
+              type="email"
+              fullWidth
+              size="small"
+              value={docEmail}
+              onChange={(e) => setDocEmail(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+        <Divider width="100%" height="10px" sx={{ mt: 2 }} />
+
         <Grid container spacing={2} sx={{ p: 2 }}>
           <Grid item xs={6}>
             <TextField
-              label="Start Time"
+              label="Time Interval(Ex : 30 mins)"
               fullWidth
               size="small"
-              placeholder="Start Time"
-              type="time"
-              value={timeSlot[0]["time_slot_start"]}
-              readOnly
-              InputLabelProps={{
-                shrink: true,
-              }}
+              placeholder="Please Enter Time Interval"
+              type="text"
+              value={interval}
+              onChange={(e) => setInterval(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
             <TextField
-              label="End Time"
+              label="Consultation Fee"
+              placeholder="please Enter Consultation Fee"
+              type="number"
               fullWidth
               size="small"
-              placeholder="End Time"
-              type="time"
-              value={timeSlot[0]["time_slot_end"]}
-              readOnly
-              InputLabelProps={{
-                shrink: true,
-              }}
+              value={fee}
+              onChange={(e) => setFee(e.target.value)}
             />
           </Grid>
         </Grid>
-      )}
 
-      {slotType === "selectDay" && (
-        <Box sx={{ p: 2 }}>
-          <FormGroup>
-            {daysOfWeek.map((day, index) => (
-              <Grid container spacing={2} key={index}>
-                <Grid item xs={2}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={Object.keys(selectedDays).includes(day.value)}
-                        onChange={handleDayChange}
-                        value={day.value}
-                      />
-                    }
-                    label={day.day}
-                  />
-                </Grid>
-                {Object.keys(selectedDays).includes(day.value) && (
-                  <Grid item container xs={6} spacing={1} mt={1}>
-                    <Grid item xs={6}>
-                      <TextField
-                        label="From time"
-                        type="time"
-                        fullWidth
-                        size="small"
-                        value={selectedDays[day.value]["start_time"]}
-                        onChange={handleTimeChange1(day.value, "start_time")}
-                        InputLabelProps={{ shrink: true }}
-                        inputProps={{ step: 300 }}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        label="To time"
-                        type="time"
-                        fullWidth
-                        size="small"
-                        value={selectedDays[day.value]["end_time"]}
-                        onChange={handleTimeChange1(day.value, "end_time")}
-                        InputLabelProps={{ shrink: true }}
-                        inputProps={{ step: 300 }}
-                      />
-                    </Grid>
+        <Divider width="100%" height="10px" sx={{ mt: 2 }} />
+
+        <FormControl sx={{ p: 2 }}>
+          <FormLabel id="demo-controlled-radio-buttons-group">
+            Select Working Hours
+          </FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="demo-controlled-radio-buttons-group"
+            name="controlled-radio-buttons-group"
+            value={slotType}
+            onChange={(e) => setSlotType(e.target.value)}
+          >
+            <FormControlLabel
+              value="all_Day"
+              control={<Radio />}
+              label="All Days"
+            />
+            <FormControlLabel
+              value="selectDay"
+              control={<Radio />}
+              label="Select Days"
+            />
+          </RadioGroup>
+        </FormControl>
+
+        {slotType === "all_Day" && (
+          <Grid container spacing={2} sx={{ p: 2 }}>
+            <Grid item xs={6}>
+              <TextField
+                label="Start Time"
+                fullWidth
+                size="small"
+                placeholder="Start Time"
+                type="time"
+                value={timeSlot[0]["time_slot_start"]}
+                readOnly
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="End Time"
+                fullWidth
+                size="small"
+                placeholder="End Time"
+                type="time"
+                value={timeSlot[0]["time_slot_end"]}
+                readOnly
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+          </Grid>
+        )}
+
+        {slotType === "selectDay" && (
+          <Box sx={{ p: 2 }}>
+            <FormGroup>
+              {daysOfWeek.map((day, index) => (
+                <Grid container spacing={2} key={index}>
+                  <Grid item xs={2}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={Object.keys(selectedDays).includes(
+                            day.value
+                          )}
+                          onChange={handleDayChange}
+                          value={day.value}
+                        />
+                      }
+                      label={day.day}
+                    />
                   </Grid>
-                )}
-              </Grid>
-            ))}
-          </FormGroup>
-        </Box>
-      )}
+                  {Object.keys(selectedDays).includes(day.value) && (
+                    <Grid item container xs={6} spacing={1} mt={1}>
+                      <Grid item xs={6}>
+                        <TextField
+                          label="From time"
+                          type="time"
+                          fullWidth
+                          size="small"
+                          value={selectedDays[day.value]["start_time"]}
+                          onChange={handleTimeChange1(day.value, "start_time")}
+                          InputLabelProps={{ shrink: true }}
+                          inputProps={{ step: 300 }}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TextField
+                          label="To time"
+                          type="time"
+                          fullWidth
+                          size="small"
+                          value={selectedDays[day.value]["end_time"]}
+                          onChange={handleTimeChange1(day.value, "end_time")}
+                          InputLabelProps={{ shrink: true }}
+                          inputProps={{ step: 300 }}
+                        />
+                      </Grid>
+                    </Grid>
+                  )}
+                </Grid>
+              ))}
+            </FormGroup>
+          </Box>
+        )} */}
 
-      <Box
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-        <Button
-          variant="contained"
-          color="success"
-          disableElevation
-          size="small"
-          onClick={handleUpdate}
-          sx={{mb:2}}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          Update
-        </Button>
+          <Button
+            variant="contained"
+            color="success"
+            disableElevation
+            size="small"
+            onClick={handleUpdate}
+            sx={{ mb: 2 }}
+          >
+            Update
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

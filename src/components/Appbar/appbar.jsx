@@ -20,8 +20,9 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import { Toaster } from 'react-hot-toast';
-import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
+import { Avatar, Menu, MenuItem, Switch, Tooltip } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
 
 const drawerWidth = 240;
@@ -104,8 +105,13 @@ const navbarItems = [
   },
   {
     icon: <ManageAccountsIcon sx={{ color: "black" }} />,
-    title: "Manage Leads",
-    route: "manage_leads",
+    title: "Manage patient",
+    route: "manage_patient",
+  },
+  {
+    icon: <AssignmentIndIcon sx={{ color: "black" }} />,
+    title: "Department",
+    route: "department",
   },
 ];
 
@@ -113,6 +119,7 @@ export default function Navbar() {
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
+  const [checked, setChecked] = React.useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const profileOpen = Boolean(anchorEl);
@@ -136,6 +143,10 @@ export default function Navbar() {
 
   const handleItemClick = (route) => {
     navigate(`${route}`);
+  };
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
   };
 
   return (
@@ -189,7 +200,27 @@ export default function Navbar() {
               alignItems: "center",
               width: "100%",
             }}
-          >
+          > 
+          <Typography
+              variant="subtitle2"
+              sx={{
+                display: "flex",
+                backgroundColor: checked ? "#00b4d8" : "red",
+                fontWeight: "bold",
+                width: "60px",
+                borderRadius: "8px",
+                justifyContent: "center",
+                mt: 1,
+                color: "white",
+              }}
+            >
+              {checked ? "Online" : "Offline"}
+            </Typography>
+            <Switch
+              checked={checked}
+              onChange={handleChange}
+              inputProps={{ "aria-label": "controlled" }}
+            />
           <Tooltip title="Account settings"> 
               <IconButton
                 onClick={handleProfileClick}

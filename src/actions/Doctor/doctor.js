@@ -11,6 +11,10 @@ export const startGetDoctorList = createAsyncThunk("docList", async () => {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(response.request.status)
+  if(response.data.message === "Expired token"){
+    console.log('Token Expired')
+  }
   return response.data;
 });
 
@@ -22,6 +26,9 @@ export const removeDoctor = createAsyncThunk("removeDoctor", async (id) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  if(response.data.message === "Expired token"){
+    console.log('Token Expired')
+  }
   return response.data;
 });
 
@@ -33,6 +40,9 @@ export const createDoctor = createAsyncThunk("createDoc", async (formData) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  if(response.data.message === "Expired token"){
+    console.log('Token Expired')
+  }
   return response.data;
 });
 
@@ -44,6 +54,9 @@ export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  if(response.data.message === "Expired token"){
+    console.log('Token Expired')
+  }
   return response.data;
 });
 
@@ -55,6 +68,9 @@ export const updateDoc = createAsyncThunk("updateDoc", async (formData) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  if(response.data.message === "Expired token"){
+    console.log('Token Expired',response.data.message)
+  }
   return response.data;
 });
 

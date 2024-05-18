@@ -249,7 +249,7 @@ const Dashboard = () => {
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <TextField
-                label="choose Date"
+                label="Choose Date"
                 size="small"
                 type="date"
                 InputLabelProps={{
@@ -258,9 +258,9 @@ const Dashboard = () => {
                 value={date}
                 onChange={handleDateChange}
               />
-              <Button size="small" onClick={handleNavigate}>
+              {/* <Button size="small" onClick={handleNavigate}>
                 <KeyboardDoubleArrowRightIcon fontSize="small" />
-              </Button>
+              </Button> */}
             </Box>
           </Box>
           <Box sx={{ height: "240px", overflow: "auto" }}>

@@ -11,10 +11,10 @@ const Whatsapp = () => {
 
   return (
     <>
-      <Box sx={{display:"flex", justifyContent:"center"}}>
+      <Box sx={{display:"flex", justifyContent:""}}>
       <FormControl sx={{ p: 0 }}>
         <FormLabel id="demo-controlled-radio-buttons-group">
-          Choose 
+          Choose your requirment
         </FormLabel>
         <RadioGroup
           row

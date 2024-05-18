@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -8,18 +8,159 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import MailIcon from '@mui/icons-material/Mail';
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import MailIcon from "@mui/icons-material/Mail";
 import { useNavigate } from "react-router";
+
+const p_form = [
+  {
+    label: "Phone Number",
+    placeholder: "Phone Number",
+    value: "",
+    type: "number",
+    formDataKey:"phone_num"
+    // variant: "standard",
+  },
+  {
+    label: "Patient Name",
+    placeholder: "Patient Name",
+    value: "",
+    type: "text",
+    formDataKey:"patient_name"
+    // variant: "standard",
+  },
+  {
+    label: "Patient Email",
+    placeholder: "Patient Email",
+    value: "",
+    type: "email",
+    formDataKey:'email_id'
+    // variant: "standard",
+  },
+  {
+    label: "Date of Birth",
+    placeholder: "Date of Birth",
+    value: "",
+    type: "date",
+    // variant: "standard",
+  },
+  {
+    label: "Gender",
+    placeholder: "Gender",
+    value: "",
+    type: "select",
+    // variant: "standard",
+    menuItems: ["Male", "Female"],
+  },
+  {
+    label: "Father/Husband name",
+    placeholder: "Father/Husband name",
+    value: "",
+    type: "text",
+    // variant: "standard",
+  },
+  {
+    label: "Martial Status",
+    placeholder: "Martial Status",
+    value: "",
+    type: "select",
+    // variant: "standard",
+    menuItems: ["Married", "Unmarried"],
+  },
+  
+  {
+    label: "Pin Code",
+    placeholder: "Pin Code",
+    value: "",
+    type: "number",
+    // variant: "standard",
+  },
+  // {
+  //   label: "Choose Date",
+  //   placeholder: "Choose Date",
+  //   value: "",
+  //   type: "date",
+  //   // variant: "standard",
+  // },
+  // {
+  //   label: "Choose Time",
+  //   placeholder: "Choose Time",
+  //   value: "",
+  //   type: "time",
+  //   // variant: "standard",
+  // },
+  {
+    label: "Religion ",
+    placeholder: "Religion ",
+    value: "",
+    type: "select",
+    // variant: "standard",
+    menuItems: ["none"],
+  },
+  {
+    label: "Patient Address",
+    placeholder: "Patient Address",
+    value: "",
+    type: "multiline",
+    // variant: "standard",
+  },
+];
+
+const appointment = [
+  {
+    label: "Department",
+    placeholder: "Department",
+    value: "",
+    type: "select",
+    menuItems: ["none"],
+    // variant: "standard",
+  },
+  {
+    label: "Doctor Name",
+    placeholder: "Doctor Name",
+    value: "",
+    type: "select",
+    menuItems: ["none"],
+    // variant: "standard",
+  },
+  {
+    label: "Date",
+    placeholder: "Date",
+    value: "",
+    type: "date",
+    // variant: "standard",
+  },
+];
 const Consultation = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({});
+  const [showAppnmt,setShowAppnmt] = useState(false)
+  const [appoinmentData, setAppoinmentData] = useState({});
 
-  const handleWhatsapp =() =>{
-    navigate('/whatsapp')
-  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
 
-  const handleEmail =() =>{
-    navigate('/email')
+  const handleChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: newValue,
+    }));
+  };
+
+  const handleWhatsapp = () => {
+    navigate("/whatsapp");
+  };
+
+  const handleEmail = () => {
+    navigate("/email");
+  };
+  const handleAppoinment=()=>{
+    setShowAppnmt(true)
   }
 
   return (
@@ -33,192 +174,274 @@ const Consultation = () => {
         // p: 2,
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between",backgroundColor: "#90e0ef",height: "50px",p:1,borderRadius:'8px' }}>
+      {/* <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          backgroundColor: "#90e0ef",
+          height: "50px",
+          p: 1,
+          borderRadius: "8px",
+        }}
+      >
         <Typography variant="h6" sx={{ color: "#0077b6" }}>
           <b> Patient Details </b>
         </Typography>
-      </Box>
-      <Grid container xs={12} spacing={2} sx={{ p:1,mt:0.2 }}>
-      <Grid item xs={6} md={6}>
-          <TextField
-            label="Mobile Number"
-            fullWidth
-            size="small"
-            placeholder="Mobile Number"
-            type="number"
-          />
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <TextField
-            label="Patient Name"
-            fullWidth
-            size="small"
-            placeholder="Patient Name"
-            type="text"
-          />
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <TextField
-            label="Date of Birth"
-            fullWidth
-            size="small"
-            placeholder="Date of Birth"
-            type="date"
-          />
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <TextField
-            label="Gender"
-            fullWidth
-            size="small"
-            placeholder="Gender"
-            select
-          >
-            <MenuItem value='Male'>Male</MenuItem>
-            <MenuItem value='Female'>Female</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <TextField
-            label="Father/Husband Name"
-            placeholder="Father/Husband Name"
-            type="text"
-            fullWidth
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <TextField
-            label="Martel Status"
-            fullWidth
-            size="small"
-            placeholder="Martel Status"
-            select
-          >
-            <MenuItem value='married'>Married</MenuItem>
-            <MenuItem value='unMarried'>UnMarried</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <TextField
-            label="Patient Email"
-            placeholder="Patient Email"
-            type="email"
-            fullWidth
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <TextField
-            label="Patient Number"
-            placeholder="Patient Number"
-            type="number"
-            fullWidth
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <TextField
-            label="Select Doctor"
-            placeholder="Select Doctor"
-            select
-            fullWidth
-            required
-            size="small"
-          >
-            <MenuItem value='none'>None</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={6} md={9}>
-          <TextField
-            label="Patient Address"
-            placeholder="Patient Address"
-            type="body"
-            rows={3}
-            fullWidth
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <TextField
-            label="Pin Code"
-            placeholder="Pin Code"
-            type="number"
-            fullWidth
-            size="small"
-          />
-        </Grid>
-
-        <Grid item xs={6}>
-          <TextField
-            label="Select Date and Time"
-            placeholder="Select Date and Time"
-            type="dateandtime"
-            fullWidth
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Religion"
-            placeholder="Religion"
-            select
-            fullWidth
-            required
-            size="small"
-          >
-            <MenuItem value='none'>None</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Department"
-            placeholder="Department"
-            select
-            fullWidth
-            required
-            size="small"
-          >
-            <MenuItem value='none'>None</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Doctor Name"
-            placeholder="Doctor Name"
-            select
-            fullWidth
-            required
-            size="small"
-          >
-            <MenuItem value='none'>None</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Religion"
-            placeholder="Religion"
-            select
-            fullWidth
-            required
-            size="small"
-          >
-            <MenuItem value='none'>None</MenuItem>
-          </TextField>
-        </Grid>
-      </Grid>
-
+      </Box> */}
       <Box
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center",mt:2,gap:2 }}
+        sx={{
+          minHeight: "100px",
+          border: "1px solid lightgray",
+          mt: 1,
+          borderRadius: "8px",
+          m: 1,
+          backgroundColor: "#FAFAFA",
+          p: 1,
+        }}
       >
-        <Button variant="contained" color="success" size="small">
+        <Typography variant="h6" sx={{ color: "#0077b6" }}>
+          <b> Patient Details </b>
+        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+          <Box
+            sx={{
+              width: "90%",
+              // backgroundColor: "red",
+              minHeight: "100px",
+              borderRadius: "8px",
+            }}
+          >
+            <Grid
+              container
+              spacing={1}
+            >
+              {p_form.map((field, index) => (
+                // <Grid key={index} item xs={12} md={4} sx={{display:"flex",justifyContent:"flex-end"}}>
+                <React.Fragment key={index}>
+                  {field.type === "select" ? (
+                    <Grid item xs={12} md={4} sx={{display:"flex",justifyContent:"center"}}>
+                    <TextField
+                      sx={{ width: "80%",mt:1 }}
+                      size="small"
+                      type="text"
+                      variant={field.variant}
+                      label={field.label}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                      select
+                    >
+                      {field.menuItems.map((item, index) => (
+                        <MenuItem key={index} value={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    </Grid>
+                  ) : field.type === "date" ? (
+                    <Grid item xs={12} md={4} sx={{display:"flex",justifyContent:"center"}}>
+                    <TextField
+                    sx={{ width: "80%",mt:1 }}
+                      size="small"
+                      type="date"
+                      variant={field.variant}
+                      label={field.label}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                    />
+                    </Grid>
+                  ) : field.type === "time" ? (
+                    <Grid item xs={12} md={4} sx={{display:"flex",justifyContent:"center"}}>
+                    <TextField
+                    sx={{ width: "80%",mt:1 }}
+                      size="small"
+                      type="time"
+                      variant={field.variant}
+                      label={field.label}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                    />
+                    </Grid>
+                  ): field.type === "multiline" ? (
+                    <Grid item xs={12} md={12 } sx={{display:"flex",justifyContent:'center'}}>
+                    <TextField
+                    sx={{ width:{md:"93%",xs:'80%'},mt:1 }}
+                      size="small"
+                      multiline
+                      rows={3}
+                      type="text"
+                      variant={field.variant}
+                      label={field.label}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                    />
+                    </Grid>
+                  )  : (
+                    <Grid item xs={12} md={4} sx={{display:"flex",justifyContent:"center"}}>
+                    <TextField
+                    sx={{ width: "80%",mt:1 }}
+                      size="small"
+                      type={field.type}
+                      label={field.label}
+                      variant={field.variant}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                    />
+                    </Grid>
+                  )}
+                  </React.Fragment>
+                
+              ))}
+            </Grid>
+          </Box>
+        </Box>
+      </Box>
+              {showAppnmt &&
+      <Box
+        sx={{
+          minHeight: "80px",
+          border: "1px solid lightgray",
+          mt: 1,
+          borderRadius: "8px",
+          m: 1,
+          backgroundColor: "#FAFAFA",
+          p: 1,
+        }}
+      >
+        <Typography variant="h6" sx={{ color: "#0077b6" }}>
+          <b> Appointment </b>
+        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+          <Box
+            sx={{
+              width: "90%",
+              // backgroundColor: "red",
+              minHeight: "100px",
+              borderRadius: "8px",
+            }}
+          >
+            <Grid
+              container
+              spacing={1}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              {appointment.map((field, index) => (
+                <React.Fragment key={index}>
+                
+                  {field.type === "select" ? (
+                    <Grid item xs={12} md={4} sx={{display:"flex",justifyContent:"center"}}>
+                    <TextField
+                      sx={{ width: "80%" }}
+                      size="small"
+                      type="text"
+                      variant={field.variant}
+                      label={field.label}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                      select
+                    >
+                      {field.menuItems.map((item, index) => (
+                        <MenuItem key={index} value={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    </Grid>
+                  ) : field.type === "date" ? (
+                    <Grid item xs={12} md={4} sx={{display:"flex",justifyContent:"center"}}>
+                    <TextField
+                      sx={{ width: "80%" }}
+                      size="small"
+                      type="date"
+                      variant={field.variant}
+                      label={field.label}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                    />
+                    </Grid>
+                  ) : field.type === "time" ? (
+                    <Grid item xs={12} md={4} sx={{display:"flex",justifyContent:"center"}}>
+                    <TextField
+                      sx={{ width: "80%" }}
+                      size="small"
+                      type="time"
+                      variant={field.variant}
+                      label={field.label}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                    />
+                    </Grid>
+                  ) : (
+                    <Grid item xs={12} md={4} sx={{display:"flex",justifyContent:"center"}}>
+                    <TextField
+                      sx={{ width: "80%" }}
+                      size="small"
+                      type={field.type}
+                      label={field.label}
+                      variant={field.variant}
+                      placeholder={field.placeholder}
+                      name={field.label}
+                      value={formData[field.label] || ""}
+                      onChange={handleChange}
+                    />
+                    </Grid>
+                  )}
+                </React.Fragment>
+              ))}
+            </Grid>
+          </Box>
+        </Box>
+      </Box>
+}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 2,
+          gap: 2,
+        }}
+      >
+        <Button variant="contained" disableElevation color="success" size="small" onClick={handleSubmit}>
           Submit
         </Button>
-        <Button variant="contained" sx={{color:"white",backgroundColor:'#38b000'}} size="small" onClick={handleWhatsapp}>
-            <WhatsAppIcon/>
-        </Button>
-        <Button variant="contained" color="success" size="small" onClick={handleEmail}>
-          <MailIcon/>
+        
+        <Button
+          variant="contained"
+          disableElevation
+          color="success"
+          size="small"
+          onClick={handleAppoinment}
+        >
+          Appoinment
         </Button>
       </Box>
     </Box>

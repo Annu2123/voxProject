@@ -17,6 +17,8 @@ import { Toaster } from "react-hot-toast";
 import Whatsapp from "./components/Whatsapp/whatsapp.jsx";
 import Email from "./components/Email/email.jsx";
 import EditDoctor from "./components/AddDoctor/editDoctor.jsx";
+import Department from "./components/Department/department.jsx";
+import VarAppbar from "./components/VarAppbar.js/varAppbar.jsx";
 
 const router = createBrowserRouter([
   {
@@ -52,11 +54,11 @@ const router = createBrowserRouter([
         element: <ConnectPatient />,
       },
       {
-        path: "manage_leads",
+        path: "manage_patient",
         element: <ManageLeads />,
       },
       {
-        path: "manage_leads/edit_leads",
+        path: "manage_patient/edit_leads",
         element: <EditManageLeads />,
       },
       {
@@ -67,6 +69,13 @@ const router = createBrowserRouter([
         path:"email",
         element:<Email/>
       },
+      {
+        path:'department',
+        element:<VarAppbar/>
+      },
+      {
+        path:""
+      }
     ],
   },
 ]);

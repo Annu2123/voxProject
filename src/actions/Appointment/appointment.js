@@ -62,6 +62,7 @@ const initialState = {
           state.loading = true;
           state.error = action.error.message;
           console.log(action.error.message);
+          toast.error('Unable to fetch data...', action.error.message)
         });
 
         builder
@@ -77,6 +78,7 @@ const initialState = {
           state.loading = true;
           state.error = action.error.message;
           console.log(action.error.message);
+          toast.error('Something went wrong...', action.error.message)
         });
 
         builder
@@ -92,6 +94,7 @@ const initialState = {
           state.loading = true;
           state.error = action.error.message;
           console.log(action.error.message);
+          toast.error('Something went wrong...', action.error.message)
         });
   
     }

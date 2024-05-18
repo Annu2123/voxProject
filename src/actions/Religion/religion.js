@@ -68,7 +68,7 @@ const initialState = {
         .addCase(startAddRelgn.rejected, (state, action) => {
           state.loading = true;
           state.error = action.error.message;
-          toast.error(action.error.message);
+          toast.error('Something went wrong...', action.error.message)
         });
 
         builder
@@ -83,7 +83,7 @@ const initialState = {
         .addCase(startGetRelgnList.rejected, (state, action) => {
           state.loading = true;
           state.error = action.error.message;
-          toast.error(action.error.message);
+          toast.error('Something went wrong...', action.error.message)
           console.log(action.error.message);
         });
 
@@ -99,7 +99,7 @@ const initialState = {
         .addCase(startDeleteRelgn.rejected, (state, action) => {
           state.loading = true;
           state.error = action.error.message;
-          toast.error(action.error.message);
+          toast.error('Something went wrong...', action.error.message)
           console.log(action.error.message);
         });
   

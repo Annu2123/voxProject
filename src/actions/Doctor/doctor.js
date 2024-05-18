@@ -99,6 +99,7 @@ const doctorSlice = createSlice({
         state.loading = true;
         state.error = action.error.message;
         console.log(action.error.message);
+        toast.error('Unable to fetch the data...', action.error.message)
       });
 
     builder
@@ -113,6 +114,7 @@ const doctorSlice = createSlice({
       .addCase(removeDoctor.rejected, (state, action) => {
         state.loading = true;
         state.error = action.error.message;
+        toast.error('Something went wrong...', action.error.message)
       });
 
     builder
@@ -127,6 +129,7 @@ const doctorSlice = createSlice({
       .addCase(createDoctor.rejected, (state, action) => {
         state.loading = true;
         state.error = action.error.message;
+        toast.error('Something went wrong...', action.error.message)
       });
 
     builder
@@ -141,6 +144,7 @@ const doctorSlice = createSlice({
       .addCase(getTimeSlot.rejected, (state, action) => {
         state.loading = true;
         state.error = action.error.message;
+        toast.error('Something went wrong...', action.error.message)
       });
 
       builder
@@ -156,6 +160,7 @@ const doctorSlice = createSlice({
       .addCase(updateDoc.rejected, (state, action) => {
         state.loading = true;
         state.error = action.error.message;
+        toast.error('Something went wrong...', action.error.message)
       });
   },
 });

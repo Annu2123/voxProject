@@ -204,9 +204,57 @@ const Dashboard = () => {
       <Box
         sx={{
           display: "flex",
+          
+          gap: 3,
+          borderRadius: "12px",
+          flexDirection: { xs: "column", md: "row" },
+        }}
+      >
+        {cardData.map((item, index) => (
+          <Card
+            key={index}
+            sx={{
+              width: { xs: "100%", md: "240px" },
+              height: "120px",
+              borderRadius: "12px",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <Box
+              sx={{
+                p: 1,
+                height: "40px",
+                backgroundColor: "#90e0ef",
+                borderTopLeftRadius: "12px",
+                borderTopRightRadius: "12px",
+              }}
+            >
+              <Typography variant="subtitle1" fontWeight="bold" color="#023e8a">
+                {item.title}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                height: "80px",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h4">
+                {item.value} <span>{item.unit}</span>
+              </Typography>
+            </Box>
+          </Card>
+        ))}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
           justifyContent: "space-between",
           gap: { xs: 2, md: 5 },
           flexDirection: { xs: "column", md: "row" },
+          mt: 2,
         }}
       >
         <Card sx={{ width: { xs: "100%", md: "50%" }, height: "300px" }}>
@@ -272,53 +320,7 @@ const Dashboard = () => {
         </Card>
       </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          mt: 2,
-          gap: 3,
-          borderRadius: "12px",
-          flexDirection: { xs: "column", md: "row" },
-        }}
-      >
-        {cardData.map((item, index) => (
-          <Card
-            key={index}
-            sx={{
-              width: { xs: "100%", md: "240px" },
-              height: "120px",
-              borderRadius: "12px",
-              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <Box
-              sx={{
-                p: 1,
-                height: "40px",
-                backgroundColor: "#90e0ef",
-                borderTopLeftRadius: "12px",
-                borderTopRightRadius: "12px",
-              }}
-            >
-              <Typography variant="subtitle1" fontWeight="bold" color="#023e8a">
-                {item.title}
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                height: "80px",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h4">
-                {item.value} <span>{item.unit}</span>
-              </Typography>
-            </Box>
-          </Card>
-        ))}
-      </Box>
+      
 
       <Dialog
         open={deleteConfirmationOpen}

@@ -364,7 +364,7 @@ export default function Navbar() {
         }}
       >
         <Outlet />
-        <Toaster/>
+        <Toaster position="top-right"/>
       </Box>
     </Box>
   );

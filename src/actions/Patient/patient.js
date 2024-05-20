@@ -12,9 +12,9 @@ export const startAddPatient = createAsyncThunk("addPatient", async (formData) =
       Authorization: `Bearer ${token}`,
     },
   });
-  if(response.data.message === "Expired token"){
-    console.log('Token Expired')
-  }
+//   if(response.data.message === "Expired token"){
+//     console.log('Token Expired')
+//   }
   return response.data;
 });
 
@@ -54,7 +54,11 @@ const initialState = {
         .addCase(startAddPatient.rejected, (state, action) => {
           state.loading = true;
           state.error = action.error.message;
-          toast.error('Something went wrong...', action.error.message)
+          if(action.error.message="Request failed with status code 409"){
+            toast.error('Fill all fields')
+          }else{
+            toast.error('Something went wrong...',)
+          }
         });
 
         builder

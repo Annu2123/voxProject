@@ -118,7 +118,7 @@ const ConnectPatient = () => {
         <Card
           sx={{
             borderTop: "1px solid #90e0ef",
-            width: { xs: "100%", md: "30%" },
+            width: { xs: "100%", md: "40%" },
             minHeight: "100px",
           }}
         >
@@ -184,7 +184,7 @@ const ConnectPatient = () => {
         <Card
           sx={{
             borderTop: "1px solid #90e0ef",
-            width: { sm: "100%", md: "24%" },
+            width: { sm: "100%", md: "35%" },
             minHeight: "100px",
             overflowX: "auto",
           }}
@@ -219,12 +219,12 @@ const ConnectPatient = () => {
               alignItems: "center",
               mt: 1,
               p: 1,
-              gap: 1,
+              gap: 2,
               flexDirection: { md: "column", lg: "row" },
             }}
           >
             <Button
-              size="small"
+              size=""
               variant="contained"
               color="warning"
               disableElevation
@@ -233,7 +233,7 @@ const ConnectPatient = () => {
               <DialpadIcon fontSize="small" />
             </Button>
             <Button
-              size="small"
+              size=""
               variant="contained"
               sx={{ backgroundColor: "#39ff5a" }}
               disableElevation
@@ -242,7 +242,7 @@ const ConnectPatient = () => {
               <WhatsAppIcon fontSize="small" />
             </Button>
             <Button
-              size="small"
+              size=""
               variant="contained"
               sx={{ backgroundColor: "#ff5d5d" }}
               disableElevation
@@ -251,7 +251,7 @@ const ConnectPatient = () => {
               <MailOutlineIcon fontSize="small" />
             </Button>
             <Button
-              size="small"
+              size=""
               variant="contained"
               sx={{ backgroundColor: "#aeb9cc" }}
               disableElevation

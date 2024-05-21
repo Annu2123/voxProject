@@ -36,10 +36,10 @@ const Department = () => {
       department: dept,
     };
     dispatch(startAddDept(formData)).then((resultAction) => {
-        if (resultAction.meta.requestStatus === "fulfilled") {
-          dispatch(startGetDeptList());
-        }
-      })
+      if (resultAction.meta.requestStatus === "fulfilled") {
+        dispatch(startGetDeptList());
+      }
+    });
   };
 
   const handleDelete = (id) => {
@@ -47,18 +47,15 @@ const Department = () => {
       id: id,
     };
     dispatch(startDeleteDept(formData)).then((resultAction) => {
-        if (resultAction.meta.requestStatus === "fulfilled") {
-          dispatch(startGetDeptList());
-        }
-      });
+      if (resultAction.meta.requestStatus === "fulfilled") {
+        dispatch(startGetDeptList());
+      }
+    });
   };
-
-
 
   const deptList = useSelector((state) => {
     return state.departmentSlice?.deptList;
   });
-  console.log(deptList);
   const list = deptList?.map((l) => ({
     dept_name: l.department,
     action: (
@@ -95,7 +92,7 @@ const Department = () => {
             border: "1px solid lightgray",
             borderRadius: "8px",
             backgroundColor: "#FAFAFA",
-            height:"200px",
+            height: "200px",
           }}
         >
           <Typography variant="body1" sx={{ color: "#0077b6", p: 1 }}>
@@ -137,8 +134,8 @@ const Department = () => {
             borderRadius: "8px",
             backgroundColor: "#FAFAFA",
             width: { xs: "100%", md: "50%" },
-            height:"64vh",
-            overflow:"auto"
+            height: "64vh",
+            overflow: "auto",
           }}
         >
           <Typography variant="body1" sx={{ color: "#0077b6", p: 1 }}>

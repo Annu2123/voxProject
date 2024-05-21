@@ -17,7 +17,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { startAddPatient } from "../../actions/Patient/patient";
+import { startAddPatient, startUpdatePatient } from "../../actions/Patient/patient";
 import { startGetRelgnList } from "../../actions/Religion/religion";
 import { startGetReferList } from "../../actions/ReferBy/referBy";
 
@@ -31,7 +31,7 @@ const religion = () => {
     return state?.religionSlice?.relgnList;
   });
   let r = relgnList?.map((r) => r.religion);
-  return r?.length > 1 ? r : ["none"];
+  return r?.length > 0 ? r : ["none"];
 };
 
 const referBy = () => {
@@ -101,150 +101,136 @@ const Consultation = () => {
     return state.patientSlice.findData
   })
   const actualData =data && data[0]
-  console.log(actualData)
+
 
   const [formData, setFormData] = useState({});
   const [showAppnmt, setShowAppnmt] = useState(false);
   const [appoinmentData, setAppoinmentData] = useState({});
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (actualData) {
+      setFormData(actualData);
+    }
+  }, [actualData]);
+
   const p_form = [
     {
       label: "Phone Number",
       placeholder: "Phone Number",
-      value: "",
+      value: actualData ? actualData.phone_num : "",
       type: "number",
       formDataKey: "phone_num",
-      // variant: "standard",
+      readOnly: !!actualData
     },
     {
       label: "Alternate Phone Number",
       placeholder: "Alternate Phone Number",
-      value: "",
+      value: actualData ? actualData.alt_phone_num : "",
       type: "number",
       formDataKey: "alt_phone_num",
-      // variant: "standard",
     },
     {
       label: "Patient Name",
       placeholder: "Patient Name",
-      value: "",
+      value: actualData ? actualData.name : "",
       type: "text",
       formDataKey: "name",
-      // variant: "standard",
     },
     {
       label: "Patient Email",
       placeholder: "Patient Email",
-      value: "",
+      value: actualData ? actualData.email : "",
       type: "email",
       formDataKey: "email",
-      // variant: "standard",
     },
     {
       label: "Date of Birth",
       placeholder: "Date of Birth",
-      value: "",
+      value: actualData ? actualData.dob : "",
       type: "date",
       formDataKey: "dob",
-      // variant: "standard",
     },
     {
       label: "Gender",
       placeholder: "Gender",
-      value: "",
+      value: actualData ? actualData.gender : "",
       type: "select",
       formDataKey: "gender",
-      // variant: "standard",
       menuItems: ["Male", "Female"],
     },
     {
       label: "Father/Husband name",
       placeholder: "Father/Husband name",
-      value: "",
+      value: actualData ? actualData.father_husband_name : "",
       type: "text",
       formDataKey: "father_husband_name",
-      // variant: "standard",
     },
     {
       label: "Martial Status",
       placeholder: "Martial Status",
-      value: "",
+      value: actualData ? actualData.marital_status : "",
       type: "select",
-      // variant: "standard",
       formDataKey: "marital_status",
       menuItems: ["Married", "Unmarried"],
     },
     {
       label: "Aadhar Number",
       placeholder: "Aadhar Number",
-      value: "",
+      value: actualData ? actualData.aadhar_num : "",
       type: "number",
       formDataKey: "aadhar_num",
-      // variant: "standard",
     },
     {
       label: "Nationality",
       placeholder: "Nationality",
-      value: "",
+      value: actualData ? actualData.nationality : "",
       type: "text",
       formDataKey: "nationality",
-      // variant: "standard",
     },
     {
-      label: "Religion ",
-      placeholder: "Religion ",
-      value: "",
+      label: "Religion",
+      placeholder: "Religion",
+      value: actualData ? actualData.religion : "",
       type: "select",
-      // variant: "standard",
       formDataKey: "religion",
       menuItems: religion(),
     },
     {
       label: "Pin Code",
       placeholder: "Pin Code",
-      value: "",
+      value: actualData ? actualData.pincode : "",
       type: "number",
       formDataKey: "pincode",
-      // variant: "standard",
     },
     {
       label: "City",
       placeholder: "City",
-      value: "",
+      value: actualData ? actualData.city : "",
       type: "text",
       formDataKey: "city",
-      // variant: "standard",
     },
     {
       label: "Refered by",
       placeholder: "Refered by",
-      value: "",
+      value: actualData ? actualData.refered_by : "",
       type: "select",
       formDataKey: "refered_by",
-      // variant: "standard",
       menuItems: referBy(),
-    },
-    {
-      label: "Remarks",
-      placeholder: "Remarks",
-      value: "",
-      type: "text",
-      formDataKey: "remarks",
-      // variant: "standard",
     },
     {
       label: "Patient Address",
       placeholder: "Patient Address",
-      value: "",
+      value: actualData ? actualData.address : "",
       type: "multiline",
       formDataKey: "address",
-      // variant: "standard",
     },
   ];
+
   const handleOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -258,8 +244,16 @@ const Consultation = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(startAddPatient(formData));
-    setFormData({});
+    if (actualData) {
+      const dataToSubmit = { ...formData };
+      delete dataToSubmit.phone_num;
+      console.log(dataToSubmit)
+      dispatch(startUpdatePatient(dataToSubmit))
+      setFormData({});
+    } else {
+      dispatch(startAddPatient(formData));
+      setFormData({});
+    }
   };
 
   const handleChange = (e) => {
@@ -294,20 +288,6 @@ const Consultation = () => {
         // p: 2,
       }}
     >
-      {/* <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          backgroundColor: "#90e0ef",
-          height: "50px",
-          p: 1,
-          borderRadius: "8px",
-        }}
-      >
-        <Typography variant="h6" sx={{ color: "#0077b6" }}>
-          <b> Patient Details </b>
-        </Typography>
-      </Box> */}
       <Box
         sx={{
           minHeight: "100px",
@@ -321,8 +301,7 @@ const Consultation = () => {
       >
         <Typography variant="h6" sx={{ color: "#0077b6" }}>
           <b>
-            {" "}
-            Patient Details <Divider />{" "}
+            Patient Details <Divider />
           </b>
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
@@ -445,6 +424,7 @@ const Consultation = () => {
                         placeholder={field.placeholder}
                         name={field.formDataKey}
                         value={formData[field.formDataKey] || ""}
+                        InputProps={field.formDataKey === "phone_num" && actualData ? { readOnly: true } : {}}
                         onChange={handleChange}
                       />
                     </Grid>
@@ -658,7 +638,7 @@ const Consultation = () => {
           size="small"
           onClick={handleSubmit}
         >
-          Add patient
+          {actualData ? "Update Patient" : "Add Patient"}
         </Button>
 
         <Button
@@ -667,6 +647,7 @@ const Consultation = () => {
           color="success"
           size="small"
           onClick={handleOpen}
+          disabled={!actualData}
         >
           Appointment
         </Button>

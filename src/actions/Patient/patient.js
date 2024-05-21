@@ -18,6 +18,20 @@ export const startAddPatient = createAsyncThunk("addPatient", async (formData) =
   return response.data;
 });
 
+export const startUpdatePatient = createAsyncThunk("updatePatient", async (formData) => {
+  const Api = "https://dev.voxprosolutions.com/api/patient_update";
+  const data = formData
+  const response = await axios.post(Api,data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+//   if(response.data.message === "Expired token"){
+//     console.log('Token Expired')
+//   }
+  return response.data;
+});
+
 export const searchPatient = createAsyncThunk("search", async (formData) => {
   const Api = "https://dev.voxprosolutions.com/api/patient_find";
   const data = formData
@@ -71,6 +85,27 @@ const initialState = {
           state.error = action.error.message;
           if(action.error.message="Request failed with status code 409"){
             toast.error('Fill all fields')
+          }else{
+            toast.error('Something went wrong...',)
+          }
+        });
+
+        builder
+        .addCase(startUpdatePatient.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(startUpdatePatient.fulfilled, (state, action) => {
+          state.loading = false;
+          toast.success("updated successfully")
+        })
+        .addCase(startUpdatePatient.rejected, (state, action) => {
+          state.loading = true;
+          state.error = action.error.message;
+          console.log(action.error.message)
+          
+          if(action.error.message="Request failed with status code 409"){
+            toast.error('Please fill the unique data')
           }else{
             toast.error('Something went wrong...',)
           }

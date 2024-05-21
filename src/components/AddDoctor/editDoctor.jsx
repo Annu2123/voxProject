@@ -313,7 +313,7 @@ const EditDoctor = () => {
             }}
           >
             <Grid container spacing={2} sx={{ p: 2 }}>
-              <Grid
+              {/* <Grid
                 item
                 xs={12}
                 sx={{ display: "flex", justifyContent: "center" }}
@@ -326,7 +326,7 @@ const EditDoctor = () => {
                   value={docId}
                   readOnly
                 />
-              </Grid>
+              </Grid> */}
               <Grid
                 item
                 xs={12}

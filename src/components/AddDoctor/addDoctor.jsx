@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchField from "../Table/customSearch";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -19,33 +19,25 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 
 import SlotBooking from "./slots";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createDoctor } from "../../actions/Doctor/doctor";
 import CustomFromToDate from "./customFromToDate";
 import { useNavigate } from "react-router";
+import { startGetDeptList } from "../../actions/Department/department";
 
-const docDept = [
-  "Dermatology",
-  "Emergency Medicine",
-  "General Medicine",
-  "General Surgery & Gastroenterology Surgery",
-  "Intensive Care Unit",
-  "Paediatrics",
-  "Nephrology",
-  "Neurosurgery",
-  "Neurology",
-  "Obstetrics and Gynaecology",
-  "Ophthalmology",
-  "Orthopaedic Surgery",
-  "Paediatrics Surgery",
-  "Plastic & Reconstructive Surgery",
-  "Psychiatry",
-  "Vascular Surgery",
-  "ENT",
-  "Fascio Maxillary Surgery",
-  "Urology",
-  "Orthopaedics",
-];
+const docDept = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(startGetDeptList());
+  }, []);
+  const deptList = useSelector((state) => {
+    return state?.departmentSlice?.deptList;
+  });
+  let r = deptList?.map((r) => r.department);
+  return r?.length > 1 ? r : ["none"];
+};
+
 
 const AddDoctor = () => {
   const navigate = useNavigate();
@@ -66,6 +58,8 @@ const AddDoctor = () => {
   const [consultaionFee, setConsultaionFee] = useState();
   const [department, setDepartment] = useState();
   const dispatch = useDispatch();
+  const deptList = docDept()
+  // console.log(deptList)
 
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -132,7 +126,7 @@ const AddDoctor = () => {
   // console.log(typeof docSlot)
 
   const handleAdd = () => {
-    console.log(value);
+    // console.log(value);
     let timeSlotValue = {};
     if (value === "all_Day") {
       timeSlotValue = {
@@ -292,7 +286,7 @@ const AddDoctor = () => {
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
                 >
-                  {docDept.map((dept, i) => (
+                  {deptList?.map((dept, i) => (
                     <MenuItem key={i} value={dept}>
                       {dept}
                     </MenuItem>

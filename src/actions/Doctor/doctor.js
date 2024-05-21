@@ -57,6 +57,7 @@ export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id) => {
   if(response.data.message === "Expired token"){
     console.log('Token Expired')
   }
+  console.log(response.data,'api')
   return response.data;
 });
 
@@ -68,9 +69,9 @@ export const updateDoc = createAsyncThunk("updateDoc", async (formData) => {
       Authorization: `Bearer ${token}`,
     },
   });
-  if(response.data.message === "Expired token"){
-    console.log('Token Expired',response.data.message)
-  }
+  // if(response.data.message === "Expired token"){
+  //   console.log('Token Expired',response.data.message)
+  // }
   return response.data;
 });
 
@@ -155,7 +156,7 @@ const doctorSlice = createSlice({
       .addCase(updateDoc.fulfilled, (state, action) => {
         state.loading = false;
         // state.timeSlot = action.payload;
-        console.log('updated successfully');
+        toast.success('updated successfully');
       })
       .addCase(updateDoc.rejected, (state, action) => {
         state.loading = true;

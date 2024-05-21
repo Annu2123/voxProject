@@ -96,6 +96,13 @@ const generateTimes = () => {
 const Consultation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const data = useSelector((state)=>{
+    return state.patientSlice.findData
+  })
+  const actualData =data && data[0]
+  console.log(actualData)
+
   const [formData, setFormData] = useState({});
   const [showAppnmt, setShowAppnmt] = useState(false);
   const [appoinmentData, setAppoinmentData] = useState({});
@@ -620,10 +627,17 @@ const Consultation = () => {
               </Box>
             </Box>
           </Box>
-          <Box sx={{display:"flex",justifyContent:"center",alignItems:"center",mt:1}}>
-                  <Button variant="contained" color="warning" size="small">
-                    Add Appoinment
-                  </Button>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 1,
+            }}
+          >
+            <Button variant="contained" color="warning" size="small">
+              Add Appoinment
+            </Button>
           </Box>
         </DialogContent>
       </Dialog>

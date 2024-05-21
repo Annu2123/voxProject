@@ -21,12 +21,17 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import SmsIcon from "@mui/icons-material/Sms";
 import Whatsapp from "../Whatsapp/whatsapp";
+import { useDispatch, useSelector } from "react-redux";
+import { searchPatient } from "../../actions/Patient/patient";
 
 const ConnectPatient = () => {
+  const dispatch = useDispatch()
   const [checked, setChecked] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [whatsappOpen, setWhatsappOpen] = React.useState(false);
   const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [searchType, setSearchType] = React.useState("");
+  const [searchData, setSearchData] = React.useState('');
 
   const handleOpen = () => {
     setOpen(true);
@@ -53,6 +58,14 @@ const ConnectPatient = () => {
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
+  const handleFind =()=>{
+    const formData ={
+      key:searchType,
+      value:searchData
+    }
+    dispatch(searchPatient(formData))
+  }
+
   return (
     <Box sx={{width:"100%"}}>
       <Box
@@ -163,19 +176,23 @@ const ConnectPatient = () => {
               size="small"
               sx={{ width: { xs: "100%", lg: "50%" } }}
               defaultValue={"none"}
+              value={searchType}
+              onChange={(e)=>setSearchType(e.target.value)}
             >
               <MenuItem value="none">none</MenuItem>
-              <MenuItem value="patientID">Patient ID</MenuItem>
-              <MenuItem value="phone">Phone Number</MenuItem>
+              {/* <MenuItem value="patientID">Patient ID</MenuItem> */}
+              <MenuItem value="phone_num">Phone Number</MenuItem>
             </TextField>
 
             <TextField
               placeholder="Provide related data"
               size="small"
+              value={searchData}
+              onChange={(e)=>setSearchData(e.target.value)}
               fullWidth
             />
 
-            <Button size="small" disableElevation variant="contained" color="success">
+            <Button size="small" disableElevation variant="contained" color="success" onClick={handleFind}>
               Find
             </Button>
           </Box>

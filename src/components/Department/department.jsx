@@ -95,6 +95,7 @@ const Department = () => {
             border: "1px solid lightgray",
             borderRadius: "8px",
             backgroundColor: "#FAFAFA",
+            height:"200px",
           }}
         >
           <Typography variant="body1" sx={{ color: "#0077b6", p: 1 }}>
@@ -136,6 +137,8 @@ const Department = () => {
             borderRadius: "8px",
             backgroundColor: "#FAFAFA",
             width: { xs: "100%", md: "50%" },
+            height:"64vh",
+            overflow:"auto"
           }}
         >
           <Typography variant="body1" sx={{ color: "#0077b6", p: 1 }}>

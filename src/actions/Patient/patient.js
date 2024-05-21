@@ -18,6 +18,20 @@ export const startAddPatient = createAsyncThunk("addPatient", async (formData) =
   return response.data;
 });
 
+export const searchPatient = createAsyncThunk("search", async (formData) => {
+  const Api = "https://dev.voxprosolutions.com/api/patient_find";
+  const data = formData
+  const response = await axios.post(Api,data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+//   if(response.data.message === "Expired token"){
+//     console.log('Token Expired')
+//   }
+  return response.data;
+});
+
 export const startGetPatientList = createAsyncThunk("getPatientList", async () => {
     const Api = "https://dev.voxprosolutions.com/api/patient_lists";
     const response = await axios.get(Api, {
@@ -35,6 +49,7 @@ const initialState = {
     loading: false,
     error: null,
     patientList:null,
+    findData:null
   };
 
   const patientSlice = createSlice({
@@ -71,6 +86,22 @@ const initialState = {
           state.patientList = action.payload;
         })
         .addCase(startGetPatientList.rejected, (state, action) => {
+          state.loading = true;
+          state.error = action.error.message;
+          toast.error('Something went wrong...', action.error.message)
+        //   console.log(action.error.message);
+        });
+
+        builder
+        .addCase(searchPatient.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(searchPatient.fulfilled, (state, action) => {
+          state.loading = false;
+          state.findData = action.payload;
+        })
+        .addCase(searchPatient.rejected, (state, action) => {
           state.loading = true;
           state.error = action.error.message;
           toast.error('Something went wrong...', action.error.message)

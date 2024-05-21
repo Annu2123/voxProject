@@ -16,7 +16,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { removeDoctor, startGetDoctorList } from "../../actions/Doctor/doctor";
+import { getTimeSlot, removeDoctor, startGetDoctorList } from "../../actions/Doctor/doctor";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { startGetAppoinmentsList } from "../../actions/Appointment/appointment";
@@ -26,7 +26,7 @@ const doctorList = [
     id: "doc_id",
     align: "center",
     disablePadding: false,
-    label: "Doc ID",
+    label: "SL No",
   },
   {
     id: "dcotor_name",
@@ -55,7 +55,7 @@ const doctorAppointment = [
     id: "doc_id",
     align: "center",
     disablePadding: false,
-    label: "DOC ID",
+    label: "SL No",
   },
   {
     id: "doc_name",
@@ -110,17 +110,25 @@ const Dashboard = () => {
     dispatch(startGetDoctorList());
   }, [dispatch]);
 
-  const handleEditClick = (rowData) => {
+  const timeSlot = useSelector((state) => state.doctorSlice?.timeSlot);
+
+  const handleEditClick = async (rowData) => {
+    // const id = { id: rowData?.id };
+    // // await dispatch(getTimeSlot(id));
+    // let abcd = await getTimeSlot(id);
+    // console.log(abcd)
+    // const fullData = { ...rowData, ...abcd };
+    // console.log(fullData);
     navigate("edit_doctor", { state: rowData });
   };
 
   const data = useSelector((state) => {
     return state.doctorSlice?.list;
   });
-  console.log(data)
+  // console.log(data)
 
   const docList = data?.map((docList, i) => ({
-    doc_id: docList.id,
+    doc_id: i+1,
     dcotor_name: docList.name,
     dcotor_dept: docList.department,
     action: (
@@ -134,7 +142,7 @@ const Dashboard = () => {
         >
           <EditIcon fontSize="small" />
         </Button>
-        <Button
+        {/* <Button
           size="small"
           disableElevation
           color="error"
@@ -142,7 +150,7 @@ const Dashboard = () => {
           onClick={() => handleDeleteConfirmationOpen(docList.id)}
         >
           <DeleteIcon fontSize="small" />
-        </Button>
+        </Button> */}
       </Box>
     ),
   }));
@@ -183,8 +191,8 @@ const Dashboard = () => {
     return state.appointmentSlice?.appointment;
   });
   // console.log(appointmentData);
-  const apnmtList = appointmentData?.map((list) => ({
-    doc_id: list.doctor_id,
+  const apnmtList = appointmentData?.map((list,i) => ({
+    doc_id: i+1,
     doc_name: list.doctor_name,
     total: list.appoint_count,
     action: (

@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
 import { startLoginUser } from "../../actions/Auth/user";
 import { useNavigate } from "react-router";
+import loginImage from '../Images/signInImage.jpeg'
 import toast from "react-hot-toast";
 
 function Copyright(props) {
@@ -76,13 +77,13 @@ export default function SignIn() {
           md={7}
           sx={{
             backgroundImage:
-              "url(https://source.unsplash.com/random?wallpapers)",
+              `url(${loginImage})`,
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
                 ? t.palette.grey[50]
                 : t.palette.grey[900],
-            backgroundSize: "cover",
+            backgroundSize: "30% 30%",
             backgroundPosition: "center",
           }}
         />

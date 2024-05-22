@@ -35,7 +35,7 @@ const docDept = () => {
     return state?.departmentSlice?.deptList;
   });
   let r = deptList?.map((r) => r.department);
-  return r?.length > 1 ? r : ["none"];
+  return r?.length >= 1 ? r : ["none"];
 };
 
 

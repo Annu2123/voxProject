@@ -17,9 +17,14 @@ import MailIcon from "@mui/icons-material/Mail";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { startAddPatient, startUpdatePatient } from "../../actions/Patient/patient";
+import {
+  startAddPatient,
+  startUpdatePatient,
+} from "../../actions/Patient/patient";
 import { startGetRelgnList } from "../../actions/Religion/religion";
 import { startGetReferList } from "../../actions/ReferBy/referBy";
+import { startGetDeptList } from "../../actions/Department/department";
+import { getTimeSlot, startGetDoctorList } from "../../actions/Doctor/doctor";
 
 const religion = () => {
   const dispatch = useDispatch();
@@ -44,36 +49,33 @@ const referBy = () => {
     return state?.referBySlice?.referList;
   });
   let r = referByList?.map((r) => r.refered_by);
-  return r?.length > 1 ? r : ["none"];
+  return r?.length >= 1 ? r : ["none"];
 };
 
-const appointment = [
-  {
-    label: "Department",
-    placeholder: "Department",
-    value: "",
-    type: "select",
-    menuItems: ["none"],
-    // variant: "standard",
-  },
-  {
-    label: "Doctor Name",
-    placeholder: "Doctor Name",
-    value: "",
-    type: "select",
-    menuItems: ["none"],
-    // variant: "standard",
-  },
-  {
-    label: "Date",
-    placeholder: "Date",
-    value: "",
-    type: "date",
-    // variant: "standard",
-  },
-];
+const docList = () => {
+  const dispatch = useDispatch();
 
-const generateTimes = () => {
+  useEffect(() => {
+    dispatch(startGetDoctorList());
+  }, []);
+  const docList = useSelector((state) => {
+    return state?.doctorSlice?.list;
+  });
+  let r = docList?.map((r) => r);
+  console.log(r);
+  return r
+};
+
+const generateTimes = (id) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getTimeSlot(id));
+  }, [id]);
+  const ts = useSelector((state) => {
+    return state.doctorSlice?.timeSlot;
+  });
+  console.log(ts);
   const times = [];
   let hour = 0;
   let minute = 0;
@@ -97,11 +99,10 @@ const Consultation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const data = useSelector((state)=>{
-    return state.patientSlice.findData
-  })
-  const actualData =data && data[0]
-
+  const data = useSelector((state) => {
+    return state.patientSlice.findData;
+  });
+  const actualData = data && data[0];
 
   const [formData, setFormData] = useState({});
   const [showAppnmt, setShowAppnmt] = useState(false);
@@ -113,6 +114,43 @@ const Consultation = () => {
       setFormData(actualData);
     }
   }, [actualData]);
+  const [departments, setDepartments] = useState([]);
+  const [doctorNames, setDoctorNames] = useState([]);
+  useEffect(() => {
+    dispatch(startGetDoctorList());
+  }, []);
+  const docList = useSelector((state) => {
+    return state?.doctorSlice?.list;
+  });
+  useEffect(() => {
+    // Extract unique departments
+    const uniqueDepartments = [...new Set(docList?.map(doctor => doctor.department))];
+    setDepartments(uniqueDepartments);
+
+    // Extract doctor names
+    const names = docList?.map(doctor => doctor.name);
+    setDoctorNames(names);
+}, []);
+
+// const [departments, setDepartments] = useState([]);
+// const [doctorNames, setDoctorNames] = useState([]);
+// const [selectedDepartment, setSelectedDepartment] = useState('');
+// const [selectedDoctor, setSelectedDoctor] = useState('');
+// useEffect(() => {
+//   // Extract unique departments
+//   const uniqueDepartments = [...new Set(doctorsData.map(doctor => doctor.department))];
+//   setDepartments(uniqueDepartments);
+// }, []);
+
+// useEffect(() => {
+//   // Filter doctors based on selected department
+//   if (selectedDepartment) {
+//       const filteredDoctors = doctorsData.filter(doctor => doctor.department === selectedDepartment).map(doctor => doctor.name);
+//       setDoctorNames(filteredDoctors);
+//   } else {
+//       setDoctorNames([]);
+//   }
+// }, [selectedDepartment]);
 
   const p_form = [
     {
@@ -121,7 +159,7 @@ const Consultation = () => {
       value: actualData ? actualData.phone_num : "",
       type: "number",
       formDataKey: "phone_num",
-      readOnly: !!actualData
+      readOnly: !!actualData,
     },
     {
       label: "Alternate Phone Number",
@@ -227,6 +265,38 @@ const Consultation = () => {
     },
   ];
 
+  const appointment = [
+    {
+      label: "Department",
+      placeholder: "Department",
+      value: "",
+      type: "select",
+      menuItems: departments,
+      // variant: "standard",
+    },
+    {
+      label: "Doctor Name",
+      placeholder: "Doctor Name",
+      value: "",
+      type: "select",
+      menuItems: doctorNames,
+      // variant: "standard",
+    },
+    {
+      label: "Date",
+      placeholder: "Date",
+      value: "",
+      type: "date",
+      // variant: "standard",
+    },
+    {
+      label: "Remarks",
+      placeholder: "Remmarks",
+      value: "",
+      type: "text",
+    },
+  ];
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -247,8 +317,8 @@ const Consultation = () => {
     if (actualData) {
       const dataToSubmit = { ...formData };
       delete dataToSubmit.phone_num;
-      console.log(dataToSubmit)
-      dispatch(startUpdatePatient(dataToSubmit))
+      console.log(dataToSubmit);
+      dispatch(startUpdatePatient(dataToSubmit));
       setFormData({});
     } else {
       dispatch(startAddPatient(formData));
@@ -424,7 +494,11 @@ const Consultation = () => {
                         placeholder={field.placeholder}
                         name={field.formDataKey}
                         value={formData[field.formDataKey] || ""}
-                        InputProps={field.formDataKey === "phone_num" && actualData ? { readOnly: true } : {}}
+                        InputProps={
+                          field.formDataKey === "phone_num" && actualData
+                            ? { readOnly: true }
+                            : {}
+                        }
                         onChange={handleChange}
                       />
                     </Grid>
@@ -435,16 +509,7 @@ const Consultation = () => {
           </Box>
         </Box>
       </Box>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          sx: {
-            width: "900px",
-            height: "700px",
-          },
-        }}
-      >
+      <Dialog open={open} onClose={handleClose} maxWidth={"xl"}>
         <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
           <DialogTitle variant="h6" sx={{ color: "#0077b6" }}>
             <b> Appointment </b>
@@ -475,7 +540,7 @@ const Consultation = () => {
             <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
               <Box
                 sx={{
-                  width: "90%",
+                  // width: "90%",
                   // backgroundColor: "red",
                   minHeight: "100px",
                   borderRadius: "8px",
@@ -488,13 +553,13 @@ const Consultation = () => {
                   alignItems={"center"}
                 >
                   {appointment.map((field, index) => (
-                    <React.Fragment key={index}>
+                    <>
                       {field.type === "select" ? (
                         <Grid
                           item
                           xs={12}
                           md={4}
-                          sx={{ display: "flex", justifyContent: "center" }}
+                          // sx={{ display: "flex", justifyContent: "center" }}
                         >
                           <TextField
                             sx={{ width: "80%" }}
@@ -508,7 +573,7 @@ const Consultation = () => {
                             onChange={handleChange}
                             select
                           >
-                            {field.menuItems.map((item, index) => (
+                            {field.menuItems?.map((item, index) => (
                               <MenuItem key={index} value={item}>
                                 {item}
                               </MenuItem>
@@ -520,7 +585,7 @@ const Consultation = () => {
                           item
                           xs={12}
                           md={4}
-                          sx={{ display: "flex", justifyContent: "center" }}
+                          // sx={{ display: "flex", justifyContent: "center" }}
                         >
                           <TextField
                             sx={{ width: "80%" }}
@@ -542,7 +607,7 @@ const Consultation = () => {
                           item
                           xs={12}
                           md={4}
-                          sx={{ display: "flex", justifyContent: "center" }}
+                          // sx={{ display: "flex", justifyContent: "center" }}
                         >
                           <TextField
                             sx={{ width: "80%" }}
@@ -564,7 +629,7 @@ const Consultation = () => {
                           item
                           xs={12}
                           md={4}
-                          sx={{ display: "flex", justifyContent: "center" }}
+                          // sx={{ display: "flex", justifyContent: "center" }}
                         >
                           <TextField
                             sx={{ width: "80%" }}
@@ -579,8 +644,10 @@ const Consultation = () => {
                           />
                         </Grid>
                       )}
-                    </React.Fragment>
+                    </>
                   ))}
+                  </Grid>
+                  <Grid>
                   {times.map((time, index) => (
                     <Button
                       key={index}

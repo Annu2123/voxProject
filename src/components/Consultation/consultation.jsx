@@ -663,7 +663,7 @@ const Consultation = () => {
           </Box>
         </Box>
       </Box>
-      <Dialog open={open} maxWidth={"xl"}>
+      <Dialog open={open} maxWidth='xl' fullWidth >
         <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
           <DialogTitle variant="h6" sx={{ color: "#0077b6" }}>
             <b> Appointment </b>
@@ -686,6 +686,7 @@ const Consultation = () => {
               m: 1,
               backgroundColor: "#FAFAFA",
               p: 1,
+              
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
@@ -693,6 +694,7 @@ const Consultation = () => {
                 sx={{
                   minHeight: "100px",
                   borderRadius: "8px",
+                  width:"100%"
                 }}
               >
                 {/* <Grid
@@ -809,6 +811,8 @@ const Consultation = () => {
                   spacing={1}
                   justifyContent={"center"}
                   alignItems={"center"}
+                  width={'100%'}
+                  // sx={{border:'1px solid red'}}
                 >
                   {appointment.map((field, index) => (
                     <React.Fragment key={index}>
@@ -925,11 +929,12 @@ const Consultation = () => {
                   justifyContent={"center"}
                   alignItems={"center"}
                   mt={2}
+                  maxWidth={'xl'}
                 >
                   {!availableDays.includes("all_Day") &&
                   !availableDays.includes(appFormData?.Date) ? (
                     <>
-                      <Typography>Doctor is not available</Typography>
+                      {appFormData?.Date !== undefined&&<Typography>Doctor is not available</Typography>}
                     </>
                   ) : (
                     <>

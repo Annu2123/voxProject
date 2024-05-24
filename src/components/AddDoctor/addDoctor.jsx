@@ -24,6 +24,7 @@ import { createDoctor } from "../../actions/Doctor/doctor";
 import CustomFromToDate from "./customFromToDate";
 import { useNavigate } from "react-router";
 import { startGetDeptList } from "../../actions/Department/department";
+import toast from "react-hot-toast";
 
 const docDept = () => {
   const dispatch = useDispatch();
@@ -126,7 +127,6 @@ const AddDoctor = () => {
   // console.log(typeof docSlot)
 
   const handleAdd = () => {
-    // console.log(value);
     let timeSlotValue = {};
     if (value === "all_Day") {
       timeSlotValue = {
@@ -136,7 +136,6 @@ const AddDoctor = () => {
         },
       };
     } else {
-      // timeSlotValue = finalObj;
       selectedDays.forEach((day) => {
         if (times[day]) {
           timeSlotValue[day] = {
@@ -158,11 +157,16 @@ const AddDoctor = () => {
     };
     console.log(formData);
     // dispatch(createDoctor(formData));
-    dispatch(createDoctor(formData)).then((resultAction) => {
-      if (resultAction.meta.requestStatus === "fulfilled") {
-        navigate("/");
-      }
-    });
+    if (Object.keys(formData.time_slot).length === 0) {
+      toast.error("Please fill the time slots."); 
+    }else {
+      dispatch(createDoctor(formData)).then((resultAction) => {
+        if (resultAction.meta.requestStatus === "fulfilled") {
+          navigate("/");
+        }
+      });
+    }
+    
   };
 
   const daysOfWeek = [

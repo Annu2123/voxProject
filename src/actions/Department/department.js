@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 const token = localStorage.getItem("token");
 
 export const startAddDept = createAsyncThunk("addDept", async (formData) => {
-  const Api = "https://dev.voxprosolutions.com/api/department_add";
+  const Api = "https://api.voxprosolutions.com:8080/api/department_add";
   const data = formData
   const response = await axios.post(Api,data, {
     headers: {
@@ -19,7 +19,7 @@ export const startAddDept = createAsyncThunk("addDept", async (formData) => {
 });
 
 export const startGetDeptList = createAsyncThunk("getDept", async () => {
-    const Api = "https://dev.voxprosolutions.com/api/department_lists";
+    const Api = "https://api.voxprosolutions.com:8080/api/department_lists";
     const response = await axios.get(Api, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -32,7 +32,7 @@ export const startGetDeptList = createAsyncThunk("getDept", async () => {
   });
 
   export const startDeleteDept = createAsyncThunk("deleteDept", async (id) => {
-    const Api = "https://dev.voxprosolutions.com/api/department_delete";
+    const Api = "https://api.voxprosolutions.com:8080/api/department_delete";
     const data = id
     const response = await axios.post(Api,data,{
       headers: {

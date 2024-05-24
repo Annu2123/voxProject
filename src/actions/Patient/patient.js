@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 const token = localStorage.getItem("token");
 
 export const startAddPatient = createAsyncThunk("addPatient", async (formData) => {
-  const Api = "https://dev.voxprosolutions.com/api/patient_add";
+  const Api = "https://api.voxprosolutions.com:8080/api/patient_add";
   const data = formData
   const response = await axios.post(Api,data, {
     headers: {
@@ -19,7 +19,7 @@ export const startAddPatient = createAsyncThunk("addPatient", async (formData) =
 });
 
 export const startUpdatePatient = createAsyncThunk("updatePatient", async (formData) => {
-  const Api = "https://dev.voxprosolutions.com/api/patient_update";
+  const Api = "https://api.voxprosolutions.com:8080/api/patient_update";
   const data = formData
   const response = await axios.post(Api,data, {
     headers: {
@@ -33,7 +33,7 @@ export const startUpdatePatient = createAsyncThunk("updatePatient", async (formD
 });
 
 export const searchPatient = createAsyncThunk("search", async (formData) => {
-  const Api = "https://dev.voxprosolutions.com/api/patient_find";
+  const Api = "https://api.voxprosolutions.com:8080/api/patient_find";
   const data = formData
   const response = await axios.post(Api,data, {
     headers: {
@@ -47,7 +47,7 @@ export const searchPatient = createAsyncThunk("search", async (formData) => {
 });
 
 export const startGetPatientList = createAsyncThunk("getPatientList", async () => {
-    const Api = "https://dev.voxprosolutions.com/api/patient_lists";
+    const Api = "https://api.voxprosolutions.com:8080/api/patient_lists";
     const response = await axios.get(Api, {
       headers: {
         Authorization: `Bearer ${token}`,

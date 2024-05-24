@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 const token = localStorage.getItem("token");
 
 export const startAddRefer = createAsyncThunk("addRefer", async (formData) => {
-  const Api = "https://dev.voxprosolutions.com/api/refered_by_add";
+  const Api = "https://api.voxprosolutions.com:8080/api/refered_by_add";
   const data = formData
   const response = await axios.post(Api,data, {
     headers: {
@@ -19,7 +19,7 @@ export const startAddRefer = createAsyncThunk("addRefer", async (formData) => {
 });
 
 export const startGetReferList = createAsyncThunk("getRefer", async () => {
-    const Api = "https://dev.voxprosolutions.com/api/refered_by_lists";
+    const Api = "https://api.voxprosolutions.com:8080/api/refered_by_lists";
     const response = await axios.get(Api, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -32,7 +32,7 @@ export const startGetReferList = createAsyncThunk("getRefer", async () => {
   });
 
   export const startDeleteRefer = createAsyncThunk("deleteRefer", async (id) => {
-    const Api = "https://dev.voxprosolutions.com/api/refered_by_delete";
+    const Api = "https://api.voxprosolutions.com:8080/api/refered_by_delete";
     const data = id
     const response = await axios.post(Api,data,{
       headers: {

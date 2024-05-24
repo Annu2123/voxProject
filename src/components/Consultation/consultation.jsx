@@ -25,6 +25,8 @@ import { startGetRelgnList } from "../../actions/Religion/religion";
 import { startGetReferList } from "../../actions/ReferBy/referBy";
 import { startGetDeptList } from "../../actions/Department/department";
 import { getTimeSlot, startGetDoctorList } from "../../actions/Doctor/doctor";
+import toast from "react-hot-toast";
+import { addAppoinment } from "../../actions/Appointment/appointment";
 
 const religion = () => {
   const dispatch = useDispatch();
@@ -55,43 +57,100 @@ const referBy = () => {
 const docList = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(startGetDoctorList());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(startGetDoctorList());
+  // }, []);
   const docList = useSelector((state) => {
     return state?.doctorSlice?.list;
   });
   let r = docList?.map((r) => r);
   console.log(r);
-  return r
+  return r;
 };
 
 const generateTimes = (id) => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getTimeSlot(id));
-  }, [id]);
+  // useEffect(() => {
+  //   dispatch(getTimeSlot(id));
+  // }, [id]);
   const ts = useSelector((state) => {
-    return state.doctorSlice?.timeSlot;
+    return state?.doctorSlice?.timeSlot;
   });
-  console.log(ts);
+  const docList = useSelector((state) => {
+    return state?.doctorSlice?.list;
+  });
+  console.log(ts, docList);
   const times = [];
-  let hour = 0;
-  let minute = 0;
+  // let hour = 0;
+  // let minute = 0;
+  // let startTime
+  // let endTime
+  // if (ts===null){
+  //    startTime ="00:00"
+  //    endTime ="00:00"
+  // }else if ( ts.length===0){
+  //   startTime ="00:00"
+  //    endTime ="00:00"
+  // }
+  // else{
+  //    startTime =ts[0].time_slot_start;
+  //    endTime =ts[0].time_slot_end;
+  // }
 
-  while (hour < 12) {
-    const ampm = hour < 12 ? "AM" : "PM";
-    const formattedHour = hour === 0 ? 12 : hour; // Convert 0 to 12 for 12:00 AM/PM
-    const formattedMinute = minute === 0 ? "00" : minute;
-    times.push(`${formattedHour}:${formattedMinute} ${ampm}`);
-
-    minute += 30;
-    if (minute === 60) {
-      minute = 0;
-      hour += 1;
-    }
+  let increment = 15;
+  function parseTime24(timeStr) {
+    const [hours, minutes] = timeStr?.split(":").map(Number);
+    return { hours, minutes };
   }
+
+  function formatTime24(hours, minutes) {
+    const formattedHours = hours.toString().padStart(2, "0");
+    const formattedMinutes = minutes.toString().padStart(2, "0");
+    return `${formattedHours}:${formattedMinutes}`;
+  }
+  ts?.forEach((slot) => {
+    const { hours: startHour, minutes: startMinute } = parseTime24(
+      slot.time_slot_start
+    );
+    const { hours: endHour, minutes: endMinute } = parseTime24(
+      slot.time_slot_end
+    );
+
+    let hour = startHour;
+    let minute = startMinute;
+
+    while (hour < endHour || (hour === endHour && minute < endMinute)) {
+      times.push(formatTime24(hour, minute));
+
+      minute += increment;
+      if (minute >= 60) {
+        hour += Math.floor(minute / 60);
+        minute = minute % 60;
+      }
+    }
+
+    // Optionally include the end time if necessary
+    // if (hour === endHour && minute === endMinute) {
+    //   times.push({
+    //     day: slot.day,
+    //     time: formatTime24(hour, minute)
+    //   });
+    // }
+  });
+
+  // while (hour < 12) {
+  //   const ampm = hour < 12 ? "AM" : "PM";
+  //   const formattedHour = hour === 0 ? 12 : hour; // Convert 0 to 12 for 12:00 AM/PM
+  //   const formattedMinute = minute === 0 ? "00" : minute;
+  //   times.push(`${formattedHour}:${formattedMinute} ${ampm}`);
+
+  //   minute += 30;
+  //   if (minute === 60) {
+  //     minute = 0;
+  //     hour += 1;
+  //   }
+  // }
 
   return times;
 };
@@ -105,8 +164,8 @@ const Consultation = () => {
   const actualData = data && data[0];
 
   const [formData, setFormData] = useState({});
-  const [showAppnmt, setShowAppnmt] = useState(false);
-  const [appoinmentData, setAppoinmentData] = useState({});
+  const [appFormData, setAppFormData] = useState({});
+  // const [departmentSelected, setDepartmentSelected] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -114,43 +173,53 @@ const Consultation = () => {
       setFormData(actualData);
     }
   }, [actualData]);
+
   const [departments, setDepartments] = useState([]);
   const [doctorNames, setDoctorNames] = useState([]);
+  const [departmentSelected, setDepartmentSelected] = useState("");
+  const [selectedDoctorId, setSelectedDoctorId] = useState("");
+  const [selectedDoctorName, setSelectedDoctorName] = useState("");
+  const [availableDays, setAvailableDays] = useState([]);
+
   useEffect(() => {
     dispatch(startGetDoctorList());
   }, []);
+
   const docList = useSelector((state) => {
     return state?.doctorSlice?.list;
   });
+
+  // useEffect(() => {
+  //   // Extract unique departments
+  //   const uniqueDepartments = [
+  //     ...new Set(docList?.map((doctor) => doctor.department)),
+  //   ];
+  //   setDepartments(uniqueDepartments);
+
+  //   // Extract doctor names
+  //   const names = docList?.map((doctor) => doctor.name);
+  //   setDoctorNames(names);
+  // }, []);
+
   useEffect(() => {
-    // Extract unique departments
-    const uniqueDepartments = [...new Set(docList?.map(doctor => doctor.department))];
-    setDepartments(uniqueDepartments);
+    if (docList) {
+      const uniqueDepartments = [
+        ...new Set(docList.map((doctor) => doctor.department)),
+      ];
+      setDepartments(uniqueDepartments);
+    }
+  }, [docList]);
 
-    // Extract doctor names
-    const names = docList?.map(doctor => doctor.name);
-    setDoctorNames(names);
-}, []);
-
-// const [departments, setDepartments] = useState([]);
-// const [doctorNames, setDoctorNames] = useState([]);
-// const [selectedDepartment, setSelectedDepartment] = useState('');
-// const [selectedDoctor, setSelectedDoctor] = useState('');
-// useEffect(() => {
-//   // Extract unique departments
-//   const uniqueDepartments = [...new Set(doctorsData.map(doctor => doctor.department))];
-//   setDepartments(uniqueDepartments);
-// }, []);
-
-// useEffect(() => {
-//   // Filter doctors based on selected department
-//   if (selectedDepartment) {
-//       const filteredDoctors = doctorsData.filter(doctor => doctor.department === selectedDepartment).map(doctor => doctor.name);
-//       setDoctorNames(filteredDoctors);
-//   } else {
-//       setDoctorNames([]);
-//   }
-// }, [selectedDepartment]);
+  useEffect(() => {
+    if (departmentSelected && docList) {
+      const filteredDoctorNames = docList
+        .filter((doctor) => doctor.department === departmentSelected)
+        .map((doctor) => ({ name: doctor.name, id: doctor.id }));
+      setDoctorNames(filteredDoctorNames);
+    } else {
+      setDoctorNames([]);
+    }
+  }, [departmentSelected, docList]);
 
   const p_form = [
     {
@@ -275,11 +344,11 @@ const Consultation = () => {
       // variant: "standard",
     },
     {
-      label: "Doctor Name",
+      label: "Doctor_Name",
       placeholder: "Doctor Name",
       value: "",
       type: "select",
-      menuItems: doctorNames,
+      menuItems: doctorNames.map((doctor) => doctor.name),
       // variant: "standard",
     },
     {
@@ -297,16 +366,20 @@ const Consultation = () => {
     },
   ];
 
-  const handleOpen = () => {
+  const handleOpen = (data) => {
+    // setAppFormData(data);
+    // console.log(data);
     setOpen(true);
   };
+  console.log(appFormData, "hi");
 
   const handleClose = () => {
     setOpen(false);
+    setAppFormData({});
   };
 
   const [selectedTime, setSelectedTime] = useState(null);
-  const times = generateTimes();
+  let times = generateTimes();
 
   const handleTimeClick = (time) => {
     setSelectedTime(time);
@@ -336,15 +409,96 @@ const Consultation = () => {
     }));
   };
 
-  const handleWhatsapp = () => {
-    navigate("/whatsapp");
-  };
+  // const handleDateChange = (selectedDate) => {
+  //   const selectedDay = new Date(selectedDate)
+  //     .toLocaleString("en-us", { weekday: "short" })
+  //     .toLowerCase();
 
-  const handleEmail = () => {
-    navigate("/email");
+  //   if (availableDays.includes("all_day")) {
+  //     console.log("Doctor is available on any day");
+  //   } else if (!availableDays.includes(selectedDay)) {
+  //     console.log(
+  //       "Doctor is not available on this selected day",
+  //       "availableDays of Doctor is " + availableDays.join(" ,")
+  //     );
+  //   } else {
+  //     console.log("Doctor is available on the selected day");
+  //   }
+  // };
+  const [showTimeSlot, setShowTimeSot] = useState(false);
+  const handleChangeApp = (e) => {
+    const { name, value, checked, type } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+
+    setAppFormData((prevData) => ({
+      ...prevData,
+      [name]: newValue,
+    }));
+
+    if (name === "Department") {
+      setDepartmentSelected(value);
+    }
+    if (name === "Doctor_Name") {
+      const selectedDoctor = doctorNames.find(
+        (doctor) => doctor.name === value
+      );
+      setSelectedDoctorId(selectedDoctor ? selectedDoctor.id : "");
+      setSelectedDoctorName(selectedDoctor ? selectedDoctor.name : "");
+    }
+    if (name === "Date") {
+      // handleDateChange(value);
+      var selectedDay = new Date(value)
+        .toLocaleString("en-us", { weekday: "short" })
+        .toLowerCase();
+
+      if (availableDays.includes("all_Day")) {
+        console.log("Doctor is available on any day");
+        setShowTimeSot(true);
+      } else if (!availableDays.includes(selectedDay)) {
+        toast.error(
+          "Doctor is not available on this selected day",
+          "availableDays of Doctor is " + availableDays.join(" ,")
+        );
+        setShowTimeSot(false);
+      } else {
+        console.log("Doctor is available on the selected day");
+        setShowTimeSot(false);
+      }
+    }
   };
-  const handleAppoinment = () => {
-    setShowAppnmt((prevShowAppnmt) => !prevShowAppnmt);
+  useEffect(() => {
+    console.log(selectedDoctorId);
+    const id = {
+      id: selectedDoctorId,
+    };
+    dispatch(getTimeSlot(id));
+  }, [selectedDoctorId]);
+  const timeSlot = useSelector((state) => {
+    return state.doctorSlice?.timeSlot;
+  });
+  // console.log(timeSlot);
+
+  useEffect(() => {
+    if (timeSlot) {
+      const days = timeSlot.map((slot) => slot.day);
+      setAvailableDays(days);
+    } else {
+      setAvailableDays([]);
+    }
+  }, [timeSlot]);
+  console.log(availableDays);
+
+  const handleAddAppoinment = () => {
+    const addApp = {
+      doctor_id: selectedDoctorId,
+      doctor_name: appFormData.Doctor_Name,
+      department: appFormData.Department,
+      patient_id: formData.id,
+      date: appFormData.Date,
+      time: selectedTime,
+      remarks: appFormData.Remarks,
+    };
+    dispatch(addAppoinment(addApp));
   };
 
   return (
@@ -509,7 +663,7 @@ const Consultation = () => {
           </Box>
         </Box>
       </Box>
-      <Dialog open={open} onClose={handleClose} maxWidth={"xl"}>
+      <Dialog open={open} maxWidth={"xl"}>
         <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
           <DialogTitle variant="h6" sx={{ color: "#0077b6" }}>
             <b> Appointment </b>
@@ -534,32 +688,28 @@ const Consultation = () => {
               p: 1,
             }}
           >
-            {/* <Typography variant="h6" sx={{ color: "#0077b6" }}>
-              <b> Appointment </b>
-            </Typography> */}
             <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
               <Box
                 sx={{
-                  // width: "90%",
-                  // backgroundColor: "red",
                   minHeight: "100px",
                   borderRadius: "8px",
                 }}
               >
-                <Grid
+                {/* <Grid
                   container
                   spacing={1}
                   justifyContent={"center"}
                   alignItems={"center"}
                 >
                   {appointment.map((field, index) => (
-                    <>
-                      {field.type === "select" ? (
+                    <React.Fragment key={index}>
+                      {field.type === "select" &&
+                      field.label === "Department" ? (
                         <Grid
                           item
                           xs={12}
-                          md={4}
-                          // sx={{ display: "flex", justifyContent: "center" }}
+                          md={3}
+                          sx={{ display: "flex", justifyContent: "center" }}
                         >
                           <TextField
                             sx={{ width: "80%" }}
@@ -569,9 +719,37 @@ const Consultation = () => {
                             label={field.label}
                             placeholder={field.placeholder}
                             name={field.label}
-                            value={formData[field.label] || ""}
-                            onChange={handleChange}
+                            value={appFormData[field.label] || ""}
+                            onChange={handleChangeApp}
                             select
+                          >
+                            {field.menuItems?.map((item, index) => (
+                              <MenuItem key={index} value={item}>
+                                {item}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Grid>
+                      ) : field.type === "select" &&
+                        field.label === "Doctor Name" ? (
+                        <Grid
+                          item
+                          xs={12}
+                          md={3}
+                          sx={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <TextField
+                            sx={{ width: "80%" }}
+                            size="small"
+                            type="text"
+                            variant={field.variant}
+                            label={field.label}
+                            placeholder={field.placeholder}
+                            name={field.label}
+                            value={appFormData[field.label] || ""}
+                            onChange={handleChangeApp}
+                            select
+                            disabled={!departmentSelected}
                           >
                             {field.menuItems?.map((item, index) => (
                               <MenuItem key={index} value={item}>
@@ -584,8 +762,8 @@ const Consultation = () => {
                         <Grid
                           item
                           xs={12}
-                          md={4}
-                          // sx={{ display: "flex", justifyContent: "center" }}
+                          md={3}
+                          sx={{ display: "flex", justifyContent: "center" }}
                         >
                           <TextField
                             sx={{ width: "80%" }}
@@ -598,38 +776,17 @@ const Consultation = () => {
                             InputLabelProps={{
                               shrink: true,
                             }}
-                            value={formData[field.label] || ""}
-                            onChange={handleChange}
-                          />
-                        </Grid>
-                      ) : field.type === "time" ? (
-                        <Grid
-                          item
-                          xs={12}
-                          md={4}
-                          // sx={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <TextField
-                            sx={{ width: "80%" }}
-                            size="small"
-                            type="time"
-                            variant={field.variant}
-                            label={field.label}
-                            placeholder={field.placeholder}
-                            name={field.label}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            value={formData[field.label] || ""}
-                            onChange={handleChange}
+                            value={appFormData[field.label] || ""}
+                            onChange={handleChangeApp}
+                            disabled={!departmentSelected}
                           />
                         </Grid>
                       ) : (
                         <Grid
                           item
                           xs={12}
-                          md={4}
-                          // sx={{ display: "flex", justifyContent: "center" }}
+                          md={3}
+                          sx={{ display: "flex", justifyContent: "center" }}
                         >
                           <TextField
                             sx={{ width: "80%" }}
@@ -639,37 +796,172 @@ const Consultation = () => {
                             variant={field.variant}
                             placeholder={field.placeholder}
                             name={field.label}
-                            value={formData[field.label] || ""}
-                            onChange={handleChange}
+                            value={appFormData[field.label] || ""}
+                            onChange={handleChangeApp}
                           />
                         </Grid>
                       )}
+                    </React.Fragment>
+                  ))}
+                </Grid> */}
+                <Grid
+                  container
+                  spacing={1}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  {appointment.map((field, index) => (
+                    <React.Fragment key={index}>
+                      {field.type === "select" &&
+                      field.label === "Department" ? (
+                        <Grid
+                          item
+                          xs={12}
+                          md={3}
+                          sx={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <TextField
+                            sx={{ width: "80%" }}
+                            size="small"
+                            type="text"
+                            variant={field.variant}
+                            label={field.label}
+                            placeholder={field.placeholder}
+                            name={field.label}
+                            value={appFormData[field.label] || ""}
+                            onChange={handleChangeApp}
+                            select
+                          >
+                            {field.menuItems?.map((item, index) => (
+                              <MenuItem key={index} value={item}>
+                                {item}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Grid>
+                      ) : field.type === "select" &&
+                        field.label === "Doctor_Name" ? (
+                        <Grid
+                          item
+                          xs={12}
+                          md={3}
+                          sx={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <TextField
+                            sx={{ width: "80%" }}
+                            size="small"
+                            type="text"
+                            variant={field.variant}
+                            label={field.label}
+                            placeholder={field.placeholder}
+                            name={field.label}
+                            value={appFormData[field.label] || ""}
+                            onChange={handleChangeApp}
+                            select
+                            disabled={!departmentSelected}
+                          >
+                            {field.menuItems?.map((item, index) => (
+                              <MenuItem key={index} value={item}>
+                                {item}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Grid>
+                      ) : field.type === "date" ? (
+                        <Grid
+                          item
+                          xs={12}
+                          md={3}
+                          sx={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <TextField
+                            sx={{ width: "80%" }}
+                            size="small"
+                            type="date"
+                            variant={field.variant}
+                            label={field.label}
+                            placeholder={field.placeholder}
+                            name={field.label}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            value={appFormData[field.label] || ""}
+                            onChange={handleChangeApp}
+                            disabled={!departmentSelected}
+                            InputProps={{
+                              inputProps: {
+                                min: new Date().toISOString().split("T")[0], // Set minimum date to today
+                                // max:getMaxAvailableDate()
+                              },
+                            }}
+                          />
+                        </Grid>
+                      ) : (
+                        <Grid
+                          item
+                          xs={12}
+                          md={3}
+                          sx={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <TextField
+                            sx={{ width: "80%" }}
+                            size="small"
+                            type={field.type}
+                            label={field.label}
+                            variant={field.variant}
+                            placeholder={field.placeholder}
+                            name={field.label}
+                            value={appFormData[field.label] || ""}
+                            onChange={handleChangeApp}
+                          />
+                        </Grid>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </Grid>
+                <Grid
+                  container
+                  spacing={1}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  mt={2}
+                >
+                  {!availableDays.includes("all_Day") &&
+                  !availableDays.includes(appFormData?.Date) ? (
+                    <>
+                      <Typography>Doctor is not available</Typography>
                     </>
-                  ))}
-                  </Grid>
-                  <Grid>
-                  {times.map((time, index) => (
-                    <Button
-                      key={index}
-                      onClick={() => handleTimeClick(time)}
-                      sx={{
-                        padding: "10px",
-                        margin: "5px",
-                        border:
-                          selectedTime === time
-                            ? "2px solid blue"
-                            : "2px solid lightgray",
-                        backgroundColor:
-                          selectedTime === time ? "blue" : "white",
-                        color: selectedTime === time ? "white" : "black",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        mt: 2,
-                      }}
-                    >
-                      {time}
-                    </Button>
-                  ))}
+                  ) : (
+                    <>
+                      {showTimeSlot && (
+                        <>
+                          {times.map((time, index) => (
+                            <Button
+                              key={index}
+                              onClick={() => handleTimeClick(time)}
+                              sx={{
+                                padding: "10px",
+                                margin: "5px",
+                                border:
+                                  selectedTime === time
+                                    ? "2px solid blue"
+                                    : "2px solid lightgray",
+                                backgroundColor:
+                                  selectedTime === time ? "blue" : "white",
+                                color:
+                                  selectedTime === time ? "white" : "black",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                                mt: 2,
+                              }}
+                            >
+                              {time}
+                            </Button>
+                          ))}
+                        </>
+                      )}
+                    </>
+                  )}
                 </Grid>
               </Box>
             </Box>
@@ -682,7 +974,12 @@ const Consultation = () => {
               mt: 1,
             }}
           >
-            <Button variant="contained" color="warning" size="small">
+            <Button
+              variant="contained"
+              color="warning"
+              size="small"
+              onClick={handleAddAppoinment}
+            >
               Add Appoinment
             </Button>
           </Box>
@@ -713,7 +1010,7 @@ const Consultation = () => {
           disableElevation
           color="success"
           size="small"
-          onClick={handleOpen}
+          onClick={() => handleOpen(formData)}
           disabled={!actualData}
         >
           Appointment

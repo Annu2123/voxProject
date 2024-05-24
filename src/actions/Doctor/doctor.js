@@ -5,13 +5,13 @@ import toast from "react-hot-toast";
 const token = localStorage.getItem("token");
 
 export const startGetDoctorList = createAsyncThunk("docList", async () => {
-  const Api = "https://dev.voxprosolutions.com/api/doctor_lists";
+  const Api = "https://api.voxprosolutions.com:8080/api/doctor_lists";
   const response = await axios.get(Api, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(response.request.status)
+  // console.log(response.request.status)
   if(response.data.message === "Expired token"){
     console.log('Token Expired')
   }
@@ -19,7 +19,7 @@ export const startGetDoctorList = createAsyncThunk("docList", async () => {
 });
 
 export const removeDoctor = createAsyncThunk("removeDoctor", async (id) => {
-  const Api = "https://dev.voxprosolutions.com/api/doctor_delete";
+  const Api = "https://api.voxprosolutions.com:8080/api/doctor_delete";
   const data = id;
   const response = await axios.post(Api, data, {
     headers: {
@@ -33,36 +33,42 @@ export const removeDoctor = createAsyncThunk("removeDoctor", async (id) => {
 });
 
 export const createDoctor = createAsyncThunk("createDoc", async (formData) => {
-  const Api = "https://dev.voxprosolutions.com/api/doctor_create";
+  const Api = "https://api.voxprosolutions.com:8080/api/doctor_create";
   const data = formData;
-  const response = await axios.post(Api, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if(response.data.message === "Expired token"){
-    console.log('Token Expired')
+  
+  try {
+    const response = await axios.post(Api, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error.response.data.messages.errors)
   }
-  return response.data;
+  // if(response.data.message === "Expired token"){
+  //   console.log('Token Expired')
+  // }
+  
 });
 
 export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id) => {
-  const Api = "https://dev.voxprosolutions.com/api/doctor_time_slot";
+  const Api = "https://api.voxprosolutions.com:8080/api/doctor_time_slot";
   const data = id;
   const response = await axios.post(Api, data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(response)
   if(response.data.message === "Expired token"){
     console.log('Token Expired')
   }
-  console.log(response.data,'api')
   return response.data;
 });
 
 export const updateDoc = createAsyncThunk("updateDoc", async (formData) => {
-  const Api = "https://dev.voxprosolutions.com/api/doctor_update";
+  const Api = "https://api.voxprosolutions.com:8080/api/doctor_update";
   const data = formData;
   const response = await axios.post(Api, data, {
     headers: {
@@ -99,7 +105,7 @@ const doctorSlice = createSlice({
       .addCase(startGetDoctorList.rejected, (state, action) => {
         state.loading = true;
         state.error = action.error.message;
-        console.log(action.error.message);
+        console.log(action);
         toast.error('Unable to fetch the data...', action.error.message)
       });
 
@@ -125,11 +131,13 @@ const doctorSlice = createSlice({
       })
       .addCase(createDoctor.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action)
         toast.success("created successfully");
       })
       .addCase(createDoctor.rejected, (state, action) => {
         state.loading = true;
         state.error = action.error.message;
+        console.log(action)
         toast.error('Something went wrong...', action.error.message)
       });
 

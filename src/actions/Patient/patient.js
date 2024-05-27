@@ -53,9 +53,6 @@ export const startGetPatientList = createAsyncThunk("getPatientList", async () =
         Authorization: `Bearer ${token}`,
       },
     });
-    if(response.data.message === "Expired token"){
-      console.log('Token Expired')
-    }
     return response.data;
   });
 

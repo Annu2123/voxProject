@@ -35,7 +35,7 @@ const EditDoctor = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const { state } = location;
-  // //console.log(state)
+  // ////console.log(state)
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [docId, setDocId] = useState(state ? state.id : "");
   const [docName, setDocName] = useState(state ? state.name : "");
@@ -58,16 +58,16 @@ const EditDoctor = () => {
   };
 
   const handleSearch = () => {
-    //console.log("Searching for:", searchValue);
+    ////console.log("Searching for:", searchValue);
   };
   const [render,setRender] = useState(false)
   const timeSlot = useSelector((state) => {
     return state.doctorSlice?.timeSlot;
   });
-  console.log(timeSlot,'selector')
+  //console.log(timeSlot,'selector')
   // const [timeSlot,setTimeSlot]= useState()
 
-  //console.log(timeSlot,'time');
+  ////console.log(timeSlot,'time');
   const [slotType, setSlotType] = useState();
 
   useEffect(()=>{
@@ -75,7 +75,7 @@ const EditDoctor = () => {
     setSlotType(xy)
   },[timeSlot])
   
-  console.log(slotType,'slotType')
+  //console.log(slotType,'slotType')
   // const x = {};
   // if (timeSlot && timeSlot[0]["day"] !== "all_day") {
   //   for (let i = 0; i < timeSlot.length; i++) {
@@ -85,7 +85,7 @@ const EditDoctor = () => {
   //     };
   //   }
   // }
-  // //console.log(x);
+  // ////console.log(x);
   useEffect(() => {
     if (!loading && timeSlot) {
       
@@ -104,11 +104,11 @@ const EditDoctor = () => {
         };
         
       }
-      console.log(slotData,'slot')
+      //console.log(slotData,'slot')
       setSelectedDays(slotData);
     }
   }, [loading, timeSlot]);
-  // //console.log(x)
+  // ////console.log(x)
   useEffect(() => {
     const fetchTimeSlot = async () => {
       const id = { id: state?.id };
@@ -157,13 +157,13 @@ const EditDoctor = () => {
   ];
 
 
-  //console.log(x,'time')
+  ////console.log(x,'time')
 
   // const [times, setTimes] = useState({});
   // const [timeSlots, setTimeSlots] = useState({});
   const handleDayChange = (event) => {
     const { value } = event.target;
-    //console.log(value);
+    ////console.log(value);
 
     if (Object.keys(selectedDays).includes(value)) {
       let y = { ...selectedDays };
@@ -193,7 +193,7 @@ const EditDoctor = () => {
     setSelectedDays(newTimes);
   };
 
-  console.log(selectedDays,'time')
+  //console.log(selectedDays,'time')
 
   const handleUpdate = () => {
     const formData = {
@@ -206,7 +206,7 @@ const EditDoctor = () => {
       department: department,
       time_slot: selectedDays,
     };
-    //console.log(formData,'formData')
+    ////console.log(formData,'formData')
     dispatch(updateDoc(formData));
     navigate("/");
   };
@@ -333,7 +333,7 @@ const EditDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Department"
+                  label="Doctor Department*"
                   sx={{ width: "60%" }}
                   size="small"
                   placeholder="Doctor ID"
@@ -347,7 +347,7 @@ const EditDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Name"
+                  label="Doctor Name*"
                   sx={{ width: "60%" }}
                   size="small"
                   placeholder="Doctor Name"
@@ -362,7 +362,7 @@ const EditDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Mobile Number"
+                  label="Doctor Mobile Number*"
                   placeholder="Mobile Number"
                   type="number"
                   sx={{ width: "60%" }}
@@ -377,7 +377,7 @@ const EditDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Email ID"
+                  label="Doctor Email ID*"
                   placeholder="Email"
                   type="email"
                   sx={{ width: "60%" }}
@@ -396,7 +396,7 @@ const EditDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Time Interval(Ex : 30 mins)"
+                  label="Time Interval(Ex : 30 mins)*"
                   sx={{ width: "60%" }}
                   size="small"
                   placeholder="Please Enter Time Interval"
@@ -411,7 +411,7 @@ const EditDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Consultation Fee"
+                  label="Consultation Fee*"
                   placeholder="please Enter Consultation Fee"
                   type="number"
                   sx={{ width: "60%" }}
@@ -441,7 +441,7 @@ const EditDoctor = () => {
             >
               <FormControl sx={{ p: 2 }}>
                 <FormLabel id="demo-controlled-radio-buttons-group">
-                  Select Working Hours
+                  Select Working Hours*
                 </FormLabel>
                 <RadioGroup
                   row
@@ -525,16 +525,16 @@ const EditDoctor = () => {
                             control={
                               <Checkbox
                                 checked={Object.keys(selectedDays).includes(
-                                  day.value
+                                  day?.value
                                 )}
                                 onChange={handleDayChange}
-                                value={day.value}
+                                value={day?.value}
                               />
                             }
-                            label={day.day}
+                            label={day?.day}
                           />
                         </Grid>
-                        {Object.keys(selectedDays).includes(day.value) && (
+                        {Object.keys(selectedDays).includes(day?.value) && (
                           <Grid
                             item
                             container
@@ -551,7 +551,7 @@ const EditDoctor = () => {
                                 size="small"
                                 value={selectedDays[day.value]["start_time"]}
                                 onChange={handleTimeChange1(
-                                  day.value,
+                                  day?.value,
                                   "start_time"
                                 )}
                                 InputLabelProps={{ shrink: true }}
@@ -566,7 +566,7 @@ const EditDoctor = () => {
                                 size="small"
                                 value={selectedDays[day.value]["end_time"]}
                                 onChange={handleTimeChange1(
-                                  day.value,
+                                  day?.value,
                                   "end_time"
                                 )}
                                 InputLabelProps={{ shrink: true }}

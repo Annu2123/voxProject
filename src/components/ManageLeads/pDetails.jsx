@@ -7,58 +7,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-
-const p_form = [
-  {
-    label: "Patient Name",
-    placeholder: "Patient Name",
-    value: "",
-    type: "text",
-    variant: "standard",
-  },
-  {
-    label: "Phone Number",
-    placeholder: "Phone Number",
-    value: "",
-    type: "number",
-    variant: "standard",
-  },
-
-  {
-    label: "Email",
-    placeholder: "Email",
-    value: "",
-    type: "email",
-    variant: "standard",
-  },
-  {
-    label: "Gender",
-    placeholder: "Gender",
-    value: "",
-    type: "select",
-    variant: "standard",
-    menuItems:['male','female',"others"],
-  },
-  {
-    label: "Patient Address",
-    placeholder: "Patient Address",
-    value: "",
-    type: "text",
-    variant: "standard",
-  },
-  {
-    label: "Appointed Reason",
-    placeholder: "Appointed Reason",
-    value: "",
-    type: "body",
-    variant: "standard",
-  },
-
-];
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 
 const Pdetails = () => {
+  const location = useLocation()
+  const {state} = location
   const [formData, setFormData] = useState({});
+
+  useEffect(()=>{
+    if(state){
+      setFormData(state)
+    }
+  },[state])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -74,6 +35,119 @@ const Pdetails = () => {
       [name]: newValue,
     }));
   };
+
+  const p_form = [
+    {
+      label: "Phone Number",
+      placeholder: "Phone Number",
+      value: state ? state.phone_num : "",
+      type: "number",
+      formDataKey: "phone_num",
+      readOnly: !!state,
+    },
+    {
+      label: "Alternate Phone Number",
+      placeholder: "Alternate Phone Number",
+      value: state ? state.alt_phone_num : "",
+      type: "number",
+      formDataKey: "alt_phone_num",
+    },
+    {
+      label: "Patient Name",
+      placeholder: "Patient Name",
+      value: state ? state.name : "",
+      type: "text",
+      formDataKey: "name",
+    },
+    {
+      label: "Patient Email",
+      placeholder: "Patient Email",
+      value: state ? state.email : "",
+      type: "email",
+      formDataKey: "email",
+    },
+    {
+      label: "Date of Birth",
+      placeholder: "Date of Birth",
+      value: state ? state.dob : "",
+      type: "date",
+      formDataKey: "dob",
+    },
+    {
+      label: "Gender",
+      placeholder: "Gender",
+      value: state ? state.gender : "",
+      type: "select",
+      formDataKey: "gender",
+      menuItems: ["Male", "Female"],
+    },
+    {
+      label: "Father/Husband name",
+      placeholder: "Father/Husband name",
+      value: state ? state.father_husband_name : "",
+      type: "text",
+      formDataKey: "father_husband_name",
+    },
+    {
+      label: "Martial Status",
+      placeholder: "Martial Status",
+      value: state ? state.marital_status : "",
+      type: "select",
+      formDataKey: "marital_status",
+      menuItems: ["Married", "Unmarried"],
+    },
+    {
+      label: "Aadhar Number",
+      placeholder: "Aadhar Number",
+      value: state ? state.aadhar_num : "",
+      type: "number",
+      formDataKey: "aadhar_num",
+    },
+    {
+      label: "Nationality",
+      placeholder: "Nationality",
+      value: state ? state.nationality : "",
+      type: "text",
+      formDataKey: "nationality",
+    },
+    {
+      label: "Religion",
+      placeholder: "Religion",
+      value: state ? state.religion : "",
+      type: "select",
+      formDataKey: "religion",
+      menuItems: ['none'],
+    },
+    {
+      label: "Pin Code",
+      placeholder: "Pin Code",
+      value: state ? state.pincode : "",
+      type: "number",
+      formDataKey: "pincode",
+    },
+    {
+      label: "City",
+      placeholder: "City",
+      value: state ? state.city : "",
+      type: "text",
+      formDataKey: "city",
+    },
+    {
+      label: "Refered by",
+      placeholder: "Refered by",
+      value: state ? state.refered_by : "",
+      type: "select",
+      formDataKey: "refered_by",
+      menuItems: ['none'],
+    },
+    {
+      label: "Patient Address",
+      placeholder: "Patient Address",
+      value: state ? state.address : "",
+      type: "multiline",
+      formDataKey: "address",
+    },
+  ];
 
   return (
     <Card sx={{ width: "100%" }}>
@@ -102,8 +176,8 @@ const Pdetails = () => {
                 variant={field.variant}
                 label={field.label}
                 placeholder={field.placeholder}
-                name={field.label}
-                value={formData[field.label] || ""}
+                name={field.formDataKey}
+                value={formData[field.formDataKey] || ""}
                 onChange={handleChange}
                 select
               >
@@ -121,8 +195,8 @@ const Pdetails = () => {
                 label={field.label}
                 variant={field.variant}
                 placeholder={field.placeholder}
-                name={field.label}
-                value={formData[field.label] || ""}
+                name={field.formDataKey}
+                value={formData[field.formDataKey] || ""}
                 onChange={handleChange}
               />
             )}

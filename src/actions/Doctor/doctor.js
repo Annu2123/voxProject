@@ -32,24 +32,24 @@ export const removeDoctor = createAsyncThunk("removeDoctor", async (id) => {
   return response.data;
 });
 
-export const createDoctor = createAsyncThunk("createDoc", async (formData) => {
+export const createDoctor = createAsyncThunk("createDoc", async (formData, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_create";
-  const data = formData;
   
   try {
-    const response = await axios.post(Api, data, {
+    const response = await axios.post(Api, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
   } catch (error) {
-    console.log(error.response.data.messages.errors)
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
   }
-  // if(response.data.message === "Expired token"){
-  //   console.log('Token Expired')
-  // }
-  
 });
 
 export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id) => {
@@ -132,13 +132,13 @@ const doctorSlice = createSlice({
       .addCase(createDoctor.fulfilled, (state, action) => {
         state.loading = false;
         console.log(action)
-        toast.success("created successfully");
+        // toast.success("created successfully");
       })
       .addCase(createDoctor.rejected, (state, action) => {
         state.loading = true;
-        state.error = action.error.message;
-        console.log(action)
-        toast.error('Something went wrong...', action.error.message)
+        state.error = action.payload ? action.payload : action.error.message;
+      // console.log(action.payload);
+      toast.error(action.payload);
       });
 
     builder

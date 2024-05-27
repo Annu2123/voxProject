@@ -255,6 +255,7 @@ const ConnectPatient = () => {
               sx={{ backgroundColor: "#39ff5a" }}
               disableElevation
               onClick={handleWhatsappOpen}
+              disabled
             >
               <WhatsAppIcon fontSize="small" />
             </Button>
@@ -264,6 +265,7 @@ const ConnectPatient = () => {
               sx={{ backgroundColor: "#ff5d5d" }}
               disableElevation
               onClick={handleOpen}
+              disabled
             >
               <MailOutlineIcon fontSize="small" />
             </Button>
@@ -273,6 +275,7 @@ const ConnectPatient = () => {
               sx={{ backgroundColor: "#aeb9cc" }}
               disableElevation
               onClick={handleOpen}
+              disabled
             >
               <SmsIcon fontSize="small" />
             </Button>

@@ -11,10 +11,8 @@ function App() {
   useEffect(() => {
     if (token === null) {
       navigate("/signIn");
-    } else {
-      navigate("/");
-    }
-  }, []);
+    } 
+  }, [token,navigate]);
 
   return (
     <Box sx={{ width: "100%", height: "100vh" }}>{token && <Navbar />}  

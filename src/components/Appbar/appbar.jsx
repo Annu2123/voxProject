@@ -20,8 +20,8 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import { Toaster } from 'react-hot-toast';
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import { Toaster } from "react-hot-toast";
 import { Avatar, Menu, MenuItem, Switch, Tooltip } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
 
@@ -110,8 +110,8 @@ const navbarItems = [
   },
   {
     icon: <AssignmentIndIcon sx={{ color: "black" }} />,
-    title: "Department",
-    route: "department",
+    title: "Consultation Settings",
+    route: "consultation_settings",
   },
 ];
 
@@ -159,7 +159,7 @@ export default function Navbar() {
           backgroundColor: "#FAFAFA",
           boxShadow: "none",
           borderBottom: "1px solid lightgray",
-          "& .MuiPaper-elevation":{ boxShadow: "none"}
+          "& .MuiPaper-elevation": { boxShadow: "none" },
         }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -176,7 +176,7 @@ export default function Navbar() {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Box
+          <Box
             sx={{
               display: "flex",
               justifyContent: "flex-end",
@@ -185,23 +185,6 @@ export default function Navbar() {
             }}
           >
             <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ color: "black" }}
-            >
-              VoxPro-Doc
-            </Typography>
-          </Box> */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              width: "100%",
-            }}
-          > 
-          <Typography
               variant="subtitle2"
               sx={{
                 display: "flex",
@@ -221,7 +204,7 @@ export default function Navbar() {
               onChange={handleChange}
               inputProps={{ "aria-label": "controlled" }}
             />
-          <Tooltip title="Account settings"> 
+            <Tooltip title="Account settings">
               <IconButton
                 onClick={handleProfileClick}
                 size="small"
@@ -236,9 +219,9 @@ export default function Navbar() {
                   sx={{ backgroundColor: "#f78888", cursor: "pointer" }}
                 />
               </IconButton>
-              </Tooltip>
-              </Box>
-              <Menu
+            </Tooltip>
+          </Box>
+          <Menu
             anchorEl={anchorEl}
             id="account-menu"
             open={profileOpen}
@@ -294,19 +277,22 @@ export default function Navbar() {
                 </Typography>
               </Box>
             </MenuItem>
-            <Divider /> 
+            <Divider />
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
-                <Logout fontSize="13px" /> 
+                <Logout fontSize="13px" />
               </ListItemIcon>
               <Typography sx={{ fontSize: "13px" }}> Logout </Typography>
             </MenuItem>
           </Menu>
-           
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader sx={{ backgroundColor: "#FAFAFA" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mr: 6 }}>
+            <Typography variant="subtitle1">KOSHYS</Typography>
+          </Box>
+
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
@@ -364,7 +350,7 @@ export default function Navbar() {
         }}
       >
         <Outlet />
-        <Toaster position="top-right"/>
+        <Toaster position="top-right" />
       </Box>
     </Box>
   );

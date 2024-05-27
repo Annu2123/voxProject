@@ -70,7 +70,7 @@ const router = createBrowserRouter([
         element:<Email/>
       },
       {
-        path:'department',
+        path:'consultation_settings',
         element:<VarAppbar/>
       },
       {

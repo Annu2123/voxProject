@@ -162,7 +162,7 @@ const AddDoctor = () => {
     }else {
       dispatch(createDoctor(formData)).then((resultAction) => {
         if (resultAction.meta.requestStatus === "fulfilled") {
-          navigate("/");
+          // navigate("/");
         }
       });
     }
@@ -282,7 +282,7 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Department"
+                  label="Doctor Department*"
                   sx={{ width: "60%" }}
                   size="small"
                   placeholder="Doctor Department"
@@ -303,7 +303,7 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Name"
+                  label="Doctor Name*"
                   sx={{ width: "60%" }}
                   size="small"
                   placeholder="Doctor Name"
@@ -318,7 +318,7 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Mobile Number"
+                  label="Doctor Mobile Number*"
                   placeholder="Mobile Number"
                   type="number"
                   sx={{ width: "60%" }}
@@ -333,7 +333,7 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Email ID"
+                  label="Doctor Email ID*"
                   placeholder="Email"
                   type="email"
                   sx={{ width: "60%" }}
@@ -351,7 +351,7 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Time Interval(Ex : 30 mins)"
+                  label="Time Interval(Ex : 30 mins)*"
                   sx={{ width: "60%" }}
                   size="small"
                   placeholder="Please Enter Time Interval"
@@ -366,7 +366,7 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Consultation Fee"
+                  label="Consultation Fee*"
                   placeholder="please Enter Consultation Fee"
                   type="number"
                   sx={{ width: "60%" }}
@@ -389,7 +389,7 @@ const AddDoctor = () => {
           >
             <FormControl sx={{ p: 2 }}>
               <FormLabel id="demo-controlled-radio-buttons-group">
-                Select Working Hours
+                Select Working Hours*
               </FormLabel>
               <RadioGroup
                 row

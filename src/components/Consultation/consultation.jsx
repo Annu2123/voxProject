@@ -64,96 +64,12 @@ const docList = () => {
     return state?.doctorSlice?.list;
   });
   let r = docList?.map((r) => r);
-  console.log(r);
+  //console.log(r);
   return r;
 };
 
-const generateTimes = (id) => {
-  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(getTimeSlot(id));
-  // }, [id]);
-  const ts = useSelector((state) => {
-    return state?.doctorSlice?.timeSlot;
-  });
-  const docList = useSelector((state) => {
-    return state?.doctorSlice?.list;
-  });
-  console.log(ts, docList);
-  const times = [];
-  // let hour = 0;
-  // let minute = 0;
-  // let startTime
-  // let endTime
-  // if (ts===null){
-  //    startTime ="00:00"
-  //    endTime ="00:00"
-  // }else if ( ts.length===0){
-  //   startTime ="00:00"
-  //    endTime ="00:00"
-  // }
-  // else{
-  //    startTime =ts[0].time_slot_start;
-  //    endTime =ts[0].time_slot_end;
-  // }
 
-  let increment = 15;
-  function parseTime24(timeStr) {
-    const [hours, minutes] = timeStr?.split(":").map(Number);
-    return { hours, minutes };
-  }
-
-  function formatTime24(hours, minutes) {
-    const formattedHours = hours.toString().padStart(2, "0");
-    const formattedMinutes = minutes.toString().padStart(2, "0");
-    return `${formattedHours}:${formattedMinutes}`;
-  }
-  ts?.forEach((slot) => {
-    const { hours: startHour, minutes: startMinute } = parseTime24(
-      slot.time_slot_start
-    );
-    const { hours: endHour, minutes: endMinute } = parseTime24(
-      slot.time_slot_end
-    );
-
-    let hour = startHour;
-    let minute = startMinute;
-
-    while (hour < endHour || (hour === endHour && minute < endMinute)) {
-      times.push(formatTime24(hour, minute));
-
-      minute += increment;
-      if (minute >= 60) {
-        hour += Math.floor(minute / 60);
-        minute = minute % 60;
-      }
-    }
-
-    // Optionally include the end time if necessary
-    // if (hour === endHour && minute === endMinute) {
-    //   times.push({
-    //     day: slot.day,
-    //     time: formatTime24(hour, minute)
-    //   });
-    // }
-  });
-
-  // while (hour < 12) {
-  //   const ampm = hour < 12 ? "AM" : "PM";
-  //   const formattedHour = hour === 0 ? 12 : hour; // Convert 0 to 12 for 12:00 AM/PM
-  //   const formattedMinute = minute === 0 ? "00" : minute;
-  //   times.push(`${formattedHour}:${formattedMinute} ${ampm}`);
-
-  //   minute += 30;
-  //   if (minute === 60) {
-  //     minute = 0;
-  //     hour += 1;
-  //   }
-  // }
-
-  return times;
-};
 const Consultation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -200,6 +116,46 @@ const Consultation = () => {
   //   const names = docList?.map((doctor) => doctor.name);
   //   setDoctorNames(names);
   // }, []);
+  const [times, setTimes] = useState([]);
+
+  const generateTimes = (selectedDay, startTime, endTime) => {
+    // const ts = useSelector((state) => {
+    //   return state?.doctorSlice?.timeSlot;
+    // });
+  console.log(startTime,endTime,'shr')
+    // //console.log(ts);
+    const times = [];
+    
+    let increment = 15;
+    function parseTime24(timeStr) {
+      const [hours, minutes] = timeStr?.split(":").map(Number);
+      return { hours, minutes };
+    }
+  
+    function formatTime24(hours, minutes) {
+      const formattedHours = hours.toString().padStart(2, "0");
+      const formattedMinutes = minutes.toString().padStart(2, "0");
+      return `${formattedHours}:${formattedMinutes}`;
+    }
+  
+    const { hours: startHour, minutes: startMinute } = parseTime24(startTime);
+    const { hours: endHour, minutes: endMinute } = parseTime24(endTime);
+  
+    let hour = startHour;
+    let minute = startMinute;
+  
+    while (hour < endHour || (hour === endHour && minute < endMinute)) {
+      times.push(formatTime24(hour, minute));
+  
+      minute += increment;
+      if (minute >= 60) {
+        hour += Math.floor(minute / 60);
+        minute = minute % 60;
+      }
+    }
+    //console.log(times,'shr')
+    setTimes(times);
+  };
 
   useEffect(() => {
     if (docList) {
@@ -368,10 +324,10 @@ const Consultation = () => {
 
   const handleOpen = (data) => {
     // setAppFormData(data);
-    // console.log(data);
+    // //console.log(data);
     setOpen(true);
   };
-  console.log(appFormData, "hi");
+  //console.log(appFormData, "hi");
 
   const handleClose = () => {
     setOpen(false);
@@ -379,7 +335,8 @@ const Consultation = () => {
   };
 
   const [selectedTime, setSelectedTime] = useState(null);
-  let times = generateTimes();
+ 
+  // let times = generateTimes();
 
   const handleTimeClick = (time) => {
     setSelectedTime(time);
@@ -390,7 +347,7 @@ const Consultation = () => {
     if (actualData) {
       const dataToSubmit = { ...formData };
       delete dataToSubmit.phone_num;
-      console.log(dataToSubmit);
+      //console.log(dataToSubmit);
       dispatch(startUpdatePatient(dataToSubmit));
       setFormData({});
     } else {
@@ -415,17 +372,31 @@ const Consultation = () => {
   //     .toLowerCase();
 
   //   if (availableDays.includes("all_day")) {
-  //     console.log("Doctor is available on any day");
+  //     //console.log("Doctor is available on any day");
   //   } else if (!availableDays.includes(selectedDay)) {
-  //     console.log(
+  //     //console.log(
   //       "Doctor is not available on this selected day",
   //       "availableDays of Doctor is " + availableDays.join(" ,")
   //     );
   //   } else {
-  //     console.log("Doctor is available on the selected day");
+  //     //console.log("Doctor is available on the selected day");
   //   }
   // };
   const [showTimeSlot, setShowTimeSot] = useState(false);
+
+  const timeSlot = useSelector((state) => {
+    return state.doctorSlice?.timeSlot;
+  });
+
+  useEffect(() => {
+    if (timeSlot) {
+      const days = timeSlot.map((slot) => slot.day);
+      setAvailableDays(days);
+    } else {
+      setAvailableDays([]);
+    }
+  }, [timeSlot]);
+
   const handleChangeApp = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === "checkbox" ? checked : value;
@@ -450,43 +421,50 @@ const Consultation = () => {
       var selectedDay = new Date(value)
         .toLocaleString("en-us", { weekday: "short" })
         .toLowerCase();
+      //console.log(selectedDay, availableDays, "shr");
 
       if (availableDays.includes("all_Day")) {
-        console.log("Doctor is available on any day");
+        //console.log("Doctor is available on any day",'shr');
+        generateTimes(
+          "all_Day",
+          timeSlot[0].time_slot_start,
+          timeSlot[0].time_slot_end,
+          // setTimes
+        );
+        //console.log(timeSlot[0].time_slot_start,timeSlot[0].time_slot_end,'shri')
         setShowTimeSot(true);
-      } else if (!availableDays.includes(selectedDay)) {
+      } else if (availableDays.includes(selectedDay)) {
+        //console.log("Doctor is available on the selected day",'shr');
+        let startTime = "00:00";
+        let endTime = '00:00'
+        for (let i = 0; i < timeSlot.length; i++) {
+          if (timeSlot[i].day === selectedDay) {
+            startTime = timeSlot[i].time_slot_start;
+            endTime = timeSlot[i].time_slot_end;
+            break;
+          }
+        }
+        //console.log(startTime,endTime,'shri')
+        generateTimes(selectedDay, startTime, endTime);
+        setShowTimeSot(true);
+      } else {
         toast.error(
           "Doctor is not available on this selected day",
           "availableDays of Doctor is " + availableDays.join(" ,")
         );
         setShowTimeSot(false);
-      } else {
-        console.log("Doctor is available on the selected day");
-        setShowTimeSot(false);
       }
     }
   };
   useEffect(() => {
-    console.log(selectedDoctorId);
+    //console.log(selectedDoctorId);
     const id = {
       id: selectedDoctorId,
     };
     dispatch(getTimeSlot(id));
   }, [selectedDoctorId]);
-  const timeSlot = useSelector((state) => {
-    return state.doctorSlice?.timeSlot;
-  });
-  // console.log(timeSlot);
 
-  useEffect(() => {
-    if (timeSlot) {
-      const days = timeSlot.map((slot) => slot.day);
-      setAvailableDays(days);
-    } else {
-      setAvailableDays([]);
-    }
-  }, [timeSlot]);
-  console.log(availableDays);
+  //console.log(availableDays);
 
   const handleAddAppoinment = () => {
     const addApp = {
@@ -663,7 +641,7 @@ const Consultation = () => {
           </Box>
         </Box>
       </Box>
-      <Dialog open={open} maxWidth='xl' fullWidth >
+      <Dialog open={open} maxWidth="xl" fullWidth>
         <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
           <DialogTitle variant="h6" sx={{ color: "#0077b6" }}>
             <b> Appointment </b>
@@ -686,7 +664,6 @@ const Consultation = () => {
               m: 1,
               backgroundColor: "#FAFAFA",
               p: 1,
-              
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
@@ -694,7 +671,7 @@ const Consultation = () => {
                 sx={{
                   minHeight: "100px",
                   borderRadius: "8px",
-                  width:"100%"
+                  width: "100%",
                 }}
               >
                 {/* <Grid
@@ -811,7 +788,7 @@ const Consultation = () => {
                   spacing={1}
                   justifyContent={"center"}
                   alignItems={"center"}
-                  width={'100%'}
+                  width={"100%"}
                   // sx={{border:'1px solid red'}}
                 >
                   {appointment.map((field, index) => (
@@ -929,16 +906,18 @@ const Consultation = () => {
                   justifyContent={"center"}
                   alignItems={"center"}
                   mt={2}
-                  maxWidth={'xl'}
+                  maxWidth={"xl"}
                 >
-                  {!availableDays.includes("all_Day") &&
+                  {/* {!availableDays.includes("all_Day") &&
                   !availableDays.includes(appFormData?.Date) ? (
                     <>
-                      {appFormData?.Date !== undefined&&<Typography>Doctor is not available</Typography>}
+                      {appFormData?.Date !== undefined && (
+                        <Typography>Doctor is not available</Typography>
+                      )}
                     </>
                   ) : (
                     <>
-                      {showTimeSlot && (
+                      { (
                         <>
                           {times.map((time, index) => (
                             <Button
@@ -966,7 +945,30 @@ const Consultation = () => {
                         </>
                       )}
                     </>
-                  )}
+                  )} */}
+                   {times.map((time, index) => (
+                            <Button
+                              key={index}
+                              onClick={() => handleTimeClick(time)}
+                              sx={{
+                                padding: "10px",
+                                margin: "5px",
+                                border:
+                                  selectedTime === time
+                                    ? "2px solid blue"
+                                    : "2px solid lightgray",
+                                backgroundColor:
+                                  selectedTime === time ? "blue" : "white",
+                                color:
+                                  selectedTime === time ? "white" : "black",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                                mt: 2,
+                              }}
+                            >
+                              {time}
+                            </Button>
+                          ))}
                 </Grid>
               </Box>
             </Box>

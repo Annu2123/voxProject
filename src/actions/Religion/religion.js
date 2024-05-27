@@ -12,9 +12,6 @@ export const startAddRelgn = createAsyncThunk("addRelgn", async (formData) => {
       Authorization: `Bearer ${token}`,
     },
   });
-  if(response.data.message === "Expired token"){
-    console.log('Token Expired')
-  }
   return response.data;
 });
 
@@ -25,9 +22,6 @@ export const startGetRelgnList = createAsyncThunk("getDept", async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    if(response.data.message === "Expired token"){
-      console.log('Token Expired')
-    }
     return response.data;
   });
 
@@ -39,9 +33,6 @@ export const startGetRelgnList = createAsyncThunk("getDept", async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    if(response.data.message === "Expired token"){
-      console.log('Token Expired')
-    }
     return response.data;
   });
 

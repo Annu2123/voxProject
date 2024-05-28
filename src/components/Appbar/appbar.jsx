@@ -21,6 +21,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import PeopleIcon from '@mui/icons-material/People';
 import { Toaster } from "react-hot-toast";
 import { Avatar, Menu, MenuItem, Switch, Tooltip } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
@@ -96,7 +97,7 @@ const navbarItems = [
   {
     icon: <DashboardIcon sx={{ color: "black" }} />,
     title: "Dashboard",
-    route: "",
+    route: "dashboard",
   },
   {
     icon: <HealthAndSafetyIcon sx={{ color: "black" }} />,
@@ -113,6 +114,11 @@ const navbarItems = [
     title: "Consultation Settings",
     route: "consultation_settings",
   },
+  {
+    icon:<PeopleIcon sx={{ color: "black" }}/>,
+    title:"Users",
+    route:"users",
+  }
 ];
 
 export default function Navbar() {

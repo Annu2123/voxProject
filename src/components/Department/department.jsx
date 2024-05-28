@@ -72,7 +72,7 @@ const Department = () => {
   }));
 
   return (
-    <Box>
+    <Box >
       <Typography variant="h6" sx={{ color: "#0077b6" }}>
         <b> Department </b>
       </Typography>
@@ -134,8 +134,8 @@ const Department = () => {
             borderRadius: "8px",
             backgroundColor: "#FAFAFA",
             width: { xs: "100%", md: "50%" },
-            height: "64vh",
-            overflow: "auto",
+            // height: "64vh",
+            // overflow: "auto",
           }}
         >
           <Typography variant="body1" sx={{ color: "#0077b6", p: 1 }}>

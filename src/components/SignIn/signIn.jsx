@@ -27,10 +27,10 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
+      <Link color="inherit" href="https://www.voxprosolutions.com/" target="_blank">
+        VoxPro Solutions Pvt Ltd
+      </Link>
+      {"  "}{new Date().getFullYear()}
       {"."}
     </Typography>
   );
@@ -41,7 +41,7 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSubmit = async (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const formData = {
@@ -49,8 +49,8 @@ export default function SignIn() {
       password: data.get("password"),
     };
     try {
-      await dispatch(startLoginUser(formData));
-      navigate("/");
+     await dispatch(startLoginUser(formData));
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error);
     }
@@ -60,9 +60,9 @@ export default function SignIn() {
 
   React.useEffect(() => {
     if (token === null) {
-      navigate("/signIn");
+      navigate("/signin");
     } else {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, []);
 
@@ -141,7 +141,7 @@ export default function SignIn() {
               >
                 Sign In
               </Button>
-              <Grid container>
+              {/* <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
@@ -152,7 +152,7 @@ export default function SignIn() {
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
-              </Grid>
+              </Grid> */}
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>

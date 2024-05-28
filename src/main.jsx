@@ -19,10 +19,13 @@ import Email from "./components/Email/email.jsx";
 import EditDoctor from "./components/AddDoctor/editDoctor.jsx";
 import Department from "./components/Department/department.jsx";
 import VarAppbar from "./components/VarAppbar.js/varAppbar.jsx";
+import User from "./components/User/user.jsx";
+import AddUser from "./components/User/addUser.jsx";
+import UpdateUser from "./components/User/updateUser.jsx";
 
 const router = createBrowserRouter([
   {
-    path: "/signIn",
+    path: "/signin",
     element: <SignIn />,
   },
   {
@@ -30,7 +33,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/",
+        path: "dashboard",
         element: <Dashboard />,
       },
       {
@@ -74,7 +77,16 @@ const router = createBrowserRouter([
         element:<VarAppbar/>
       },
       {
-        path:""
+        path:"users",
+        element:<User/>
+      },
+      {
+        path:"users/create",
+        element:<AddUser/>
+      },
+      {
+        path:"users/edit",
+        element:<UpdateUser/>
       }
     ],
   },

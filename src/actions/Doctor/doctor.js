@@ -4,24 +4,15 @@ import toast from "react-hot-toast";
 
 const token = localStorage.getItem("token");
 
-export const startGetDoctorList = createAsyncThunk("docList", async (_, { rejectWithValue }) => {
+export const startGetDoctorList = createAsyncThunk("docList", async ({ rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_lists";
-  // const response = await axios.get(Api, {
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //   },
-  // });
-  // // console.log(response.request.status)
-  // if(response.data.message === "Expired token"){
-  //   console.log('Token Expired')
-  // }
-  // return response.data;
   try {
     const response = await axios.get(Api, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(response)
     return response.data;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
@@ -29,6 +20,7 @@ export const startGetDoctorList = createAsyncThunk("docList", async (_, { reject
       const formattedErrors = Object.values(errorMessages).flat().join(', ');
       return rejectWithValue(formattedErrors);
     }
+    console.log(error.message)
     return rejectWithValue(error.message);
   }
 });
@@ -113,7 +105,7 @@ export const updateDoc = createAsyncThunk("updateDoc", async (formData) => {
 const initialState = {
   loading: false,
   error: null,
-  list: null,
+  list: [],
   timeSlot: null,
 };
 

@@ -90,10 +90,8 @@ const Dashboard = () => {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const token = localStorage.getItem('token');
 
-  const handleNavigate = () => {
-    navigate("/appointment_list");
-  };
   const handleAddDoc = () => {
     navigate("/add_doctor");
   };
@@ -106,27 +104,20 @@ const Dashboard = () => {
     navigate("/appointment_list",{state:formData});
   };
 
-  useEffect(() => {
-    dispatch(startGetDoctorList());
-  }, [dispatch]);
-
-  const timeSlot = useSelector((state) => state.doctorSlice?.timeSlot);
-
   const handleEditClick = async (rowData) => {
-    // const id = { id: rowData?.id };
-    // // await dispatch(getTimeSlot(id));
-    // let abcd = await getTimeSlot(id);
-    // console.log(abcd)
-    // const fullData = { ...rowData, ...abcd };
-    // console.log(fullData);
-    navigate("edit_doctor", { state: rowData });
+    navigate("/edit_doctor", { state: rowData });
   };
+
+  useEffect(() => {
+    if(token){
+      dispatch(startGetDoctorList())
+    }
+  }, [token,dispatch]);
 
   const data = useSelector((state) => {
     return state.doctorSlice?.list;
   });
-  // console.log(data)
-
+  console.log(data)
   const docList = data?.map((docList, i) => ({
     doc_id: i+1,
     dcotor_name: docList.name,
@@ -142,23 +133,9 @@ const Dashboard = () => {
         >
           <EditIcon fontSize="small" />
         </Button>
-        {/* <Button
-          size="small"
-          disableElevation
-          color="error"
-          variant="outlined"
-          onClick={() => handleDeleteConfirmationOpen(docList.id)}
-        >
-          <DeleteIcon fontSize="small" />
-        </Button> */}
       </Box>
     ),
   }));
-
-  const handleDeleteConfirmationOpen = (rowData) => {
-    setSelectedRow(rowData);
-    setDeleteConfirmationOpen(true);
-  };
 
   const handleDeleteConfirmationClose = () => {
     setDeleteConfirmationOpen(false);
@@ -185,12 +162,12 @@ const Dashboard = () => {
       date: date,
     };
     dispatch(startGetAppoinmentsList(formData));
-  }, [date]);
+  }, [date,dispatch]);
 
   const appointmentData = useSelector((state) => {
     return state.appointmentSlice?.appointment;
   });
-  // console.log(appointmentData);
+
   const apnmtList = appointmentData?.map((list,i) => ({
     doc_id: i+1,
     doc_name: list.doctor_name,
@@ -284,7 +261,7 @@ const Dashboard = () => {
               <PersonAddIcon fontSize="small" />
             </Button>
           </Box>
-          <Box sx={{ height: "240px", overflow: "auto" }}>
+          <Box sx={{ height: "240px", overflow: "auto",p:1.5 }}>
             <CustomTable columns={doctorList} rows={docList} />
           </Box>
         </Card>
@@ -319,7 +296,7 @@ const Dashboard = () => {
               </Button> */}
             </Box>
           </Box>
-          <Box sx={{ height: "240px", overflow: "auto" }}>
+          <Box sx={{ height: "240px", overflow: "auto",p:2 }}>
             <CustomTable
               columns={doctorAppointment}
               rows={apnmtList}

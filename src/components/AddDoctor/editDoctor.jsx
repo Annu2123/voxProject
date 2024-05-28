@@ -60,7 +60,7 @@ const EditDoctor = () => {
   const handleSearch = () => {
     ////console.log("Searching for:", searchValue);
   };
-  const [render,setRender] = useState(false)
+  const [render, setRender] = useState(false);
   const timeSlot = useSelector((state) => {
     return state.doctorSlice?.timeSlot;
   });
@@ -70,11 +70,14 @@ const EditDoctor = () => {
   ////console.log(timeSlot,'time');
   const [slotType, setSlotType] = useState();
 
-  useEffect(()=>{
-    const xy = timeSlot && timeSlot!==null && timeSlot[0]["day"] === "all_Day" ? "all_Day" : "selectDay" 
-    setSlotType(xy)
-  },[timeSlot])
-  
+  useEffect(() => {
+    const xy =
+      timeSlot && timeSlot !== null && timeSlot[0]["day"] === "all_Day"
+        ? "all_Day"
+        : "selectDay";
+    setSlotType(xy);
+  }, [timeSlot]);
+
   //console.log(slotType,'slotType')
   // const x = {};
   // if (timeSlot && timeSlot[0]["day"] !== "all_day") {
@@ -88,7 +91,6 @@ const EditDoctor = () => {
   // ////console.log(x);
   useEffect(() => {
     if (!loading && timeSlot) {
-      
       const slotData = {};
       if (timeSlot[0]["day"] !== "all_day") {
         for (let i = 0; i < timeSlot.length; i++) {
@@ -97,12 +99,11 @@ const EditDoctor = () => {
             end_time: timeSlot[i]["time_slot_end"],
           };
         }
-      }else if(timeSlot[0]["day"] === "all_day"){
+      } else if (timeSlot[0]["day"] === "all_day") {
         slotData[timeSlot[0]["day"]] = {
           start_time: timeSlot[0]["time_slot_start"],
           end_time: timeSlot[0]["time_slot_end"],
         };
-        
       }
       //console.log(slotData,'slot')
       setSelectedDays(slotData);
@@ -156,7 +157,6 @@ const EditDoctor = () => {
     },
   ];
 
-
   ////console.log(x,'time')
 
   // const [times, setTimes] = useState({});
@@ -178,17 +178,19 @@ const EditDoctor = () => {
   };
 
   const handleTimeChange1 = (day, field) => (event) => {
-    let newTimes = null
-    if(day !== 'all_Day'){
-       newTimes = {
+    let newTimes = null;
+    if (day !== "all_Day") {
+      newTimes = {
         ...selectedDays,
         [day]: {
           ...selectedDays[day],
           [field]: event.target.value,
         },
       };
-    }else{
-    newTimes = {[day]:{...selectedDays[day],[field]:event.target.value}}
+    } else {
+      newTimes = {
+        [day]: { ...selectedDays[day], [field]: event.target.value },
+      };
     }
     setSelectedDays(newTimes);
   };
@@ -467,7 +469,7 @@ const EditDoctor = () => {
                 <Box
                   sx={{
                     display: "flex",
-                    // justifyContent: "center",
+                    justifyContent: "flex-end",
                     width: "100%",
                     flexDirection: "column",
                     gap: 1,
@@ -484,11 +486,11 @@ const EditDoctor = () => {
                       size="small"
                       placeholder="Start Time"
                       type="time"
-                      value={Object.keys(selectedDays).includes('all_Day')&&selectedDays['all_Day']["start_time"]}
-                      onChange={handleTimeChange1(
-                        "all_Day",
-                        "start_time"
-                      )}
+                      value={
+                        Object.keys(selectedDays).includes("all_Day") &&
+                        selectedDays["all_Day"]["start_time"]
+                      }
+                      onChange={handleTimeChange1("all_Day", "start_time")}
                       readOnly
                       InputLabelProps={{
                         shrink: true,
@@ -500,11 +502,11 @@ const EditDoctor = () => {
                       size="small"
                       placeholder="End Time"
                       type="time"
-                      value={Object.keys(selectedDays).includes('all_Day')&&selectedDays['all_Day']["end_time"]}
-                      onChange={handleTimeChange1(
-                        "all_Day",
-                        "end_time"
-                      )}
+                      value={
+                        Object.keys(selectedDays).includes("all_Day") &&
+                        selectedDays["all_Day"]["end_time"]
+                      }
+                      onChange={handleTimeChange1("all_Day", "end_time")}
                       readOnly
                       InputLabelProps={{
                         shrink: true,
@@ -518,7 +520,7 @@ const EditDoctor = () => {
                 <Box sx={{ p: 2, mt: -2 }}>
                   <Divider sx={{ mt: -1 }} />
                   <FormGroup>
-                    {daysOfWeek.map((day, index) => (
+                    {daysOfWeek?.map((day, index) => (
                       <Grid container spacing={2} key={index}>
                         <Grid item xs={2}>
                           <FormControlLabel
@@ -541,7 +543,7 @@ const EditDoctor = () => {
                             lg={8}
                             md={12}
                             spacing={1}
-                            sx={{ mt: { md: -2, lg: 0 } }}
+                            sx={{ mt: { md: -2, lg: 0 }, ml: 1 }}
                           >
                             <Grid item xs={6}>
                               <TextField
@@ -549,7 +551,7 @@ const EditDoctor = () => {
                                 type="time"
                                 fullWidth
                                 size="small"
-                                value={selectedDays[day.value]["start_time"]}
+                                value={selectedDays[day?.value]["start_time"]}
                                 onChange={handleTimeChange1(
                                   day?.value,
                                   "start_time"
@@ -564,7 +566,7 @@ const EditDoctor = () => {
                                 type="time"
                                 fullWidth
                                 size="small"
-                                value={selectedDays[day.value]["end_time"]}
+                                value={selectedDays[day?.value]["end_time"]}
                                 onChange={handleTimeChange1(
                                   day?.value,
                                   "end_time"

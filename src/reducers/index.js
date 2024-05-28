@@ -8,6 +8,7 @@ import religionSlice from "../actions/Religion/religion";
 import referBySlice from "../actions/ReferBy/referBy";
 import patientSlice from "../actions/Patient/patient";
 import manageLeadsSlice from "../actions/ManageLeads/manageLeads";
+import usersSlice from "../actions/Users/users";
 
 const reducers = combineReducers({
   user,
@@ -17,7 +18,8 @@ const reducers = combineReducers({
   religionSlice,
   referBySlice,
   patientSlice,
-  manageLeadsSlice
+  manageLeadsSlice,
+  usersSlice
 });
 
 export default reducers;

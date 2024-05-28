@@ -64,7 +64,7 @@ const EditDoctor = () => {
   const timeSlot = useSelector((state) => {
     return state.doctorSlice?.timeSlot;
   });
-  //console.log(timeSlot,'selector')
+  console.log(timeSlot,'selector')
   // const [timeSlot,setTimeSlot]= useState()
 
   ////console.log(timeSlot,'time');
@@ -72,7 +72,7 @@ const EditDoctor = () => {
 
   useEffect(() => {
     const xy =
-      timeSlot && timeSlot !== null && timeSlot[0]["day"] === "all_Day"
+      timeSlot && timeSlot !== null&& timeSlot !== undefined && timeSlot != [''] && timeSlot[0]["day"] === "all_Day"
         ? "all_Day"
         : "selectDay";
     setSlotType(xy);

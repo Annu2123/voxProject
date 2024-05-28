@@ -4,25 +4,32 @@ import toast from "react-hot-toast";
 
 const token = localStorage.getItem("token");
 
-export const startGetDoctorList = createAsyncThunk("docList", async ({ rejectWithValue }) => {
+export const startGetDoctorList = createAsyncThunk("docList", async () => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_lists";
-  try {
-    const response = await axios.get(Api, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log(response)
-    return response.data;
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
-      const errorMessages = error.response.data.messages.errors;
-      const formattedErrors = Object.values(errorMessages).flat().join(', ');
-      return rejectWithValue(formattedErrors);
-    }
-    console.log(error.message)
-    return rejectWithValue(error.message);
-  }
+  const response = await axios.get(Api, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(response)
+  return response.data;
+  // try {
+  //   const response = await axios.get(Api, {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
+  //   console.log(response)
+  //   return response.data;
+  // } catch (error) {
+  //   if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+  //     const errorMessages = error.response.data.messages.errors;
+  //     const formattedErrors = Object.values(errorMessages).flat().join(', ');
+  //     return rejectWithValue(formattedErrors);
+  //   }
+  //   console.log(error.message)
+  //   return rejectWithValue(error.message);
+  // }
 });
 
 export const removeDoctor = createAsyncThunk("removeDoctor", async (id, { rejectWithValue }) => {
@@ -105,7 +112,7 @@ export const updateDoc = createAsyncThunk("updateDoc", async (formData) => {
 const initialState = {
   loading: false,
   error: null,
-  list: [],
+  list: null,
   timeSlot: null,
 };
 

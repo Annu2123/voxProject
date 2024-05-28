@@ -112,6 +112,7 @@ const Dashboard = () => {
     if(token){
       dispatch(startGetDoctorList())
     }
+    // dispatch(startGetDoctorList())
   }, [token,dispatch]);
 
   const data = useSelector((state) => {

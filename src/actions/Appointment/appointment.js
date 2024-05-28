@@ -4,48 +4,80 @@ import toast from "react-hot-toast";
 
 const token = localStorage.getItem("token");
 
-export const startGetAppoinmentsList = createAsyncThunk("appoinmentList", async (date) => {
+export const startGetAppoinmentsList = createAsyncThunk("appoinmentList", async (date, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/appointment_lists";
-  const data = date
-  const response = await axios.post(Api,data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-});
-
-export const appointmentDetails = createAsyncThunk("appointment_list_details", async (formData) => {
-    const Api = "https://api.voxprosolutions.com:8080/api/appointment_list_details";
-    const data = formData
-    const response = await axios.post(Api,data, {
+  try {
+    const response = await axios.post(Api, date, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
+  }
+});
+
+export const appointmentDetails = createAsyncThunk("appointment_list_details", async (formData, { rejectWithValue }) => {
+    const Api = "https://api.voxprosolutions.com:8080/api/appointment_list_details";
+    try {
+      const response = await axios.post(Api, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+        const errorMessages = error.response.data.messages.errors;
+        const formattedErrors = Object.values(errorMessages).flat().join(', ');
+        return rejectWithValue(formattedErrors);
+      }
+      return rejectWithValue(error.message);
+    }
   });
 
   export const appointmentDelete = createAsyncThunk("appointment_delete", async (id) => {
     const Api = "https://api.voxprosolutions.com:8080/api/appointment_delete";
-    const data = id
-    const response = await axios.post(Api,data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
+    try {
+      const response = await axios.post(Api, id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+        const errorMessages = error.response.data.messages.errors;
+        const formattedErrors = Object.values(errorMessages).flat().join(', ');
+        return rejectWithValue(formattedErrors);
+      }
+      return rejectWithValue(error.message);
+    }
   });
 
   export const addAppoinment = createAsyncThunk("appointment_add", async (formData) => {
     const Api = "https://api.voxprosolutions.com:8080/api/appointment_add";
-    const data = formData
-    const response = await axios.post(Api,data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
+    try {
+      const response = await axios.post(Api, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+        const errorMessages = error.response.data.messages.errors;
+        const formattedErrors = Object.values(errorMessages).flat().join(', ');
+        return rejectWithValue(formattedErrors);
+      }
+      return rejectWithValue(error.message);
+    }
   });
 
 const initialState = {
@@ -71,9 +103,8 @@ const initialState = {
         })
         .addCase(startGetAppoinmentsList.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          console.log(action.error.message);
-          toast.error('Unable to fetch data...', action.error.message)
+          state.error = action.payload ? action.payload : action.error.message;
+          toast.error(action.payload);
         });
 
         builder
@@ -87,9 +118,8 @@ const initialState = {
         })
         .addCase(appointmentDetails.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          console.log(action.error.message);
-          toast.error('Something went wrong...', action.error.message)
+          state.error = action.payload ? action.payload : action.error.message;
+          toast.error(action.payload);
         });
 
         builder
@@ -103,9 +133,8 @@ const initialState = {
         })
         .addCase(appointmentDelete.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          console.log(action.error.message);
-          toast.error('Something went wrong...', action.error.message)
+          state.error = action.payload ? action.payload : action.error.message;
+          toast.error(action.payload);
         });
 
         builder
@@ -119,9 +148,8 @@ const initialState = {
         })
         .addCase(addAppoinment.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          console.log(action.error.message);
-          toast.error('Something went wrong...', action.error.message)
+          state.error = action.payload ? action.payload : action.error.message;
+          toast.error(action.payload);
         });
   
     }

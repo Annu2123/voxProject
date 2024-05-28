@@ -4,32 +4,52 @@ import toast from "react-hot-toast";
 
 const token = localStorage.getItem("token");
 
-export const startGetDoctorList = createAsyncThunk("docList", async () => {
+export const startGetDoctorList = createAsyncThunk("docList", async (_, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_lists";
-  const response = await axios.get(Api, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  // console.log(response.request.status)
-  if(response.data.message === "Expired token"){
-    console.log('Token Expired')
+  // const response = await axios.get(Api, {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //   },
+  // });
+  // // console.log(response.request.status)
+  // if(response.data.message === "Expired token"){
+  //   console.log('Token Expired')
+  // }
+  // return response.data;
+  try {
+    const response = await axios.get(Api, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
   }
-  return response.data;
 });
 
-export const removeDoctor = createAsyncThunk("removeDoctor", async (id) => {
+export const removeDoctor = createAsyncThunk("removeDoctor", async (id, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_delete";
-  const data = id;
-  const response = await axios.post(Api, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if(response.data.message === "Expired token"){
-    console.log('Token Expired')
+  try {
+    const response = await axios.post(Api, id, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
   }
-  return response.data;
 });
 
 export const createDoctor = createAsyncThunk("createDoc", async (formData, { rejectWithValue }) => {
@@ -54,31 +74,40 @@ export const createDoctor = createAsyncThunk("createDoc", async (formData, { rej
 
 export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id) => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_time_slot";
-  const data = id;
-  const response = await axios.post(Api, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  console.log(response)
-  if(response.data.message === "Expired token"){
-    console.log('Token Expired')
+  try {
+    const response = await axios.post(Api, id, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
   }
-  return response.data;
 });
 
 export const updateDoc = createAsyncThunk("updateDoc", async (formData) => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_update";
-  const data = formData;
-  const response = await axios.post(Api, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  // if(response.data.message === "Expired token"){
-  //   console.log('Token Expired',response.data.message)
-  // }
-  return response.data;
+  try {
+    const response = await axios.post(Api, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
+  }
 });
 
 const initialState = {
@@ -104,9 +133,8 @@ const doctorSlice = createSlice({
       })
       .addCase(startGetDoctorList.rejected, (state, action) => {
         state.loading = true;
-        state.error = action.error.message;
-        console.log(action);
-        toast.error('Unable to fetch the data...', action.error.message)
+        state.error = action.payload ? action.payload : action.error.message;
+        toast.error(action.payload);
       });
 
     builder
@@ -120,8 +148,8 @@ const doctorSlice = createSlice({
       })
       .addCase(removeDoctor.rejected, (state, action) => {
         state.loading = true;
-        state.error = action.error.message;
-        toast.error('Something went wrong...', action.error.message)
+        state.error = action.payload ? action.payload : action.error.message;
+        toast.error(action.payload);
       });
 
     builder
@@ -131,14 +159,12 @@ const doctorSlice = createSlice({
       })
       .addCase(createDoctor.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action)
-        // toast.success("created successfully");
+        toast.success("created successfully");
       })
       .addCase(createDoctor.rejected, (state, action) => {
         state.loading = true;
         state.error = action.payload ? action.payload : action.error.message;
-      // console.log(action.payload);
-      toast.error(action.payload);
+        toast.error(action.payload);
       });
 
     builder
@@ -152,8 +178,8 @@ const doctorSlice = createSlice({
       })
       .addCase(getTimeSlot.rejected, (state, action) => {
         state.loading = true;
-        state.error = action.error.message;
-        toast.error('Something went wrong...', action.error.message)
+        state.error = action.payload ? action.payload : action.error.message;
+        toast.error(action.payload);
       });
 
       builder
@@ -168,8 +194,8 @@ const doctorSlice = createSlice({
       })
       .addCase(updateDoc.rejected, (state, action) => {
         state.loading = true;
-        state.error = action.error.message;
-        toast.error('Something went wrong...', action.error.message)
+        state.error = action.payload ? action.payload : action.error.message;
+        toast.error(action.payload);
       });
   },
 });

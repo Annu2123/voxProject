@@ -4,46 +4,61 @@ import toast from "react-hot-toast";
 
 const token = localStorage.getItem("token");
 
-export const startAddPatient = createAsyncThunk("addPatient", async (formData) => {
+export const startAddPatient = createAsyncThunk("addPatient", async (formData, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/patient_add";
-  const data = formData
-  const response = await axios.post(Api,data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-//   if(response.data.message === "Expired token"){
-//     console.log('Token Expired')
-//   }
-  return response.data;
+  try {
+    const response = await axios.post(Api, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
+  }
 });
 
-export const startUpdatePatient = createAsyncThunk("updatePatient", async (formData) => {
+export const startUpdatePatient = createAsyncThunk("updatePatient", async (formData, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/patient_update";
-  const data = formData
-  const response = await axios.post(Api,data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-//   if(response.data.message === "Expired token"){
-//     console.log('Token Expired')
-//   }
-  return response.data;
+  try {
+    const response = await axios.post(Api, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
+  }
 });
 
-export const searchPatient = createAsyncThunk("search", async (formData) => {
+export const searchPatient = createAsyncThunk("search", async (formData, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/patient_find";
-  const data = formData
-  const response = await axios.post(Api,data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-//   if(response.data.message === "Expired token"){
-//     console.log('Token Expired')
-//   }
-  return response.data;
+  try {
+    const response = await axios.post(Api, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
+  }
 });
 
 export const startGetPatientList = createAsyncThunk("getPatientList", async () => {
@@ -79,12 +94,8 @@ const initialState = {
         })
         .addCase(startAddPatient.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          if(action.error.message="Request failed with status code 409"){
-            toast.error('Fill all fields')
-          }else{
-            toast.error('Something went wrong...',)
-          }
+          state.error = action.payload ? action.payload : action.error.message;
+          toast.error(action.payload);
         });
 
         builder
@@ -98,14 +109,8 @@ const initialState = {
         })
         .addCase(startUpdatePatient.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          console.log(action.error.message)
-          
-          if(action.error.message="Request failed with status code 409"){
-            toast.error('Please fill the unique data')
-          }else{
-            toast.error('Something went wrong...',)
-          }
+          state.error = action.payload ? action.payload : action.error.message;
+          toast.error(action.payload);
         });
 
         builder
@@ -135,9 +140,8 @@ const initialState = {
         })
         .addCase(searchPatient.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          toast.error('Something went wrong...', action.error.message)
-        //   console.log(action.error.message);
+          state.error = action.payload ? action.payload : action.error.message;
+          toast.error(action.payload);
         });
   
     }

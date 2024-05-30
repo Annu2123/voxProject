@@ -25,6 +25,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import { Toaster } from "react-hot-toast";
 import { Avatar, Menu, MenuItem, Switch, Tooltip } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -93,40 +94,72 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const navbarItems = [
-  {
-    icon: <DashboardIcon sx={{ color: "black" }} />,
-    title: "Dashboard",
-    route: "dashboard",
-  },
-  {
-    icon: <HealthAndSafetyIcon sx={{ color: "black" }} />,
-    title: "Consultation",
-    route: "consultation",
-  },
-  {
-    icon: <ManageAccountsIcon sx={{ color: "black" }} />,
-    title: "Manage patient",
-    route: "manage_patient",
-  },
-  {
-    icon: <AssignmentIndIcon sx={{ color: "black" }} />,
-    title: "Consultation Settings",
-    route: "consultation_settings",
-  },
-  {
-    icon:<PeopleIcon sx={{ color: "black" }}/>,
-    title:"Users",
-    route:"users",
-  }
-];
+
+
+
 
 export default function Navbar() {
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = React.useState(false);
+  const role = localStorage.getItem('roles');
+  console.log("Role:", role);
+  let navbarItems;
 
+  if (role === 'admin') {
+    navbarItems = [
+      {
+        icon: <DashboardIcon sx={{ color: "black" }} />,
+        title: "Dashboard",
+        route: "dashboard",
+      },
+      {
+        icon: <HealthAndSafetyIcon sx={{ color: "black" }} />,
+        title: "Consultation",
+        route: "consultation",
+      },
+      {
+        icon: <ManageAccountsIcon sx={{ color: "black" }} />,
+        title: "Manage patient",
+        route: "manage_patient",
+      },
+      {
+        icon: <AssignmentIndIcon sx={{ color: "black" }} />,
+        title: "Consultation Settings",
+        route: "consultation_settings",
+      },
+      {
+        icon:<PeopleIcon sx={{ color: "black" }}/>,
+        title:"Users",
+        route:"users",
+      }
+    ];
+  } else if (role === 'user') {
+    navbarItems = [
+      {
+        icon: <DashboardIcon sx={{ color: "black" }} />,
+        title: "Dashboard",
+        route: "dashboard",
+      },
+      {
+        icon: <HealthAndSafetyIcon sx={{ color: "black" }} />,
+        title: "Consultation",
+        route: "consultation",
+      },
+      {
+        icon: <ManageAccountsIcon sx={{ color: "black" }} />,
+        title: "Manage patient",
+        route: "manage_patient",
+      },
+      {
+        icon: <AssignmentIndIcon sx={{ color: "black" }} />,
+        title: "Consultation Settings",
+        route: "consultation_settings",
+      },
+    ];
+  }
+  console.log(navbarItems)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const profileOpen = Boolean(anchorEl);
   const handleDrawerOpen = () => {
@@ -140,9 +173,16 @@ export default function Navbar() {
   };
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem('fname');
+    localStorage.removeItem('lname');
+    localStorage.removeItem('roles');
+    localStorage.removeItem('email_id' );
+    localStorage.removeItem('telephone_ext');
+    sessionStorage.removeItem('msg_queue_id');
     navigate("/signIn");
   };
 
+  console.log(sessionStorage.getItem('msg_queue_id'))
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -309,7 +349,7 @@ export default function Navbar() {
         </DrawerHeader>
         <Divider />
         <List sx={{ backgroundColor: "#FAFAFA" }}>
-          {navbarItems.map((item, i) => (
+          {navbarItems?.map((item, i) => (
             <Tooltip key={i} title={open ? "" : item.title} placement="right">
               <ListItem key={i} disablePadding sx={{ display: "block" }}>
                 <ListItemButton

@@ -186,7 +186,7 @@ const Dashboard = () => {
     dispatch(startGetAppoinmentsList(formData));
   }, [date, dispatch]);
 
-  console.log(appointmentData)
+  // console.log(appointmentData)
   const apnmtList = appointmentData?.map((list, i) => ({
     doc_id: i + 1,
     doc_name: list.doctor_name,

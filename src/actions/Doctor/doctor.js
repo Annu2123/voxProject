@@ -87,7 +87,7 @@ export const createDoctor = createAsyncThunk("createDoc", async (formData, { rej
   }
 });
 
-export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id) => {
+export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_time_slot";
   try {
     const response = await axios.post(Api, id, {
@@ -106,7 +106,7 @@ export const getTimeSlot = createAsyncThunk("getTimeSlot", async (id) => {
   }
 });
 
-export const updateDoc = createAsyncThunk("updateDoc", async (formData) => {
+export const updateDoc = createAsyncThunk("updateDoc", async (formData, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/doctor_update";
   try {
     const response = await axios.post(Api, formData, {
@@ -178,8 +178,11 @@ const doctorSlice = createSlice({
       })
       .addCase(createDoctor.rejected, (state, action) => {
         state.loading = true;
-        state.error = action.payload ? action.payload : action.error.message;
-        toast.error(action.payload);
+        const error = action.payload ? action.payload : action.error.message;
+        const errorMessages = error.split(',');
+        const firstError = errorMessages[0].trim();
+        state.error = firstError;
+        toast.error(firstError);
       });
 
     builder
@@ -193,8 +196,11 @@ const doctorSlice = createSlice({
       })
       .addCase(getTimeSlot.rejected, (state, action) => {
         state.loading = true;
-        state.error = action.payload ? action.payload : action.error.message;
-        toast.error(action.payload);
+        const error = action.payload ? action.payload : action.error.message;
+        const errorMessages = error.split(',');
+        const firstError = errorMessages[0].trim();
+        state.error = firstError;
+        toast.error(firstError);
       });
 
       builder
@@ -209,8 +215,11 @@ const doctorSlice = createSlice({
       })
       .addCase(updateDoc.rejected, (state, action) => {
         state.loading = true;
-        state.error = action.payload ? action.payload : action.error.message;
-        toast.error(action.payload);
+        const error = action.payload ? action.payload : action.error.message;
+        const errorMessages = error.split(',');
+        const firstError = errorMessages[0].trim();
+        state.error = firstError;
+        toast.error(firstError);
       });
   },
 });

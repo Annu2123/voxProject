@@ -39,7 +39,6 @@ const docDept = () => {
   return r?.length >= 1 ? r : ["none"];
 };
 
-
 const AddDoctor = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
@@ -59,7 +58,7 @@ const AddDoctor = () => {
   const [consultaionFee, setConsultaionFee] = useState();
   const [department, setDepartment] = useState();
   const dispatch = useDispatch();
-  const deptList = docDept()
+  const deptList = docDept();
   // console.log(deptList)
 
   const [selectedTime, setSelectedTime] = useState(null);
@@ -156,19 +155,18 @@ const AddDoctor = () => {
       added_by: "madhu",
     };
     // if (Object.keys(formData.docName)=== '') {
-    //   toast.error("Please enter the doctor name"); 
+    //   toast.error("Please enter the doctor name");
     // }
 
     if (Object.keys(formData.time_slot).length === 0) {
-      toast.error("Please fill the time slots."); 
-    }else {
+      toast.error("Please fill the time slots.");
+    } else {
       dispatch(createDoctor(formData)).then((resultAction) => {
         if (resultAction.meta.requestStatus === "fulfilled") {
           window.location.reload();
         }
       });
     }
-    
   };
 
   const daysOfWeek = [
@@ -233,7 +231,7 @@ const AddDoctor = () => {
           minHeight: "70vh",
           borderRadius: "9px",
           mt: 2,
-          borderTop:"1px solid lightgray",
+          borderTop: "1px solid lightgray",
         }}
       >
         <Box
@@ -284,27 +282,6 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Department*"
-                  sx={{ width: "60%" }}
-                  size="small"
-                  placeholder="Doctor Department"
-                  select
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                >
-                  {deptList?.map((dept, i) => (
-                    <MenuItem key={i} value={dept}>
-                      {dept}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <TextField
                   label="Doctor Name*"
                   sx={{ width: "60%" }}
                   size="small"
@@ -343,6 +320,27 @@ const AddDoctor = () => {
                   value={docEmail}
                   onChange={(e) => setDocEmail(e.target.value)}
                 />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
+                <TextField
+                  label="Doctor Department*"
+                  sx={{ width: "60%" }}
+                  size="small"
+                  placeholder="Doctor Department"
+                  select
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                >
+                  {deptList?.map((dept, i) => (
+                    <MenuItem key={i} value={dept}>
+                      {dept}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
             </Grid>
             <Divider width="100%" height="10px" sx={{ mt: 2 }} />
@@ -426,7 +424,7 @@ const AddDoctor = () => {
                   mt: -1,
                 }}
               >
-                <Divider sx={{mt:-1}}/>
+                <Divider sx={{ mt: -1 }} />
                 <Typography variant="body1">All Day</Typography>
                 <Box sx={{ display: "flex", gap: 2 }}>
                   <TextField
@@ -463,7 +461,7 @@ const AddDoctor = () => {
 
             {value === "selectDay" && (
               <Box sx={{ p: 2, mt: -2 }}>
-                <Divider sx={{mt:-1}}/>
+                <Divider sx={{ mt: -1 }} />
                 <FormGroup>
                   {daysOfWeek.map((day, index) => (
                     <Grid container spacing={2} key={index}>
@@ -529,7 +527,7 @@ const AddDoctor = () => {
             color="success"
             size="small"
             onClick={handleAdd}
-            sx={{m:2}}
+            sx={{ m: 2 }}
           >
             Save
           </Button>

@@ -1,60 +1,60 @@
-import React, { useEffect } from 'react';
-import amqp from 'amqplib/callback_api.js';
-import toast from 'react-hot-toast';
+// import React, { useEffect } from 'react';
+// import amqp from 'amqplib/callback_api.js';
+// import toast from 'react-hot-toast';
 
-const Recevie = () => {
-    useEffect(() => {
-        let connection;
+// const Recevie = () => {
+//     useEffect(() => {
+//         let connection;
 
-        const consumeMessages = () => {
-            amqp.connect('amqp://49.205.193.250', function(error0, conn) {
-                if (error0) {
-                    throw error0;
-                }
-                connection = conn;
-                connection.createChannel(function(error1, channel) {
-                    if (error1) {
-                        throw error1;
-                    }
+//         const consumeMessages = () => {
+//             amqp.connect('amqp://49.205.193.250', function(error0, conn) {
+//                 if (error0) {
+//                     throw error0;
+//                 }
+//                 connection = conn;
+//                 connection.createChannel(function(error1, channel) {
+//                     if (error1) {
+//                         throw error1;
+//                     }
 
-                    var queue = 'hello';
+//                     var queue = 'hello';
 
-                    channel.assertQueue(queue, {
-                        durable: false
-                    });
+//                     channel.assertQueue(queue, {
+//                         durable: false
+//                     });
 
-                    console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
+//                     console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
 
-                    channel.consume(queue, function(msg) {
-                        const message = msg.content.toString();
-                        console.log(" [x] Received %s", message);
-                        toast.info(message);
-                    }, {
-                        noAck: true
-                    });
-                });
-            }); 
-        };
+//                     channel.consume(queue, function(msg) {
+//                         const message = msg.content.toString();
+//                         console.log(" [x] Received %s", message);
+//                         toast.info(message);
+//                     }, {
+//                         noAck: true
+//                     });
+//                 });
+//             }); 
+//         };
 
-        consumeMessages();
+//         consumeMessages();
 
-        return () => {
-            if (connection) {
-                connection.close();
-            }
-        };
-    }, []);
+//         return () => {
+//             if (connection) {
+//                 connection.close();
+//             }
+//         };
+//     }, []);
 
-    // // Return null if you don't have any JSX to render in this component
-    // return null;
-    return(
-        <>
-            hi
-        </>
-    )
-};
+//     // // Return null if you don't have any JSX to render in this component
+//     // return null;
+//     return(
+//         <>
+//             hi
+//         </>
+//     )
+// };
 
-export default Recevie;
+// export default Recevie;
 
 
 
@@ -122,3 +122,57 @@ export default Recevie;
 // };
 
 // export default Recevie;
+
+
+
+import React, { useEffect, useState } from 'react';
+import { connect } from 'amqplib';
+
+const Receive = () => {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const connectToRabbitMQ = async () => {
+      try {
+        const connection = await connect('amqp://49.205.193.250');
+        const channel = await connection.createChannel();
+
+        const exchange = 'amq.topic';
+        const routingKey = 'messages';
+        const queueName = 'hello';
+
+        await channel.assertQueue(queueName, { durable: false });
+        await channel.bindQueue(queueName, exchange, routingKey);
+
+        const textDecoder = new TextDecoder();
+
+        channel.consume(queueName, (msg) => {
+          if (msg !== null) {
+            const message = textDecoder.decode(msg.content);
+            console.log('Received:', message);
+            setMessages((prevMessages) => [...prevMessages, message]);
+            channel.ack(msg);
+          }
+        });
+      } catch (error) {
+        console.error('Error connecting to RabbitMQ:', error);
+      }
+    };
+
+    connectToRabbitMQ();
+  }, []);
+
+  return (
+    <div>
+      <h2>Received Messages:</h2>
+      <ul>
+        {messages.map((message, index) => (
+          <li key={index}>{message}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default Receive;
+

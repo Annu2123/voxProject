@@ -97,7 +97,6 @@ const User = () => {
         borderTop: "1px solid lightgray",
       }}
     >
-      {/* <Recevie/> */}
       <Box
         sx={{
           display: "flex",

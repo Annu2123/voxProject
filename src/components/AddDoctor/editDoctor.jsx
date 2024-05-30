@@ -64,7 +64,7 @@ const EditDoctor = () => {
   const timeSlot = useSelector((state) => {
     return state.doctorSlice?.timeSlot;
   });
-  console.log(timeSlot,'selector')
+  // console.log(timeSlot,'selector')
   // const [timeSlot,setTimeSlot]= useState()
 
   ////console.log(timeSlot,'time');
@@ -218,7 +218,6 @@ const EditDoctor = () => {
     };
     ////console.log(formData,'formData')
     dispatch(updateDoc(formData));
-    navigate("/");
   };
 
   const handleBack = () => {
@@ -349,6 +348,7 @@ const EditDoctor = () => {
                   placeholder="Doctor ID"
                   value={docDepartment}
                   readOnly
+                  disabled
                 />
               </Grid>
               <Grid
@@ -363,7 +363,8 @@ const EditDoctor = () => {
                   placeholder="Doctor Name"
                   type="text"
                   value={docName}
-                  onChange={(e) => setDocName(e.target.value)}
+                  readOnly
+                  disabled
                 />
               </Grid>
               <Grid
@@ -378,7 +379,8 @@ const EditDoctor = () => {
                   sx={{ width: "60%" }}
                   size="small"
                   value={docNumber}
-                  onChange={(e) => setDocNumber(e.target.value)}
+                  readOnly
+                  disabled
                 />
               </Grid>
               <Grid
@@ -393,7 +395,8 @@ const EditDoctor = () => {
                   sx={{ width: "60%" }}
                   size="small"
                   value={docEmail}
-                  onChange={(e) => setDocEmail(e.target.value)}
+                  readOnly
+                  disabled
                 />
               </Grid>
             </Grid>

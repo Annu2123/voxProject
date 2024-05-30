@@ -57,6 +57,8 @@ const AddDoctor = () => {
   const [interval, setInterval] = useState('');
   const [consultaionFee, setConsultaionFee] = useState('');
   const [department, setDepartment] = useState('');
+  const [docFromDate,setDocFromDate] = useState('');
+  const [docToDate,setDocToDate] = useState('');
   const dispatch = useDispatch();
   const deptList = docDept();
   // console.log(deptList)
@@ -157,7 +159,7 @@ const AddDoctor = () => {
     // if (Object.keys(formData.docName)=== '') {
     //   toast.error("Please enter the doctor name");
     // }
-    console.log(formData,'shri')
+    // console.log(formData,'shri')
 
     if (Object.keys(formData.time_slot).length === 0) {
       toast.error("Please fill the time slots.");
@@ -298,7 +300,7 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Mobile Number*"
+                  label="Doctor Mobile Number"
                   placeholder="Mobile Number"
                   type="number"
                   sx={{ width: "60%" }}
@@ -313,7 +315,7 @@ const AddDoctor = () => {
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <TextField
-                  label="Doctor Email ID*"
+                  label="Doctor Email ID"
                   placeholder="Email"
                   type="email"
                   sx={{ width: "60%" }}
@@ -388,6 +390,31 @@ const AddDoctor = () => {
               border: "1px solid lightgray",
             }}
           >
+            <Box sx={{display:"flex",gap:2,ml:2,mt:1.5,mr:2}}>
+              <TextField
+                label="From Date"
+                fullWidth
+                type="date"
+                size="small"
+                value={docFromDate}
+                onChange={(e)=>setDocFromDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                label="To Date"
+                fullWidth
+                type="date"
+                size="small"
+                value={docToDate}
+                onChange={(e)=>setDocToDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Box>
+            <Divider sx={{mt:1}}/>
             <FormControl sx={{ p: 2 }}>
               <FormLabel id="demo-controlled-radio-buttons-group">
                 Select Working Hours*

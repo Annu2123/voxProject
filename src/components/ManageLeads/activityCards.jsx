@@ -17,7 +17,7 @@ const ActivityCards = () => {
   const data = useSelector((state) => state.manageLeadsSlice?.callActivityList);
   console.log(data);
   return (
-    <Box>
+    <Box sx={{height:"65vh"}}>
       {data?.map((data, i) => {
         return (
           <>
@@ -42,6 +42,14 @@ const ActivityCards = () => {
           </>
         );
       })}
+      {
+        data?.length===0 && (
+          <Box sx={{display:"flex",justifyContent:"center"}}>
+            <Typography variant="subtitle1" >No Data Found</Typography>
+            </Box>
+          
+        )
+      }
     </Box>
   );
 };

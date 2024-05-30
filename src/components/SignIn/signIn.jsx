@@ -54,28 +54,38 @@ export default function SignIn() {
     try {
       await dispatch(startLoginUser(formData));
       const token = localStorage.getItem('token');
-      if (token) {
-        navigate('/dashboard');
-        window.location.reload();
-      } else {
-        throw new Error('Token not found');
+      const roles = localStorage.getItem('roles');
+      if(token){
+        if (roles && roles==='user') {
+          navigate('/consultation');
+          window.location.reload();
+        }else if (roles && roles==='admin'){
+          navigate('/dashboard');
+          window.location.reload();
+        } else {
+          throw new Error('Token not found');
+        }
       }
+      
     } catch (error) {
       toast.error(error.message || 'An error occurred');
     } finally {
-      setLoading(false); // Set loading state to false
+      setLoading(false); 
     }
   };
 
   const token = localStorage.getItem("token");
+  const roles = localStorage.getItem('roles');
 
   React.useEffect(() => {
     if (token === null) {
       navigate("/signin");
-    } else {
-      navigate("/dashboard");
+    } else if (roles === 'user')  {
+      navigate('/consultation');
+    }else if (roles === 'admin') {
+      navigate('/dashboard');
     }
-  }, [token]);
+  }, [token,roles]);
 
   return (
     <ThemeProvider theme={defaultTheme}>

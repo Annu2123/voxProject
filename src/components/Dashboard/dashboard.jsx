@@ -83,9 +83,9 @@ const doctorAppointment = [
 ];
 
 const cardData = [
-  { title: "WhatsApp", value: 200, unit: "msg" },
+  { title: "WhatsApp", value: 0, unit: "msg" },
   { title: "Call Volume", value: 1200, unit: "/day" },
-  { title: "Email", value: 1200, unit: "" },
+  { title: "Email", value: 0, unit: "email" },
   { title: "Visiter", value: 1200, unit: "/day" },
 ];
 
@@ -262,7 +262,7 @@ const Dashboard = () => {
           mt: 2,
         }}
       >
-        <Card sx={{ width: { xs: "100%", md: "50%" }, height: "300px" }}>
+        <Card sx={{ width: { xs: "100%", md: "50%" }, height: "400px" }}>
           <Box
             sx={{
               display: "flex",
@@ -285,7 +285,7 @@ const Dashboard = () => {
             <CustomTable columns={doctorList} rows={docList} />
           </Box>
         </Card>
-        <Card sx={{ width: { xs: "100%", md: "50%" }, height: "300px" }}>
+        <Card sx={{ width: { xs: "100%", md: "50%" }, height: "400px" }}>
           <Box
             sx={{
               display: "flex",

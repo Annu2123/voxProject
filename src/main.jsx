@@ -24,6 +24,7 @@ import AddUser from "./components/User/addUser.jsx";
 import UpdateUser from "./components/User/updateUser.jsx";
 import CallActivity from "./components/CallActivity/callActivity.jsx";
 import { Buffer } from 'buffer';
+import VisterActivity from "./components/VisterActivity/visterActivity.jsx";
 
 window.Buffer = Buffer;
 
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
       {
         path:"call_activity",
         element:<CallActivity/>
+      },
+      {
+        path:"visit_activity",
+        element:<VisterActivity/>
       }
     ],
   },

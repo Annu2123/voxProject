@@ -23,6 +23,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import TtyIcon from '@mui/icons-material/Tty';
 import PeopleIcon from '@mui/icons-material/People';
+import BoyIcon from '@mui/icons-material/Boy';
 import { Toaster } from "react-hot-toast";
 import { Avatar, Menu, MenuItem, Switch, Tooltip } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
@@ -105,7 +106,6 @@ export default function Navbar() {
   const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = React.useState(false);
   const role = localStorage.getItem('roles');
-  console.log("Role:", role);
   let navbarItems;
 
   if (role === 'admin') {
@@ -143,11 +143,11 @@ export default function Navbar() {
     ];
   } else if (role === 'user') {
     navbarItems = [
-      {
-        icon: <DashboardIcon sx={{ color: "black" }} />,
-        title: "Dashboard",
-        route: "dashboard",
-      },
+      // {
+      //   icon: <DashboardIcon sx={{ color: "black" }} />,
+      //   title: "Dashboard",
+      //   route: "dashboard",
+      // },
       {
         icon: <HealthAndSafetyIcon sx={{ color: "black" }} />,
         title: "Consultation",
@@ -159,13 +159,18 @@ export default function Navbar() {
         route: "manage_patient",
       },
       {
-        icon: <AssignmentIndIcon sx={{ color: "black" }} />,
-        title: "Consultation Settings",
-        route: "consultation_settings",
+        icon:<TtyIcon sx={{ color: "black" }}/>,
+        title:"Call Activity",
+        route:"call_activity",
+      },
+      {
+        icon:<BoyIcon sx={{ color: "black" }}/>,
+        title:"Vist Activity",
+        route:"visit_activity",
       },
     ];
   }
-  console.log(navbarItems)
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const profileOpen = Boolean(anchorEl);
   const handleDrawerOpen = () => {
@@ -227,7 +232,11 @@ export default function Navbar() {
             }}
           >
             <MenuIcon />
+            
           </IconButton>
+            <Box sx={{width:"200px"}}>
+            <Typography variant="subtitle1" sx={{color:"black"}}>KOSHYS Hospital</Typography>
+            </Box>
           <Box
             sx={{
               display: "flex",
@@ -236,7 +245,9 @@ export default function Navbar() {
               width: "100%",
             }}
           >
-            <Typography
+            {role === 'user' && (
+              <>
+              <Typography
               variant="subtitle2"
               sx={{
                 display: "flex",
@@ -256,6 +267,8 @@ export default function Navbar() {
               onChange={handleChange}
               inputProps={{ "aria-label": "controlled" }}
             />
+            </>
+            )}
             <Tooltip title="Account settings">
               <IconButton
                 onClick={handleProfileClick}

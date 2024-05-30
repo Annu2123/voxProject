@@ -8,20 +8,21 @@ export const searchActivity = createAsyncThunk("searchA", async (formData,{rejec
     const Api = "https://api.voxprosolutions.com:8080/api/call_activity_search";
   
     try {
-        const response = await axios.post(Api, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        return response.data;
-      } catch (error) {
-        if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
-          const errorMessages = error.response.data.messages.errors;
-          const formattedErrors = Object.values(errorMessages).flat().join(', ');
-          return rejectWithValue(formattedErrors);
-        }
-        return rejectWithValue(error.message);
+      const response = await axios.post(Api, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data)
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+        const errorMessages = error.response.data.messages.errors;
+        const formattedErrors = Object.values(errorMessages).flat().join(', ');
+        return rejectWithValue(formattedErrors);
       }
+      return rejectWithValue(error.message);
+    }
   });
 
 const initialState = {
@@ -43,7 +44,7 @@ const callActivitySlice = createSlice({
       })
       .addCase(searchActivity.fulfilled, (state, action) => {
         state.loading = false;
-        state.patientList = action.payload;
+        state.callList = action.payload;
       })
       .addCase(searchActivity.rejected, (state, action) => {
         state.loading = true;

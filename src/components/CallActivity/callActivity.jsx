@@ -5,6 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { searchActivity } from "../../actions/CallActivity/callActivity";
+import toast from "react-hot-toast";
 const columns = [
   {
     id: "sl_no",
@@ -59,23 +60,57 @@ const columns = [
 const CallActivity = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [formDate, setFormDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    return now.toISOString().slice(0, 16);
+  };
+  const [formDate, setFormDate] = useState(getCurrentDateTime);
+  const [toDate, setToDate] = useState(getCurrentDateTime);
 
-  
+  const handleFromDateChange = (e) => {
+    const inputDate = new Date(e.target.value);
+    if (!isNaN(inputDate)) {
+      // Check if the date is valid
+      const year = inputDate.getFullYear();
+      const month = String(inputDate.getMonth() + 1).padStart(2, "0");
+      const day = String(inputDate.getDate()).padStart(2, "0");
+      const hours = String(inputDate.getHours()).padStart(2, "0");
+      const minutes = String(inputDate.getMinutes()).padStart(2, "0");
+      const seconds = String(inputDate.getSeconds()).padStart(2, "0");
+
+      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      setFormDate(formattedDate);
+    }
+  };
+
+  const handleToDateChange = (e) => {
+    const inputDate = new Date(e.target.value);
+    if (!isNaN(inputDate)) {
+      // Check if the date is valid
+      const year = inputDate.getFullYear();
+      const month = String(inputDate.getMonth() + 1).padStart(2, "0");
+      const day = String(inputDate.getDate()).padStart(2, "0");
+      const hours = String(inputDate.getHours()).padStart(2, "0");
+      const minutes = String(inputDate.getMinutes()).padStart(2, "0");
+      const seconds = String(inputDate.getSeconds()).padStart(2, "0");
+
+      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      setToDate(formattedDate);
+    }
+  };
+
   const handleSearch = () => {
     const formData = {
       from_date: formDate,
       to_date: toDate,
     };
-    console.log(formData)
     dispatch(searchActivity(formData));
   };
 
   const list = useSelector((state) => {
     return state?.callActivitySlice?.callList;
   });
-  console.log(list)
+  console.log(list);
   const patientList = [];
   //   const patientList = list?.map((pl, i) => ({
   //     sl_no: i + 1,
@@ -114,19 +149,12 @@ const CallActivity = () => {
           label="Form date"
           type="datetime-local"
           size="small"
-          sx={{ width: { xs: "100%", md: "14%" } }}
-          value={formDate}
+          sx={{ width: { xs: "100%", md: "15%" } }}
+          value={formDate.replace(" ", "T")}
           InputLabelProps={{
             shrink: true,
           }}
-          onChange={(e) => {
-            const inputDate = new Date(e.target.value); // Parse the input date
-            const formattedDate = inputDate
-              .toISOString()
-              .slice(0, 19)
-              .replace("T", " "); // Format the date as "YYYY-MM-DD HH:mm:ss"
-            setFormDate(formattedDate);
-          }}
+          onChange={handleFromDateChange}
         />
 
         <TextField
@@ -137,15 +165,8 @@ const CallActivity = () => {
           InputLabelProps={{
             shrink: true,
           }}
-          onChange={(e) => {
-            const inputDate = new Date(e.target.value); // Parse the input date
-            const formattedDate = inputDate
-              .toISOString()
-              .slice(0, 19)
-              .replace("T", " "); // Format the date as "YYYY-MM-DD HH:mm:ss"
-            setToDate(formattedDate);
-          }}
-          sx={{ width: { xs: "100%", md: "24%" } }}
+          onChange={handleToDateChange}
+          sx={{ width: { xs: "100%", md: "15%" } }}
         />
         <Button
           size="small"

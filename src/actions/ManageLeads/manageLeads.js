@@ -26,6 +26,25 @@ export const searchPatient = createAsyncThunk("searchP", async (formData) => {
     return response.data;
   });
 
+  export const startGetActivityList = createAsyncThunk("activityList", async (formData, { rejectWithValue }) => {
+    const Api = "https://api.voxprosolutions.com:8080/api/call_activity_list";
+    try {
+      const response = await axios.post(Api, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+        const errorMessages = error.response.data.messages.errors;
+        const formattedErrors = Object.values(errorMessages).flat().join(', ');
+        return rejectWithValue(formattedErrors);
+      }
+      return rejectWithValue(error.message);
+    }
+  });
+
 
 // export const createDoctor = createAsyncThunk("createDoc", async (formData, { rejectWithValue }) => {
 //   const Api = "https://api.voxprosolutions.com:8080/api/doctor_create";
@@ -50,7 +69,7 @@ export const searchPatient = createAsyncThunk("searchP", async (formData) => {
 const initialState = {
   loading: false,
   error: null,
-  patientList: null,
+  callActivityList: null,
 //   searchPatient:null
 };
 
@@ -89,6 +108,21 @@ const manageLeadsSlice = createSlice({
         state.error = action.error.message;
         console.log(action);
         toast.error('Unable to fetch the data...')
+      });
+
+      builder
+      .addCase(startGetActivityList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(startGetActivityList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.callActivityList = action.payload;
+      })
+      .addCase(startGetActivityList.rejected, (state, action) => {
+        state.loading = true;
+        state.error = action.payload ? action.payload : action.error.message;
+        toast.error(action.payload);
       });
   },
 });

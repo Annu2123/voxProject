@@ -104,7 +104,6 @@ const Activity = () => {
       <CustomTabPanel value={value} index={0}>
         <Box sx={{display:"flex",flexDirection:"column",gap:2,overflow:"auto"}}>
           <ActivityCards />
-          <ActivityCards />
         </Box>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

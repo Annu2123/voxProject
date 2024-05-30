@@ -133,7 +133,7 @@ const Consultation = ({ searchData }) => {
   const [receivedData, setReceivedData] = useState("");
   useEffect(() => {
     if (appData) {
-      console.log(appData)
+      // console.log(appData)
       setReceivedData(appData);
     }
   }, [appData]);
@@ -353,7 +353,7 @@ const Consultation = ({ searchData }) => {
 
   const handleClose = () => {
     setOpen(false);
-    window.location.reload();
+    // window.location.reload();
   };
 
   const [selectedTime, setSelectedTime] = useState(null);

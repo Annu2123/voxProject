@@ -21,6 +21,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import TtyIcon from '@mui/icons-material/Tty';
 import PeopleIcon from '@mui/icons-material/People';
 import { Toaster } from "react-hot-toast";
 import { Avatar, Menu, MenuItem, Switch, Tooltip } from "@mui/material";
@@ -133,6 +134,11 @@ export default function Navbar() {
         icon:<PeopleIcon sx={{ color: "black" }}/>,
         title:"Users",
         route:"users",
+      },
+      {
+        icon:<TtyIcon sx={{ color: "black" }}/>,
+        title:"Call Activity",
+        route:"call_activity",
       }
     ];
   } else if (role === 'user') {

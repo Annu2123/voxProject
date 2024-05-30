@@ -13,7 +13,7 @@ const EditManageLeads = () => {
 
   return (
     <Box>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex",gap:2 }}>
         <Button
           disableElevation
           size="small"

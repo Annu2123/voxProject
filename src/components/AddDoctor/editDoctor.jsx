@@ -203,9 +203,22 @@ const EditDoctor = () => {
     setSelectedDays(newTimes);
   };
 
-  //console.log(selectedDays,'time')
+  // console.log(selectedDays,'time')
 
   const handleUpdate = () => {
+    const timeData = {...selectedDays}
+    if(slotType === "selectDay"){
+      delete timeData.all_Day;
+    }else if(slotType === "all_Day"){
+      delete timeData.mon 
+      delete timeData.tue
+      delete timeData.wed 
+      delete timeData.thu
+      delete timeData.fri 
+      delete timeData.sat
+      delete timeData.sun
+    }
+    
     const formData = {
       id: docId,
       name: docName,
@@ -214,7 +227,7 @@ const EditDoctor = () => {
       consultation_interval: interval,
       consultation_fee: fee,
       department: department,
-      time_slot: selectedDays,
+      time_slot: timeData,
     };
     ////console.log(formData,'formData')
     dispatch(updateDoc(formData));
@@ -238,7 +251,7 @@ const EditDoctor = () => {
       id: docId,
     };
     dispatch(removeDoctor(id));
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (

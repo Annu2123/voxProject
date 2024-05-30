@@ -8,7 +8,34 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
+import { startGetRelgnList } from "../../actions/Religion/religion";
+import { startGetReferList } from "../../actions/ReferBy/referBy";
+const referBy = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(startGetReferList());
+  }, []);
+  const referByList = useSelector((state) => {
+    return state?.referBySlice?.referList;
+  });
+  let r = referByList?.map((r) => r.refered_by);
+  return r?.length >= 1 ? r : ["none"];
+};
+const religion = () => {
+  const dispatch = useDispatch(); 
+
+  useEffect(() => {
+    dispatch(startGetRelgnList());
+  }, []);
+  const relgnList = useSelector((state) => {
+    return state?.religionSlice?.relgnList;
+  });
+  let r = relgnList?.map((r) => r.religion);
+  return r?.length > 0 ? r : ["none"];
+};
 
 const Pdetails = () => {
   const location = useLocation()
@@ -23,7 +50,7 @@ const Pdetails = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
   };
 
   const handleChange = (e) => {
@@ -116,7 +143,7 @@ const Pdetails = () => {
       value: state ? state.religion : "",
       type: "select",
       formDataKey: "religion",
-      menuItems: ['none'],
+      menuItems: religion(),
     },
     {
       label: "Pin Code",
@@ -138,7 +165,7 @@ const Pdetails = () => {
       value: state ? state.refered_by : "",
       type: "select",
       formDataKey: "refered_by",
-      menuItems: ['none'],
+      menuItems: referBy(),
     },
     {
       label: "Patient Address",

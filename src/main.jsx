@@ -22,7 +22,9 @@ import VarAppbar from "./components/VarAppbar.js/varAppbar.jsx";
 import User from "./components/User/user.jsx";
 import AddUser from "./components/User/addUser.jsx";
 import UpdateUser from "./components/User/updateUser.jsx";
+import CallActivity from "./components/CallActivity/callActivity.jsx";
 import { Buffer } from 'buffer';
+
 window.Buffer = Buffer;
 
 const router = createBrowserRouter([
@@ -89,6 +91,10 @@ const router = createBrowserRouter([
       {
         path:"users/edit",
         element:<UpdateUser/>
+      },
+      {
+        path:"call_activity",
+        element:<CallActivity/>
       }
     ],
   },

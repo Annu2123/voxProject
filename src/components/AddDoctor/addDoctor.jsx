@@ -49,14 +49,14 @@ const AddDoctor = () => {
     ampm: "",
   });
 
-  const [fromTime, setFromTime] = useState();
-  const [toTime, setToTime] = useState();
-  const [docName, setDocName] = useState();
-  const [docEmail, setDocEmail] = useState();
-  const [docNumber, setDocNumber] = useState();
-  const [interval, setInterval] = useState();
-  const [consultaionFee, setConsultaionFee] = useState();
-  const [department, setDepartment] = useState();
+  const [fromTime, setFromTime] = useState('');
+  const [toTime, setToTime] = useState('');
+  const [docName, setDocName] = useState('');
+  const [docEmail, setDocEmail] = useState('');
+  const [docNumber, setDocNumber] = useState('');
+  const [interval, setInterval] = useState('');
+  const [consultaionFee, setConsultaionFee] = useState('');
+  const [department, setDepartment] = useState('');
   const dispatch = useDispatch();
   const deptList = docDept();
   // console.log(deptList)
@@ -129,7 +129,7 @@ const AddDoctor = () => {
     let timeSlotValue = {};
     if (value === "all_Day") {
       timeSlotValue = {
-        all_Day: {
+        all_day: {
           start_time: fromTime,
           end_time: toTime,
         },
@@ -152,11 +152,12 @@ const AddDoctor = () => {
       consultation_fee: consultaionFee,
       time_slot: timeSlotValue,
       department: department,
-      added_by: "madhu",
+      added_by: "Madhu",
     };
     // if (Object.keys(formData.docName)=== '') {
     //   toast.error("Please enter the doctor name");
     // }
+    console.log(formData,'shri')
 
     if (Object.keys(formData.time_slot).length === 0) {
       toast.error("Please fill the time slots.");

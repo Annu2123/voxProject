@@ -155,8 +155,10 @@ const AddDoctor = () => {
       department: department,
       added_by: "madhu",
     };
-    // console.log(formData);
-    // dispatch(createDoctor(formData));
+    // if (Object.keys(formData.docName)=== '') {
+    //   toast.error("Please enter the doctor name"); 
+    // }
+
     if (Object.keys(formData.time_slot).length === 0) {
       toast.error("Please fill the time slots."); 
     }else {

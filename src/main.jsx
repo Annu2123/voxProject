@@ -22,6 +22,8 @@ import VarAppbar from "./components/VarAppbar.js/varAppbar.jsx";
 import User from "./components/User/user.jsx";
 import AddUser from "./components/User/addUser.jsx";
 import UpdateUser from "./components/User/updateUser.jsx";
+import { Buffer } from 'buffer';
+window.Buffer = Buffer;
 
 const router = createBrowserRouter([
   {

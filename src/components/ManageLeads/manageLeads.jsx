@@ -68,6 +68,12 @@ const ManageLeads = () => {
     }
   };
 
+  const handleShowAll =()=>{
+    setSearch('')
+    setSearchType('')
+    dispatch(startGetPatient());
+  }
+
   const list = useSelector((state) => {
     return state?.manageLeadsSlice?.patientList;
   });
@@ -132,7 +138,7 @@ const ManageLeads = () => {
         >
           Search
         </Button>
-        <Button size="small" variant="contained" disableElevation>
+        <Button size="small" variant="contained" disableElevation onClick={handleShowAll}>
           Show All
         </Button>
       </Box>

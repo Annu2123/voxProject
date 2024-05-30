@@ -11,6 +11,7 @@ export const startLoginUser = createAsyncThunk("login", async (formData) => {
 const initialState = {
   loading: false,
   error: null,
+  tkn: null,
 };
 
 const userSlice = createSlice({
@@ -27,6 +28,7 @@ const userSlice = createSlice({
       .addCase(startLoginUser.fulfilled, (state, action) => {
         state.loading = false;
         localStorage.setItem("token", action.payload.token);
+        state.tkn = action.payload.token;
       })
       .addCase(startLoginUser.rejected, (state, action) => {
         state.loading = true;

@@ -41,18 +41,29 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSubmit = async(event) => {
+  const [loading, setLoading] = React.useState(false);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true); 
     const data = new FormData(event.currentTarget);
     const formData = {
-      email: data.get("email"),
-      password: data.get("password"),
+      email: data.get('email'),
+      password: data.get('password'),
     };
     try {
-     await dispatch(startLoginUser(formData));
-      navigate("/dashboard");
+      await dispatch(startLoginUser(formData));
+      const token = localStorage.getItem('token');
+      if (token) {
+        navigate('/dashboard');
+        window.location.reload();
+      } else {
+        throw new Error('Token not found');
+      }
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || 'An error occurred');
+    } finally {
+      setLoading(false); // Set loading state to false
     }
   };
 
@@ -64,7 +75,7 @@ export default function SignIn() {
     } else {
       navigate("/dashboard");
     }
-  }, []);
+  }, [token]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -139,7 +150,7 @@ export default function SignIn() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+               {loading ? 'Loading...' : 'Sign IN'}
               </Button>
               {/* <Grid container>
                 <Grid item xs>

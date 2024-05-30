@@ -58,6 +58,7 @@ const ConnectPatient = () => {
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
+
   const handleFind =()=>{
     const formData ={
       key:searchType,
@@ -424,7 +425,7 @@ const ConnectPatient = () => {
 
       {/* <PatientDetails /> */}
       <Box sx={{ mt: 1 }}>
-        <Consultation />
+        <Consultation  searchData={searchData}/>
       </Box>
     </Box>
   );

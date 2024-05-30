@@ -70,12 +70,20 @@ const EditDoctor = () => {
   ////console.log(timeSlot,'time');
   const [slotType, setSlotType] = useState();
 
+  // useEffect(() => {
+  //   const xy =
+  //     timeSlot && timeSlot !== null&& timeSlot !== undefined && timeSlot != [] && timeSlot[0]["day"] === "all_Day"
+  //       ? "all_Day"
+  //       : "selectDay";
+  //   setSlotType(xy);
+  // }, [timeSlot]);
   useEffect(() => {
-    const xy =
-      timeSlot && timeSlot !== null&& timeSlot !== undefined && timeSlot != [''] && timeSlot[0]["day"] === "all_Day"
-        ? "all_Day"
-        : "selectDay";
-    setSlotType(xy);
+    if (timeSlot && Array.isArray(timeSlot) && timeSlot.length > 0) {
+      const xy = timeSlot[0].day === "all_Day" ? "all_Day" : "selectDay";
+      setSlotType(xy);
+    } else {
+      setSlotType("selectDay");
+    }
   }, [timeSlot]);
 
   //console.log(slotType,'slotType')

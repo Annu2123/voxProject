@@ -16,10 +16,15 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { getTimeSlot, removeDoctor, startGetDoctorList } from "../../actions/Doctor/doctor";
+import {
+  getTimeSlot,
+  removeDoctor,
+  startGetDoctorList,
+} from "../../actions/Doctor/doctor";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { startGetAppoinmentsList } from "../../actions/Appointment/appointment";
+// import Recevie from "../RabbitMQ/receive";
 
 const doctorList = [
   {
@@ -90,7 +95,7 @@ const Dashboard = () => {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   const handleAddDoc = () => {
     navigate("/add_doctor");
@@ -98,29 +103,41 @@ const Dashboard = () => {
 
   const handleDetails = (list) => {
     const formData = {
-      doctor_id : list.doctor_id,
-      date:date
-    }
-    navigate("/appointment_list",{state:formData});
+      doctor_id: list.doctor_id,
+      date: date,
+    };
+    navigate("/appointment_list", { state: formData });
   };
 
   const handleEditClick = async (rowData) => {
     navigate("/edit_doctor", { state: rowData });
   };
 
+  const token1 = useSelector((state)=>{
+    return state?.userSlice?.tkn
+  })
+
   useEffect(() => {
-    if(token){
-      dispatch(startGetDoctorList())
-    }
-    // dispatch(startGetDoctorList())
-  }, [token,dispatch]);
+    const fetchData = async () => {
+      try {
+        await dispatch(startGetDoctorList());
+      } catch (error) {
+        console.error("Failed to fetch doctor list:", error);
+      }
+    };
+
+    fetchData();
+    // if(token){
+    //   dispatch(startGetDoctorList());
+    // }
+  }, [dispatch]);
 
   const data = useSelector((state) => {
     return state.doctorSlice?.list;
   });
-  console.log(data)
+
   const docList = data?.map((docList, i) => ({
-    doc_id: i+1,
+    doc_id: i + 1,
     dcotor_name: docList.name,
     dcotor_dept: docList.department,
     action: (
@@ -158,19 +175,20 @@ const Dashboard = () => {
     setDate(e.target.value);
   };
 
+  const appointmentData = useSelector((state) => {
+    return state?.appointmentSlice?.appointment;
+  });
+
   useEffect(() => {
     const formData = {
       date: date,
     };
     dispatch(startGetAppoinmentsList(formData));
-  }, [date,dispatch]);
+  }, [date, dispatch]);
 
-  const appointmentData = useSelector((state) => {
-    return state.appointmentSlice?.appointment;
-  });
-
-  const apnmtList = appointmentData?.map((list,i) => ({
-    doc_id: i+1,
+  console.log(appointmentData)
+  const apnmtList = appointmentData?.map((list, i) => ({
+    doc_id: i + 1,
     doc_name: list.doctor_name,
     total: list.appoint_count,
     action: (
@@ -178,7 +196,7 @@ const Dashboard = () => {
         size="small"
         variant="contained"
         disableElevation
-        onClick={()=>handleDetails(list)}
+        onClick={() => handleDetails(list)}
       >
         Details
       </Button>
@@ -187,10 +205,11 @@ const Dashboard = () => {
 
   return (
     <Box sx={{}}>
+      
       <Box
         sx={{
           display: "flex",
-          
+
           gap: 3,
           borderRadius: "12px",
           flexDirection: { xs: "column", md: "row" },
@@ -262,7 +281,7 @@ const Dashboard = () => {
               <PersonAddIcon fontSize="small" />
             </Button>
           </Box>
-          <Box sx={{ height: "240px", overflow: "auto",p:1.5 }}>
+          <Box sx={{ height: "240px", overflow: "auto", p: 1.5 }}>
             <CustomTable columns={doctorList} rows={docList} />
           </Box>
         </Card>
@@ -297,16 +316,11 @@ const Dashboard = () => {
               </Button> */}
             </Box>
           </Box>
-          <Box sx={{ height: "240px", overflow: "auto",p:2 }}>
-            <CustomTable
-              columns={doctorAppointment}
-              rows={apnmtList}
-            />
+          <Box sx={{ height: "240px", overflow: "auto", p: 2 }}>
+            <CustomTable columns={doctorAppointment} rows={apnmtList} />
           </Box>
         </Card>
       </Box>
-
-      
 
       <Dialog
         open={deleteConfirmationOpen}

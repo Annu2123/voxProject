@@ -4,15 +4,15 @@ import toast from "react-hot-toast";
 
 const token = localStorage.getItem("token");
 
-export const startGetDoctorList = createAsyncThunk("docList", async () => {
-  const Api = "https://api.voxprosolutions.com:8080/api/doctor_lists";
-  const response = await axios.get(Api, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  console.log(response)
-  return response.data;
+// export const startGetDoctorList = createAsyncThunk("docList", async () => {
+//   const Api = "https://api.voxprosolutions.com:8080/api/doctor_lists";
+//   const response = await axios.get(Api, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+//   console.log('response')
+//   return response.data;
   // try {
   //   const response = await axios.get(Api, {
   //     headers: {
@@ -30,6 +30,22 @@ export const startGetDoctorList = createAsyncThunk("docList", async () => {
   //   console.log(error.message)
   //   return rejectWithValue(error.message);
   // }
+// });
+export const startGetDoctorList = createAsyncThunk("docList", async () => {
+  try {
+    const Api = "https://api.voxprosolutions.com:8080/api/doctor_lists";
+    if(token){
+      const response = await axios.get(Api, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Failed to fetch doctor list:", error);
+    throw error; 
+  }
 });
 
 export const removeDoctor = createAsyncThunk("removeDoctor", async (id, { rejectWithValue }) => {

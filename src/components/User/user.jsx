@@ -4,6 +4,7 @@ import CustomTable from "../Table/customTable";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { startGetUserList } from "../../actions/Users/users";
+// import Recevie from "../RabbitMQ/receive";
 
 const columns = [
   {
@@ -96,6 +97,7 @@ const User = () => {
         borderTop: "1px solid lightgray",
       }}
     >
+      {/* <Recevie/> */}
       <Box
         sx={{
           display: "flex",

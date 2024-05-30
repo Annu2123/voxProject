@@ -7,12 +7,14 @@ const token = localStorage.getItem("token");
 export const startGetAppoinmentsList = createAsyncThunk("appoinmentList", async (date, { rejectWithValue }) => {
   const Api = "https://api.voxprosolutions.com:8080/api/appointment_lists";
   try {
-    const response = await axios.post(Api, date, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
+    if(token){
+      const response = await axios.post(Api, date, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    }
   } catch (error) {
     if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
       const errorMessages = error.response.data.messages.errors;
@@ -80,11 +82,31 @@ export const appointmentDetails = createAsyncThunk("appointment_list_details", a
     }
   });
 
+  export const startGetAppoinmentSlot = createAsyncThunk("appointment_slot", async (formData) => {
+    const Api = "https://api.voxprosolutions.com:8080/api/appointment_solt";
+    try {
+      const response = await axios.post(Api, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+        const errorMessages = error.response.data.messages.errors;
+        const formattedErrors = Object.values(errorMessages).flat().join(', ');
+        return rejectWithValue(formattedErrors);
+      }
+      return rejectWithValue(error.message);
+    }
+  });
+
 const initialState = {
     loading: false,
     error: null,
     appointment: null,
-    details:null
+    details:null,
+    slots:null,
   };
 
   const appointmentSlice = createSlice({
@@ -147,6 +169,21 @@ const initialState = {
           toast.success('Added successfully')
         })
         .addCase(addAppoinment.rejected, (state, action) => {
+          state.loading = true;
+          state.error = action.payload ? action.payload : action.error.message;
+          toast.error(action.payload);
+        });
+
+        builder
+        .addCase(startGetAppoinmentSlot.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(startGetAppoinmentSlot.fulfilled, (state, action) => {
+          state.loading = false;
+          state.slots = action.payload;
+        })
+        .addCase(startGetAppoinmentSlot.rejected, (state, action) => {
           state.loading = true;
           state.error = action.payload ? action.payload : action.error.message;
           toast.error(action.payload);

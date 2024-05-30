@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-import user from "../actions/Auth/user";
+import userSlice from "../actions/Auth/user";
 import doctorSlice from "../actions/Doctor/doctor";
 import appointmentSlice from "../actions/Appointment/appointment";
 import departmentSlice from "../actions/Department/department";
@@ -11,7 +11,7 @@ import manageLeadsSlice from "../actions/ManageLeads/manageLeads";
 import usersSlice from "../actions/Users/users";
 
 const reducers = combineReducers({
-  user,
+  userSlice,
   doctorSlice,
   appointmentSlice,
   departmentSlice,

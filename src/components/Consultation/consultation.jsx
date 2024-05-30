@@ -15,7 +15,7 @@ import {
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import MailIcon from "@mui/icons-material/Mail";
 import CloseIcon from "@mui/icons-material/Close";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   startAddPatient,
@@ -26,7 +26,11 @@ import { startGetReferList } from "../../actions/ReferBy/referBy";
 import { startGetDeptList } from "../../actions/Department/department";
 import { getTimeSlot, startGetDoctorList } from "../../actions/Doctor/doctor";
 import toast from "react-hot-toast";
-import { addAppoinment } from "../../actions/Appointment/appointment";
+import {
+  addAppoinment,
+  appointmentDetails,
+  startGetAppoinmentSlot,
+} from "../../actions/Appointment/appointment";
 
 const religion = () => {
   const dispatch = useDispatch();
@@ -68,14 +72,13 @@ const docList = () => {
   return r;
 };
 
-
-
-const Consultation = () => {
+const Consultation = ({ searchData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const data = useSelector((state) => {
-    return state.patientSlice.findData;
+    return state.patientSlice?.findData;
   });
   const actualData = data && data[0];
 
@@ -87,13 +90,20 @@ const Consultation = () => {
   useEffect(() => {
     if (actualData) {
       setFormData(actualData);
+    } else if (actualData === undefined) {
+      toast.error("Not found!");
+      setFormData({ phone_num: searchData });
     }
   }, [actualData]);
+  useEffect(() => {
+    setFormData({});
+  }, [location]);
 
   const [departments, setDepartments] = useState([]);
   const [doctorNames, setDoctorNames] = useState([]);
   const [departmentSelected, setDepartmentSelected] = useState("");
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
   const [selectedDoctorName, setSelectedDoctorName] = useState("");
   const [availableDays, setAvailableDays] = useState([]);
 
@@ -105,48 +115,60 @@ const Consultation = () => {
     return state?.doctorSlice?.list;
   });
 
-  // useEffect(() => {
-  //   // Extract unique departments
-  //   const uniqueDepartments = [
-  //     ...new Set(docList?.map((doctor) => doctor.department)),
-  //   ];
-  //   setDepartments(uniqueDepartments);
-
-  //   // Extract doctor names
-  //   const names = docList?.map((doctor) => doctor.name);
-  //   setDoctorNames(names);
-  // }, []);
   const [times, setTimes] = useState([]);
+  const appData = useSelector((state) => state?.appointmentSlice?.slots);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (selectedDoctorId && selectedDate) {
+        const fd = {
+          doctor_id: selectedDoctorId,
+          date: selectedDate,
+        };
+        // console.log('Fetching data with:', fd);
+        await dispatch(startGetAppoinmentSlot(fd));
+      }
+    };
+    fetchData();
+  }, [selectedDoctorId, selectedDate, dispatch]);
+  const [receivedData, setReceivedData] = useState("");
+  useEffect(() => {
+    if (appData) {
+      console.log(appData)
+      setReceivedData(appData);
+    }
+  }, [appData]);
 
-  const generateTimes = (selectedDay, startTime, endTime) => {
-    // const ts = useSelector((state) => {
-    //   return state?.doctorSlice?.timeSlot;
-    // });
-  console.log(startTime,endTime,'shr')
-    // //console.log(ts);
+  // useEffect(() => {
+  //   if(receivedData){
+  //     if (receivedData.length > 0) {
+  //    ( receivedData[0]?.time);
+  //     }}
+  // }, [receivedData]);
+
+  const generateTimes = async (selectedDay, startTime, endTime) => {
     const times = [];
-    
+
     let increment = 15;
     function parseTime24(timeStr) {
       const [hours, minutes] = timeStr?.split(":").map(Number);
       return { hours, minutes };
     }
-  
+
     function formatTime24(hours, minutes) {
       const formattedHours = hours.toString().padStart(2, "0");
       const formattedMinutes = minutes.toString().padStart(2, "0");
       return `${formattedHours}:${formattedMinutes}`;
     }
-  
+
     const { hours: startHour, minutes: startMinute } = parseTime24(startTime);
     const { hours: endHour, minutes: endMinute } = parseTime24(endTime);
-  
+
     let hour = startHour;
     let minute = startMinute;
-  
+
     while (hour < endHour || (hour === endHour && minute < endMinute)) {
       times.push(formatTime24(hour, minute));
-  
+
       minute += increment;
       if (minute >= 60) {
         hour += Math.floor(minute / 60);
@@ -179,7 +201,7 @@ const Consultation = () => {
 
   const p_form = [
     {
-      label: "Phone Number",
+      label: "Phone Number*",
       placeholder: "Phone Number",
       value: actualData ? actualData.phone_num : "",
       type: "number",
@@ -187,35 +209,35 @@ const Consultation = () => {
       readOnly: !!actualData,
     },
     {
-      label: "Alternate Phone Number",
+      label: "Alternate Phone Number*",
       placeholder: "Alternate Phone Number",
       value: actualData ? actualData.alt_phone_num : "",
       type: "number",
       formDataKey: "alt_phone_num",
     },
     {
-      label: "Patient Name",
+      label: "Patient Name*",
       placeholder: "Patient Name",
       value: actualData ? actualData.name : "",
       type: "text",
       formDataKey: "name",
     },
     {
-      label: "Patient Email",
+      label: "Patient Email*",
       placeholder: "Patient Email",
       value: actualData ? actualData.email : "",
       type: "email",
       formDataKey: "email",
     },
     {
-      label: "Date of Birth",
+      label: "Date of Birth*",
       placeholder: "Date of Birth",
       value: actualData ? actualData.dob : "",
       type: "date",
       formDataKey: "dob",
     },
     {
-      label: "Gender",
+      label: "Gender*",
       placeholder: "Gender",
       value: actualData ? actualData.gender : "",
       type: "select",
@@ -223,14 +245,14 @@ const Consultation = () => {
       menuItems: ["Male", "Female"],
     },
     {
-      label: "Father/Husband name",
+      label: "Father/Husband name*",
       placeholder: "Father/Husband name",
       value: actualData ? actualData.father_husband_name : "",
       type: "text",
       formDataKey: "father_husband_name",
     },
     {
-      label: "Martial Status",
+      label: "Martial Status*",
       placeholder: "Martial Status",
       value: actualData ? actualData.marital_status : "",
       type: "select",
@@ -238,21 +260,21 @@ const Consultation = () => {
       menuItems: ["Married", "Unmarried"],
     },
     {
-      label: "Aadhar Number",
+      label: "Aadhar Number*",
       placeholder: "Aadhar Number",
       value: actualData ? actualData.aadhar_num : "",
       type: "number",
       formDataKey: "aadhar_num",
     },
     {
-      label: "Nationality",
+      label: "Nationality*",
       placeholder: "Nationality",
       value: actualData ? actualData.nationality : "",
       type: "text",
       formDataKey: "nationality",
     },
     {
-      label: "Religion",
+      label: "Religion*",
       placeholder: "Religion",
       value: actualData ? actualData.religion : "",
       type: "select",
@@ -260,21 +282,21 @@ const Consultation = () => {
       menuItems: religion(),
     },
     {
-      label: "Pin Code",
+      label: "Pin Code*",
       placeholder: "Pin Code",
       value: actualData ? actualData.pincode : "",
       type: "number",
       formDataKey: "pincode",
     },
     {
-      label: "City",
+      label: "City*",
       placeholder: "City",
       value: actualData ? actualData.city : "",
       type: "text",
       formDataKey: "city",
     },
     {
-      label: "Refered by",
+      label: "Refered by*",
       placeholder: "Refered by",
       value: actualData ? actualData.refered_by : "",
       type: "select",
@@ -282,7 +304,7 @@ const Consultation = () => {
       menuItems: referBy(),
     },
     {
-      label: "Patient Address",
+      label: "Patient Address*",
       placeholder: "Patient Address",
       value: actualData ? actualData.address : "",
       type: "multiline",
@@ -331,11 +353,11 @@ const Consultation = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setAppFormData({});
+    window.location.reload();
   };
 
   const [selectedTime, setSelectedTime] = useState(null);
- 
+
   // let times = generateTimes();
 
   const handleTimeClick = (time) => {
@@ -347,12 +369,11 @@ const Consultation = () => {
     if (actualData) {
       const dataToSubmit = { ...formData };
       delete dataToSubmit.phone_num;
-      //console.log(dataToSubmit);
+      delete dataToSubmit.alt_phone_num;
+      delete dataToSubmit.email;
       dispatch(startUpdatePatient(dataToSubmit));
-      setFormData({});
     } else {
       dispatch(startAddPatient(formData));
-      setFormData({});
     }
   };
 
@@ -397,6 +418,21 @@ const Consultation = () => {
     }
   }, [timeSlot]);
 
+  // console.log(appData?appData:"")
+  useEffect(() => {
+    let fetchData = async () => {
+      if (selectedDoctorId && selectedDate) {
+        const fd = {
+          doctor_id: selectedDoctorId,
+          date: selectedDate,
+        };
+        console.log(fd);
+        await dispatch(startGetAppoinmentSlot(fd));
+      }
+    };
+    fetchData();
+  }, [selectedDate, selectedDoctorId]);
+
   const handleChangeApp = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === "checkbox" ? checked : value;
@@ -417,26 +453,24 @@ const Consultation = () => {
       setSelectedDoctorName(selectedDoctor ? selectedDoctor.name : "");
     }
     if (name === "Date") {
-      // handleDateChange(value);
+      setSelectedDate(value);
+      // const fd={doctor_id: selectedDoctorId,date: value}
+      // dispatch(startGetAppoinmentSlot(fd))
       var selectedDay = new Date(value)
         .toLocaleString("en-us", { weekday: "short" })
         .toLowerCase();
-      //console.log(selectedDay, availableDays, "shr");
 
       if (availableDays.includes("all_Day")) {
-        //console.log("Doctor is available on any day",'shr');
         generateTimes(
           "all_Day",
           timeSlot[0].time_slot_start,
           timeSlot[0].time_slot_end,
-          // setTimes
+          appData
         );
-        //console.log(timeSlot[0].time_slot_start,timeSlot[0].time_slot_end,'shri')
         setShowTimeSot(true);
       } else if (availableDays.includes(selectedDay)) {
-        //console.log("Doctor is available on the selected day",'shr');
         let startTime = "00:00";
-        let endTime = '00:00'
+        let endTime = "00:00";
         for (let i = 0; i < timeSlot.length; i++) {
           if (timeSlot[i].day === selectedDay) {
             startTime = timeSlot[i].time_slot_start;
@@ -444,8 +478,7 @@ const Consultation = () => {
             break;
           }
         }
-        //console.log(startTime,endTime,'shri')
-        generateTimes(selectedDay, startTime, endTime);
+        generateTimes(selectedDay, startTime, endTime, appData);
         setShowTimeSot(true);
       } else {
         toast.error(
@@ -456,6 +489,7 @@ const Consultation = () => {
       }
     }
   };
+  // console.log(appFormData)
   useEffect(() => {
     //console.log(selectedDoctorId);
     const id = {
@@ -463,8 +497,6 @@ const Consultation = () => {
     };
     dispatch(getTimeSlot(id));
   }, [selectedDoctorId]);
-
-  //console.log(availableDays);
 
   const handleAddAppoinment = () => {
     const addApp = {
@@ -871,8 +903,7 @@ const Consultation = () => {
                             disabled={!departmentSelected}
                             InputProps={{
                               inputProps: {
-                                min: new Date().toISOString().split("T")[0], // Set minimum date to today
-                                // max:getMaxAvailableDate()
+                                min: new Date().toISOString().split("T")[0],
                               },
                             }}
                           />
@@ -946,29 +977,61 @@ const Consultation = () => {
                       )}
                     </>
                   )} */}
-                   {times.map((time, index) => (
-                            <Button
-                              key={index}
-                              onClick={() => handleTimeClick(time)}
-                              sx={{
-                                padding: "10px",
-                                margin: "5px",
-                                border:
-                                  selectedTime === time
-                                    ? "2px solid blue"
-                                    : "2px solid lightgray",
-                                backgroundColor:
-                                  selectedTime === time ? "blue" : "white",
-                                color:
-                                  selectedTime === time ? "white" : "black",
-                                borderRadius: "5px",
-                                cursor: "pointer",
-                                mt: 2,
-                              }}
-                            >
-                              {time}
-                            </Button>
-                          ))}
+                  {/* {times.map((time, index) => (
+                    <Button
+                      key={index}
+                      onClick={() => handleTimeClick(time)}
+                      disabled={receivedData && Array.isArray(receivedData) && receivedData.some((data) => data.time === time)}
+                      sx={{
+                        padding: "10px",
+                        margin: "5px",
+                        border:
+                          selectedTime === time
+                            ? "2px solid blue"
+                            : "2px solid lightgray",
+                        backgroundColor:
+                          selectedTime === time ? "blue" : "white",
+                        color: selectedTime === time ? "white" : "black",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        mt: 2,
+                      }}
+                    >
+                      {time}
+                    </Button>
+                  ))} */}
+                  {times.map((time, index) => {
+                    const isDisabled =
+                      receivedData &&
+                      Array.isArray(receivedData) &&
+                      receivedData.some((data) => {
+                        // console.log('Checking time:', data.time, time);
+                        return data.time === time;
+                      });
+                    return (
+                      <Button
+                        key={index}
+                        onClick={() => handleTimeClick(time)}
+                        disabled={isDisabled}
+                        sx={{
+                          padding: "10px",
+                          margin: "5px",
+                          border:
+                            selectedTime === time
+                              ? "2px solid blue"
+                              : "2px solid lightgray",
+                          backgroundColor:
+                            selectedTime === time ? "blue" : "white",
+                          color: selectedTime === time ? "white" : "black",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          mt: 2,
+                        }}
+                      >
+                        {time}
+                      </Button>
+                    );
+                  })}
                 </Grid>
               </Box>
             </Box>
@@ -1018,7 +1081,7 @@ const Consultation = () => {
           color="success"
           size="small"
           onClick={() => handleOpen(formData)}
-          disabled={!actualData}
+          disabled={!actualData|| Object.keys(formData).length === 0}
         >
           Appointment
         </Button>

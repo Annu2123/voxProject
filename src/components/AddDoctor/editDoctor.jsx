@@ -79,7 +79,7 @@ const EditDoctor = () => {
   // }, [timeSlot]);
   useEffect(() => {
     if (timeSlot && Array.isArray(timeSlot) && timeSlot.length > 0) {
-      const xy = timeSlot[0].day === "all_Day" ? "all_Day" : "selectDay";
+      const xy = timeSlot[0].day === "all_day" ? "all_Day" : "selectDay";
       setSlotType(xy);
     } else {
       setSlotType("selectDay");
@@ -117,7 +117,7 @@ const EditDoctor = () => {
       setSelectedDays(slotData);
     }
   }, [loading, timeSlot]);
-  // ////console.log(x)
+  console.log(selectedDays)
   useEffect(() => {
     const fetchTimeSlot = async () => {
       const id = { id: state?.id };

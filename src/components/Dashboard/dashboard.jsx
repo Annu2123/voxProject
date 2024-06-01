@@ -281,7 +281,7 @@ const Dashboard = () => {
               <PersonAddIcon fontSize="small" />
             </Button>
           </Box>
-          <Box sx={{ height: "240px", overflow: "auto", p: 1.5 }}>
+          <Box sx={{ height: "340px", overflow: "auto", p: 1.5 }}>
             <CustomTable columns={doctorList} rows={docList} />
           </Box>
         </Card>
@@ -316,7 +316,7 @@ const Dashboard = () => {
               </Button> */}
             </Box>
           </Box>
-          <Box sx={{ height: "240px", overflow: "auto", p: 2 }}>
+          <Box sx={{ height: "340px", overflow: "auto", p: 2 }}>
             <CustomTable columns={doctorAppointment} rows={apnmtList} />
           </Box>
         </Card>

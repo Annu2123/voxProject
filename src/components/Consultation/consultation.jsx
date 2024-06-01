@@ -106,6 +106,7 @@ const Consultation = ({ searchData }) => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedDoctorName, setSelectedDoctorName] = useState("");
   const [availableDays, setAvailableDays] = useState([]);
+  const [consultationInterval, setConsultationInterval] = useState(5);
 
   useEffect(() => {
     dispatch(startGetDoctorList());
@@ -114,6 +115,7 @@ const Consultation = ({ searchData }) => {
   const docList = useSelector((state) => {
     return state?.doctorSlice?.list;
   });
+  // console.log(docList)
 
   const [times, setTimes] = useState([]);
   const appData = useSelector((state) => state?.appointmentSlice?.slots);
@@ -145,39 +147,84 @@ const Consultation = ({ searchData }) => {
   //     }}
   // }, [receivedData]);
 
+  // const generateTimes = async (selectedDay, startTime, endTime) => {
+  //   const times = [];
+
+  //   let increment = consultationInterval;
+  //   console.log(startTime, endTime,consultationInterval)
+  //   function parseTime24(timeStr) {
+  //     const [hours, minutes] = timeStr.split(":").map(Number);
+  //     return { hours, minutes };
+  //   }
+  
+  //   function formatTime24(hours, minutes) {
+  //     const formattedHours = hours.toString().padStart(2, "0");
+  //     const formattedMinutes = minutes.toString().padStart(2, "0");
+  //     return `${formattedHours}:${formattedMinutes}`;
+  //   }
+  
+  //   const { hours: startHour, minutes: startMinute } = parseTime24(startTime);
+  //   const { hours: endHour, minutes: endMinute } = parseTime24(endTime);
+  
+  //   let hour = startHour;
+  //   let minute = startMinute;
+  
+  //   while (hour < endHour || (hour === endHour && minute < endMinute)) {
+  //     times.push(formatTime24(hour, minute));
+  
+  //     minute += increment;
+  //     if (minute >= 60) {
+  //       hour += Math.floor(minute / 60);
+  //       minute = minute % 60;
+  //     }
+  //   }
+  //   console.log(times)
+  //   setTimes(times);
+  // };
   const generateTimes = async (selectedDay, startTime, endTime) => {
     const times = [];
-
-    let increment = 15;
+  
+    const increment = consultationInterval;
+    console.log('Generating times with:', startTime, endTime, consultationInterval);
+  
     function parseTime24(timeStr) {
-      const [hours, minutes] = timeStr?.split(":").map(Number);
+      const [hours, minutes] = timeStr.split(":").map(Number);
       return { hours, minutes };
     }
-
+  
     function formatTime24(hours, minutes) {
       const formattedHours = hours.toString().padStart(2, "0");
       const formattedMinutes = minutes.toString().padStart(2, "0");
       return `${formattedHours}:${formattedMinutes}`;
     }
-
+  
     const { hours: startHour, minutes: startMinute } = parseTime24(startTime);
     const { hours: endHour, minutes: endMinute } = parseTime24(endTime);
-
+  
     let hour = startHour;
     let minute = startMinute;
-
-    while (hour < endHour || (hour === endHour && minute < endMinute)) {
-      times.push(formatTime24(hour, minute));
-
+  
+    while (!(hour === endHour && minute > endMinute)) {
+      const formattedTime = formatTime24(hour, minute);
+      times.push(formattedTime);
+  
       minute += increment;
       if (minute >= 60) {
-        hour += Math.floor(minute / 60);
-        minute = minute % 60;
+        hour += 1;
+        minute %= 60;
       }
     }
-    //console.log(times,'shr')
+  
+    console.log('Generated times:', times);
     setTimes(times);
   };
+  
+  
+
+  useEffect(() => {
+    console.log('Times array updated:', times);
+  }, [times]);
+
 
   useEffect(() => {
     if (docList) {
@@ -192,12 +239,23 @@ const Consultation = ({ searchData }) => {
     if (departmentSelected && docList) {
       const filteredDoctorNames = docList
         .filter((doctor) => doctor.department === departmentSelected)
-        .map((doctor) => ({ name: doctor.name, id: doctor.id }));
+        .map((doctor) => ({ name: doctor.name, id: doctor.id }))
       setDoctorNames(filteredDoctorNames);
     } else {
       setDoctorNames([]);
     }
   }, [departmentSelected, docList]);
+
+  useEffect(() => {
+    if (selectedDoctorName && docList) {
+      const doctor = docList.find((doc) => doc.id === selectedDoctorId);
+      if (doctor) {
+        setConsultationInterval(doctor.consultation_interval);
+      }
+    } else {
+      setConsultationInterval(null);
+    }
+  }, [selectedDoctorName, docList,consultationInterval]);
 
   const p_form = [
     {
@@ -460,12 +518,13 @@ const Consultation = ({ searchData }) => {
         .toLocaleString("en-us", { weekday: "short" })
         .toLowerCase();
 
-      if (availableDays.includes("all_Day")) {
+      if (availableDays.includes("all_day")) {
         generateTimes(
           "all_Day",
           timeSlot[0].time_slot_start,
           timeSlot[0].time_slot_end,
-          appData
+          appData,
+          consultationInterval
         );
         setShowTimeSot(true);
       } else if (availableDays.includes(selectedDay)) {
@@ -478,7 +537,7 @@ const Consultation = ({ searchData }) => {
             break;
           }
         }
-        generateTimes(selectedDay, startTime, endTime, appData);
+        generateTimes(selectedDay, startTime, endTime, appData,consultationInterval);
         setShowTimeSot(true);
       } else {
         toast.error(

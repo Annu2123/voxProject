@@ -184,8 +184,6 @@ const CallActivity = () => {
     if (audio) {
       audio.pause();
     }
-    // const audio = new Audio(url);
-    // audio.play();
     const newAudio = new Audio(url);
     newAudio.play();
     setAudio(newAudio);

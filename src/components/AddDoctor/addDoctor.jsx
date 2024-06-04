@@ -224,7 +224,15 @@ const AddDoctor = () => {
   const handleBack = () => {
     navigate(-1);
   };
-
+  useEffect(() => {
+    if (value === "all_Day") {
+      setSelectedDays([])
+      setTimes({})
+    }else if (value === "selectDay") {
+      setFromTime('')
+      setToTime('')
+    }
+  }, [value])
   return (
     <Box>
       <Box
@@ -414,6 +422,7 @@ const AddDoctor = () => {
                 }}
               />
             </Box>
+            {/* days selection */}
             <Divider sx={{mt:1}}/>
             <FormControl sx={{ p: 2 }}>
               <FormLabel id="demo-controlled-radio-buttons-group">

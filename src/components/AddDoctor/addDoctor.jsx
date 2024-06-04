@@ -152,6 +152,8 @@ const AddDoctor = () => {
       email_id: docEmail,
       consultation_interval: interval,
       consultation_fee: consultaionFee,
+      start_date:docFromDate,
+      end_date :docToDate,
       time_slot: timeSlotValue,
       department: department,
       added_by: "Madhu",

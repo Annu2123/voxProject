@@ -35,12 +35,15 @@ const EditDoctor = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const { state } = location;
-  // ////console.log(state)
+  console.log("sdfgfds",location)
+  console.log(state)
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [docId, setDocId] = useState(state ? state.id : "");
   const [docName, setDocName] = useState(state ? state.name : "");
   const [docNumber, setDocNumber] = useState(state ? state.phone_num : "");
   const [docEmail, setDocEmail] = useState(state ? state.email_id : "");
+  const [docFromDate,setDocFromDate] = useState(state ? state.docFromDate :'');
+  const [docToDate,setDocToDate] = useState(state ? state.docToDate :'');
   const [docDepartment, setDocDepartment] = useState(
     state ? state.department : ""
   );
@@ -465,6 +468,42 @@ const EditDoctor = () => {
                 border: "1px solid lightgray",
               }}
             >
+              {/* <Box
+            sx={{
+              minHeight: "100px",
+              width: { xs: "100%", md: "50%" },
+              backgroundColor: "#FAFAFA",
+              mt: 2,
+              borderRadius: "8px",
+              border: "1px solid lightgray",
+            }}
+          > */}
+            <Box sx={{display:"flex",gap:2,ml:2,mt:1.5,mr:2}}>
+              <TextField
+                label="From Date"
+                fullWidth
+                type="date"
+                size="small"
+                value={docFromDate}
+                // onChange={(e)=>setDocFromDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                label="To Date"
+                fullWidth
+                type="date"
+                size="small"
+                value={docToDate}
+                // onChange={(e)=>setDocToDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Box>
+            {/* days selection */}
+            <Divider sx={{mt:1}}/>
               <FormControl sx={{ p: 2 }}>
                 <FormLabel id="demo-controlled-radio-buttons-group">
                   Select Working Hours*
@@ -488,7 +527,7 @@ const EditDoctor = () => {
                   />
                 </RadioGroup>
               </FormControl>
-
+            {/* </Box> */}
               {slotType === "all_Day" && (
                 <Box
                   sx={{

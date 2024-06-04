@@ -231,9 +231,17 @@ const EditDoctor = () => {
       consultation_fee: fee,
       department: department,
       time_slot: timeData,
+      start_date:docFromDate ,
+      end_date:docToDate
     };
     ////console.log(formData,'formData')
-    dispatch(updateDoc(formData));
+    dispatch(updateDoc(formData))
+    // .then((resultAction) => {
+    //   if (resultAction.meta.requestStatus === "fulfilled") {
+    //     window.location.reload()
+    //   }
+    // });
+    
   };
 
   const handleBack = () => {
@@ -256,7 +264,11 @@ const EditDoctor = () => {
     dispatch(removeDoctor(id));
     navigate("/dashboard");
   };
-
+  const handleSlotTypeChange = (event) => {
+    const { value } = event.target;
+    setSlotType(value);
+    setSelectedDays({});
+  };
   return (
     <Box>
       <Box
@@ -485,7 +497,7 @@ const EditDoctor = () => {
                 type="date"
                 size="small"
                 value={docFromDate}
-                // onChange={(e)=>setDocFromDate(e.target.value)}
+                onChange={(e)=>setDocFromDate(e.target.value)}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -496,7 +508,7 @@ const EditDoctor = () => {
                 type="date"
                 size="small"
                 value={docToDate}
-                // onChange={(e)=>setDocToDate(e.target.value)}
+                onChange={(e)=>setDocToDate(e.target.value)}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -513,7 +525,8 @@ const EditDoctor = () => {
                   aria-labelledby="demo-controlled-radio-buttons-group"
                   name="controlled-radio-buttons-group"
                   value={slotType}
-                  onChange={(e) => setSlotType(e.target.value)}
+                  // onChange={(e) => setSlotType(e.target.value)}
+                  onChange={handleSlotTypeChange}
                 >
                   <FormControlLabel
                     value="all_Day"

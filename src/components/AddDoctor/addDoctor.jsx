@@ -158,6 +158,7 @@ const AddDoctor = () => {
       department: department,
       added_by: "Madhu",
     };
+    console.log("formData",formData)
     // if (Object.keys(formData.docName)=== '') {
     //   toast.error("Please enter the doctor name");
     // }

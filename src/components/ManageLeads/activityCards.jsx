@@ -15,6 +15,7 @@ const ActivityCards = () => {
   const [audio] = useState(new Audio())
   const [progress, setProgress] = useState(0)
   const { state } = location;
+  const [id,setId]=useState('')
   useEffect(() => {
     const formData = {
       phone_num: state.phone_num,
@@ -23,8 +24,10 @@ const ActivityCards = () => {
   }, [state.phone_num]);
   const data = useSelector((state) => state.manageLeadsSlice?.callActivityList);
 
-  const audioPlay = (recLink) => {
-    if (isAudioPlaying) {
+  const audioPlay = (recLink,id) => {
+    // setId(id)
+    // const result=data?.find(ele =>ele.id == id)
+    if (isAudioPlaying  && result.id == id) {
       audio.pause()
       setIsAudioPlaying(false)
     } else {
@@ -47,13 +50,13 @@ const ActivityCards = () => {
       audio.removeEventListener('timeupdate', updateProgress)
     }
   }, [audio])
-  console.log(data);
+  console.log("adaddadd",data);
   return (
     <Box sx={{ height: "65vh" }}>
-      {data?.map((data, i) => {
+      {data?.map((data) => {
         return (
           <>
-            <Card sx={{ width: "100%", borderTop: "1px solid blue", p: 2, mt: 1 }}>
+            <Card sx={{ width: "100%", borderTop: "1px solid blue", p: 2, mt: 1 }} key={data.id}>
               <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
                 <Typography variant="subtitle2" fontWeight={"bold"}>
                   Date:{data.created_at}
@@ -66,9 +69,9 @@ const ActivityCards = () => {
                 <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center' }}>
                   Rec:{' '}
                   <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-                    <IconButton onClick={() => audioPlay(data.rec_link)}>
+                    <IconButton onClick={() => audioPlay(data.rec_link,data.id)}>
                       {isAudioPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-                    </IconButton>
+                    </IconButton >
                     <LinearProgress variant="determinate" value={progress} sx={{ width: 100 }} />
                   </Box>
                 </Typography>

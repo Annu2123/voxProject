@@ -124,11 +124,30 @@ export const updateDoc = createAsyncThunk("updateDoc", async (formData, { reject
     return rejectWithValue(error.message);
   }
 });
+export const getDoctorById = createAsyncThunk("getDoctorById", async (id, { rejectWithValue }) => {
+  const Api = "https://api.voxprosolutions.com:8080/doctor_edit";
+  try {
+    const response = await axios.post(Api, { id }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
+  }
+});
+
 
 const initialState = {
   loading: false,
   error: null,
-  list: null,
+  list: [],
   timeSlot: null,
 };
 
@@ -209,9 +228,13 @@ const doctorSlice = createSlice({
         state.error = null;
       })
       .addCase(updateDoc.fulfilled, (state, action) => {
-        state.loading = false;
-        // state.timeSlot = action.payload;
-        toast.success('updated successfully');
+        state.loading = false
+        const updatedDoctor = action.payload
+        const index = state.list.findIndex((doc) => doc.id === updatedDoctor.id)
+        if (index !== -1) {
+          state.list[index] = updatedDoctor
+        }
+        toast.success('updated successfully')
       })
       .addCase(updateDoc.rejected, (state, action) => {
         state.loading = true;

@@ -28,7 +28,7 @@ import {
   removeDoctor,
   updateDoc,
 } from "../../actions/Doctor/doctor";
-
+import Swal from 'sweetalert2'
 const EditDoctor = () => {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ const EditDoctor = () => {
   const [searchValue, setSearchValue] = useState("");
   const { state } = location;
   console.log("sdfgfds",location)
-  console.log(state)
+  console.log("stae",state)
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [docId, setDocId] = useState(state ? state.id : "");
   const [docName, setDocName] = useState(state ? state.name : "");
@@ -72,7 +72,7 @@ const EditDoctor = () => {
 
   ////console.log(timeSlot,'time');
   const [slotType, setSlotType] = useState();
-
+console.log("slotTpe",slotType)
   // useEffect(() => {
   //   const xy =
   //     timeSlot && timeSlot !== null&& timeSlot !== undefined && timeSlot != [] && timeSlot[0]["day"] === "all_Day"
@@ -116,7 +116,7 @@ const EditDoctor = () => {
           end_time: timeSlot[0]["time_slot_end"],
         };
       }
-      //console.log(slotData,'slot')
+      console.log("slotDat",slotData,'slot')
       setSelectedDays(slotData);
     }
   }, [loading, timeSlot]);
@@ -187,10 +187,24 @@ const EditDoctor = () => {
       });
     }
   };
-
+  const deletePopUP=()=>{
+    Swal.fire({
+        title: "Deleted!",
+        text: ` Doctor deleted.`,
+        icon: "success"
+      })
+   }
+   const DeleteError = (error) => {
+    Swal.fire({
+        title: `${error}`,
+        text: ` cancel delete request.`,
+        icon: "cancel"
+    })
+}
   const handleTimeChange1 = (day, field) => (event) => {
+    console.log("dayyy",day)
     let newTimes = null;
-    if (day !== "all_Day") {
+    if (day !== "all_day") {
       newTimes = {
         ...selectedDays,
         [day]: {
@@ -212,7 +226,7 @@ const EditDoctor = () => {
     const timeData = {...selectedDays}
     if(slotType === "selectDay"){
       delete timeData.all_Day;
-    }else if(slotType === "all_Day"){
+    }else if(slotType === "all_day"){
       delete timeData.mon 
       delete timeData.tue
       delete timeData.wed 
@@ -236,11 +250,7 @@ const EditDoctor = () => {
     };
     ////console.log(formData,'formData')
     dispatch(updateDoc(formData))
-    // .then((resultAction) => {
-    //   if (resultAction.meta.requestStatus === "fulfilled") {
-    //     window.location.reload()
-    //   }
-    // });
+    navigate('/dashboard')
     
   };
 
@@ -269,6 +279,8 @@ const EditDoctor = () => {
     setSlotType(value);
     setSelectedDays({});
   };
+  console.log("timeslot",timeSlot)
+  console.log("seleceddayd",selectedDays)
   return (
     <Box>
       <Box
@@ -563,11 +575,11 @@ const EditDoctor = () => {
                       placeholder="Start Time"
                       type="time"
                       value={
-                        Object.keys(selectedDays).includes("all_Day") &&
-                        selectedDays["all_Day"]["start_time"]
+                        Object.keys(selectedDays).includes("all_day") &&
+                        selectedDays["all_day"]["start_time"]
                       }
-                      onChange={handleTimeChange1("all_Day", "start_time")}
-                      readOnly
+                      onChange={handleTimeChange1("all_day", "start_time")}
+                      // readOnly
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -579,11 +591,11 @@ const EditDoctor = () => {
                       placeholder="End Time"
                       type="time"
                       value={
-                        Object.keys(selectedDays).includes("all_Day") &&
-                        selectedDays["all_Day"]["end_time"]
+                        Object.keys(selectedDays).includes("all_day") &&
+                        selectedDays["all_day"]["end_time"]
                       }
-                      onChange={handleTimeChange1("all_Day", "end_time")}
-                      readOnly
+                      onChange={handleTimeChange1("all_day", "end_time")}
+                      // readOnly
                       InputLabelProps={{
                         shrink: true,
                       }}

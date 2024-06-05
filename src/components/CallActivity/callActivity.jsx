@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { searchActivity } from "../../actions/CallActivity/callActivity";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "react-modal";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import toast from "react-hot-toast";
 const columns = [
   {
@@ -175,7 +176,7 @@ const CallActivity = () => {
         variant="outlined"
         onClick={() => handlePlay(call.rec_link)}
       >
-        <EditIcon fontSize="small" />
+       <PlayArrowIcon fontSize="small" />
       </Button>
     ),
   }));

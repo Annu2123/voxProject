@@ -31,6 +31,7 @@ import {
   appointmentDetails,
   startGetAppoinmentSlot,
 } from "../../actions/Appointment/appointment";
+import axios from "axios";
 
 const religion = () => {
   const dispatch = useDispatch();
@@ -107,7 +108,8 @@ const Consultation = ({ searchData }) => {
   const [selectedDoctorName, setSelectedDoctorName] = useState("");
   const [availableDays, setAvailableDays] = useState([]);
   const [consultationInterval, setConsultationInterval] = useState(5);
-
+  const[selectedDoctor,setSelectedDoctor]=useState({})
+  const [bookedSlot,setBookedSlot]=useState([])
   useEffect(() => {
     dispatch(startGetDoctorList());
   }, []);
@@ -115,10 +117,21 @@ const Consultation = ({ searchData }) => {
   const docList = useSelector((state) => {
     return state?.doctorSlice?.list;
   });
-  // console.log(docList)
+  console.log("doctor list",docList)
+console.log("selectedoID",selectedDoctorId)
+useEffect(()=>{
+  if(selectedDoctorId){
+    const result=docList?.find((ele)=>{
+      return ele.id == selectedDoctorId
+    })
+    setSelectedDoctor(result)
+  }
+},[selectedDoctorId])
 
+console.log("selectedDocter",selectedDoctor)
   const [times, setTimes] = useState([]);
   const appData = useSelector((state) => state?.appointmentSlice?.slots);
+
   useEffect(() => {
     const fetchData = async () => {
       if (selectedDoctorId && selectedDate) {
@@ -140,92 +153,11 @@ const Consultation = ({ searchData }) => {
     }
   }, [appData]);
 
-  // useEffect(() => {
-  //   if(receivedData){
-  //     if (receivedData.length > 0) {
-  //    ( receivedData[0]?.time);
-  //     }}
-  // }, [receivedData]);
-
-  // const generateTimes = async (selectedDay, startTime, endTime) => {
-  //   const times = [];
-
-  //   let increment = consultationInterval;
-  //   console.log(startTime, endTime,consultationInterval)
-  //   function parseTime24(timeStr) {
-  //     const [hours, minutes] = timeStr.split(":").map(Number);
-  //     return { hours, minutes };
-  //   }
-  
-  //   function formatTime24(hours, minutes) {
-  //     const formattedHours = hours.toString().padStart(2, "0");
-  //     const formattedMinutes = minutes.toString().padStart(2, "0");
-  //     return `${formattedHours}:${formattedMinutes}`;
-  //   }
-  
-  //   const { hours: startHour, minutes: startMinute } = parseTime24(startTime);
-  //   const { hours: endHour, minutes: endMinute } = parseTime24(endTime);
-  
-  //   let hour = startHour;
-  //   let minute = startMinute;
-  
-  //   while (hour < endHour || (hour === endHour && minute < endMinute)) {
-  //     times.push(formatTime24(hour, minute));
-  
-  //     minute += increment;
-  //     if (minute >= 60) {
-  //       hour += Math.floor(minute / 60);
-  //       minute = minute % 60;
-  //     }
-  //   }
-  //   console.log(times)
-  //   setTimes(times);
-  // };
-  const generateTimes = async (selectedDay, startTime, endTime) => {
-    const times = [];
-  
-    const increment = consultationInterval;
-    console.log('Generating times with:', startTime, endTime, consultationInterval);
-  
-    function parseTime24(timeStr) {
-      const [hours, minutes] = timeStr.split(":").map(Number);
-      return { hours, minutes };
-    }
-  
-    function formatTime24(hours, minutes) {
-      const formattedHours = hours.toString().padStart(2, "0");
-      const formattedMinutes = minutes.toString().padStart(2, "0");
-      return `${formattedHours}:${formattedMinutes}`;
-    }
-  
-    const { hours: startHour, minutes: startMinute } = parseTime24(startTime);
-    const { hours: endHour, minutes: endMinute } = parseTime24(endTime);
-  
-    let hour = startHour;
-    let minute = startMinute;
-  
-    while (!(hour === endHour && minute > endMinute)) {
-      const formattedTime = formatTime24(hour, minute);
-      times.push(formattedTime);
-  
-      minute += increment;
-      if (minute >= 60) {
-        hour += 1;
-        minute %= 60;
-      }
-    }
-  
-    console.log('Generated times:', times);
-    setTimes(times);
-  };
-  
-  
-
   useEffect(() => {
     console.log('Times array updated:', times);
   }, [times]);
 
-
+// finding doctors department
   useEffect(() => {
     if (docList) {
       const uniqueDepartments = [
@@ -235,6 +167,8 @@ const Consultation = ({ searchData }) => {
     }
   }, [docList]);
 
+
+  // department doctor list according to department
   useEffect(() => {
     if (departmentSelected && docList) {
       const filteredDoctorNames = docList
@@ -246,6 +180,8 @@ const Consultation = ({ searchData }) => {
     }
   }, [departmentSelected, docList]);
 
+
+  // finding doctor interval
   useEffect(() => {
     if (selectedDoctorName && docList) {
       const doctor = docList.find((doc) => doc.id === selectedDoctorId);
@@ -444,29 +380,14 @@ const Consultation = ({ searchData }) => {
       [name]: newValue,
     }));
   };
-
-  // const handleDateChange = (selectedDate) => {
-  //   const selectedDay = new Date(selectedDate)
-  //     .toLocaleString("en-us", { weekday: "short" })
-  //     .toLowerCase();
-
-  //   if (availableDays.includes("all_day")) {
-  //     //console.log("Doctor is available on any day");
-  //   } else if (!availableDays.includes(selectedDay)) {
-  //     //console.log(
-  //       "Doctor is not available on this selected day",
-  //       "availableDays of Doctor is " + availableDays.join(" ,")
-  //     );
-  //   } else {
-  //     //console.log("Doctor is available on the selected day");
-  //   }
-  // };
   const [showTimeSlot, setShowTimeSot] = useState(false);
 
   const timeSlot = useSelector((state) => {
     return state.doctorSlice?.timeSlot;
   });
 
+
+  // finding doctor slot day 
   useEffect(() => {
     if (timeSlot) {
       const days = timeSlot.map((slot) => slot.day);
@@ -475,9 +396,12 @@ const Consultation = ({ searchData }) => {
       setAvailableDays([]);
     }
   }, [timeSlot]);
-
+console.log("timeslot",timeSlot)
+console.log("availabledays",availableDays)
   // console.log(appData?appData:"")
+  // no used appoinntment list using date
   useEffect(() => {
+    console.log("232242")
     let fetchData = async () => {
       if (selectedDoctorId && selectedDate) {
         const fd = {
@@ -491,64 +415,167 @@ const Consultation = ({ searchData }) => {
     fetchData();
   }, [selectedDate, selectedDoctorId]);
 
-  const handleChangeApp = (e) => {
-    const { name, value, checked, type } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
-
-    setAppFormData((prevData) => ({
-      ...prevData,
-      [name]: newValue,
-    }));
-
-    if (name === "Department") {
-      setDepartmentSelected(value);
+  // generating time interval
+  const generateTimes = async (selectedDay, startTime, endTime) => {
+    console.log("starttime", startTime);
+    console.log("endtime", endTime);
+    const times = [];
+  
+    const increment = consultationInterval; // Ensure this is defined and accessible in scope
+    console.log('Generating times with:', startTime, endTime, consultationInterval);
+  
+    function parseTime24(timeStr) {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      return { hours, minutes };
     }
-    if (name === "Doctor_Name") {
-      const selectedDoctor = doctorNames.find(
-        (doctor) => doctor.name === value
-      );
-      setSelectedDoctorId(selectedDoctor ? selectedDoctor.id : "");
-      setSelectedDoctorName(selectedDoctor ? selectedDoctor.name : "");
+  
+    function formatTime24(hours, minutes) {
+      const formattedHours = hours.toString().padStart(2, "0");
+      const formattedMinutes = minutes.toString().padStart(2, "0");
+      return `${formattedHours}:${formattedMinutes}`;
     }
-    if (name === "Date") {
-      setSelectedDate(value);
-      // const fd={doctor_id: selectedDoctorId,date: value}
-      // dispatch(startGetAppoinmentSlot(fd))
-      var selectedDay = new Date(value)
-        .toLocaleString("en-us", { weekday: "short" })
-        .toLowerCase();
-
-      if (availableDays.includes("all_day")) {
-        generateTimes(
-          "all_Day",
-          timeSlot[0].time_slot_start,
-          timeSlot[0].time_slot_end,
-          appData,
-          consultationInterval
-        );
-        setShowTimeSot(true);
-      } else if (availableDays.includes(selectedDay)) {
-        let startTime = "00:00";
-        let endTime = "00:00";
-        for (let i = 0; i < timeSlot.length; i++) {
-          if (timeSlot[i].day === selectedDay) {
-            startTime = timeSlot[i].time_slot_start;
-            endTime = timeSlot[i].time_slot_end;
-            break;
-          }
-        }
-        generateTimes(selectedDay, startTime, endTime, appData,consultationInterval);
-        setShowTimeSot(true);
-      } else {
-        toast.error(
-          "Doctor is not available on this selected day",
-          "availableDays of Doctor is " + availableDays.join(" ,")
-        );
-        setShowTimeSot(false);
+  
+    const { hours: startHour, minutes: startMinute } = parseTime24(startTime);
+    const { hours: endHour, minutes: endMinute } = parseTime24(endTime);
+  
+    let hour = startHour;
+    let minute = startMinute;
+  
+    // Ensure the end condition is correct
+    while (hour < endHour || (hour === endHour && minute <= endMinute)) {
+      const formattedTime = formatTime24(hour, minute);
+      times.push(formattedTime);
+  
+      minute += increment;
+      if (minute >= 60) {
+        hour += 1;
+        minute %= 60;
       }
     }
+  
+    console.log('Generated times:', times);
+    setTimes(times);
   };
-  // console.log(appFormData)
+  
+ let notAvailable=""
+//  update the appointment form 
+const [error, setError] = useState('')
+const handleChangeApp = (e) => {
+  console.log(e); // Corrected from 'event' to 'e'
+  console.log("comes to handleChange first", times);
+  
+  const { name, value, checked, type } = e.target;
+  const newValue = type === "checkbox" ? checked : value;
+
+  setAppFormData((prevData) => ({
+    ...prevData,
+    [name]: newValue,
+  }));
+
+  if (name === "Department") {
+    setError('')
+    setShowTimeSot(false);
+    setTimes([]);
+    setSelectedDate("");
+    setDepartmentSelected(value);
+  }
+
+  if (name === "Doctor_Name") {
+    console.log("selected doctor name");
+    setError('')
+    setShowTimeSot(false);
+    setTimes([]);
+    const selectedDoctor = doctorNames.find(
+      (doctor) => doctor.name === value
+    );
+    setSelectedDoctorId(selectedDoctor ? selectedDoctor.id : "");
+    setSelectedDoctorName(selectedDoctor ? selectedDoctor.name : "");
+  }
+
+  if (name === "Date") {
+    console.log("come to date");
+    setSelectedDate(value);
+    
+    var selectedDay = new Date(value)
+      .toLocaleString("en-us", { weekday: "short" })
+      .toLowerCase();
+    console.log(selectedDay);
+    console.log("aa1");
+
+    if (availableDays.includes("all_day")) {
+      generateTimes(
+        "all_day",
+        timeSlot[0].time_slot_start,
+        timeSlot[0].time_slot_end,
+        appData,
+        consultationInterval
+      );
+      setShowTimeSot(true);
+    } else if (availableDays.includes(selectedDay)) {
+      console.log("inside ")
+      setError('')
+      let startTime = "00:00";
+      let endTime = "00:00";
+      for (let i = 0; i < timeSlot.length; i++) {
+        if (timeSlot[i].day === selectedDay) {
+          startTime = timeSlot[i].time_slot_start;
+          endTime = timeSlot[i].time_slot_end;
+          break;
+        }
+      }
+      console.log("not all day");
+      generateTimes(selectedDay, startTime, endTime, appData, consultationInterval);
+      setShowTimeSot(true);
+    } else {
+      console.log("error in slots");
+      // toast.error(
+      //   "Doctor is not available on this selected day",
+      //   "availableDays of Doctor is " + availableDays.join(" ,")
+      // );
+      const errorMessage = "Doctor is not available on this selected day. Available days of Doctor: " + availableDays.join(", ");
+      setError(errorMessage)
+      setShowTimeSot(false);
+    }
+  }
+};
+
+  console.log("dfghgf",appFormData)
+  // const [slotDate,setSlotDate]=useState('')
+  // const handelSlots=(date)=>{
+  //   setSlotDate(date)
+  //   var selectedDay = new Date(date)
+  //   .toLocaleString("en-us", { weekday: "short" })
+  //   .toLowerCase();
+  //   console.log("sleDay",selectedDay)
+    
+  // }
+  useEffect(() => {
+    const formData = {
+      doctor_id: selectedDoctorId,
+      date: selectedDate
+    };
+
+    if (selectedDoctorId && selectedDate) {
+      (async () => {
+        try {
+          const response = await axios.post('https://api.voxprosolutions.com:8080/api/appointment_solt', formData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+          console.log(response.data);
+          setBookedSlot(response.data);
+        } catch (err) {
+          console.log(err);
+        }
+      })();
+    }
+  }, [selectedDoctorId, selectedDate]); // Added selectedDate to dependencies
+
+  useEffect(() => {
+    console.log("bookedSlot:", bookedSlot);
+  }, [bookedSlot]); // New useEffect to log bookedSlot whenever it changes
+  console.log(appFormData)
   useEffect(() => {
     //console.log(selectedDoctorId);
     const id = {
@@ -557,6 +584,15 @@ const Consultation = ({ searchData }) => {
     dispatch(getTimeSlot(id));
   }, [selectedDoctorId]);
 
+  const handleFormEmpty=()=>{
+   setSelectedDoctorId('')
+    setFormData({})
+    setAppFormData({})
+    setSelectedTime('')
+    setSelectedDate("")
+    setTimes([])
+   
+  }
   const handleAddAppoinment = () => {
     const addApp = {
       doctor_id: selectedDoctorId,
@@ -567,9 +603,27 @@ const Consultation = ({ searchData }) => {
       time: selectedTime,
       remarks: appFormData.Remarks,
     };
-    dispatch(addAppoinment(addApp));
+    dispatch(addAppoinment(addApp, handleFormEmpty))
+    .unwrap()
+    .then((result) => {
+      console.log('Appointment added:', result);
+      handleFormEmpty()
+      setOpen(false)
+    })
+    .catch((error) => {
+      console.error('Failed to add appointment:', error)
+    })
+   
   };
+// const handleDateChange=()=>{
+//      setAppointDate()
+// }
+const getDayName = (date) => {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return days[date.getDay()];
+};
 
+console.log("appointment",appointment)
   return (
     <Box
       sx={{
@@ -732,6 +786,8 @@ const Consultation = ({ searchData }) => {
           </Box>
         </Box>
       </Box>
+
+    {/* Modal content */}
       <Dialog open={open} maxWidth="xl" fullWidth>
         <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
           <DialogTitle variant="h6" sx={{ color: "#0077b6" }}>
@@ -743,7 +799,6 @@ const Consultation = ({ searchData }) => {
             </Button>
           </Tooltip>
         </Box>
-
         <Divider />
         <DialogContent>
           <Box
@@ -764,116 +819,7 @@ const Consultation = ({ searchData }) => {
                   borderRadius: "8px",
                   width: "100%",
                 }}
-              >
-                {/* <Grid
-                  container
-                  spacing={1}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                >
-                  {appointment.map((field, index) => (
-                    <React.Fragment key={index}>
-                      {field.type === "select" &&
-                      field.label === "Department" ? (
-                        <Grid
-                          item
-                          xs={12}
-                          md={3}
-                          sx={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <TextField
-                            sx={{ width: "80%" }}
-                            size="small"
-                            type="text"
-                            variant={field.variant}
-                            label={field.label}
-                            placeholder={field.placeholder}
-                            name={field.label}
-                            value={appFormData[field.label] || ""}
-                            onChange={handleChangeApp}
-                            select
-                          >
-                            {field.menuItems?.map((item, index) => (
-                              <MenuItem key={index} value={item}>
-                                {item}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                        </Grid>
-                      ) : field.type === "select" &&
-                        field.label === "Doctor Name" ? (
-                        <Grid
-                          item
-                          xs={12}
-                          md={3}
-                          sx={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <TextField
-                            sx={{ width: "80%" }}
-                            size="small"
-                            type="text"
-                            variant={field.variant}
-                            label={field.label}
-                            placeholder={field.placeholder}
-                            name={field.label}
-                            value={appFormData[field.label] || ""}
-                            onChange={handleChangeApp}
-                            select
-                            disabled={!departmentSelected}
-                          >
-                            {field.menuItems?.map((item, index) => (
-                              <MenuItem key={index} value={item}>
-                                {item}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                        </Grid>
-                      ) : field.type === "date" ? (
-                        <Grid
-                          item
-                          xs={12}
-                          md={3}
-                          sx={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <TextField
-                            sx={{ width: "80%" }}
-                            size="small"
-                            type="date"
-                            variant={field.variant}
-                            label={field.label}
-                            placeholder={field.placeholder}
-                            name={field.label}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            value={appFormData[field.label] || ""}
-                            onChange={handleChangeApp}
-                            disabled={!departmentSelected}
-                          />
-                        </Grid>
-                      ) : (
-                        <Grid
-                          item
-                          xs={12}
-                          md={3}
-                          sx={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <TextField
-                            sx={{ width: "80%" }}
-                            size="small"
-                            type={field.type}
-                            label={field.label}
-                            variant={field.variant}
-                            placeholder={field.placeholder}
-                            name={field.label}
-                            value={appFormData[field.label] || ""}
-                            onChange={handleChangeApp}
-                          />
-                        </Grid>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </Grid> */}
+              >             
                 <Grid
                   container
                   spacing={1}
@@ -928,6 +874,7 @@ const Consultation = ({ searchData }) => {
                             placeholder={field.placeholder}
                             name={field.label}
                             value={appFormData[field.label] || ""}
+                            // value={appointDate}
                             onChange={handleChangeApp}
                             select
                             disabled={!departmentSelected}
@@ -958,12 +905,16 @@ const Consultation = ({ searchData }) => {
                               shrink: true,
                             }}
                             value={appFormData[field.label] || ""}
+                            // value={slotDate}
                             onChange={handleChangeApp}
+                            // onChange={(e)=>{handelSlots(e.target.value)}}
                             disabled={!departmentSelected}
                             InputProps={{
                               inputProps: {
-                                min: new Date().toISOString().split("T")[0],
+                                min: selectedDoctor?.start_date,
+                                max: selectedDoctor?.end_date,
                               },
+                      
                             }}
                           />
                         </Grid>
@@ -990,6 +941,9 @@ const Consultation = ({ searchData }) => {
                     </React.Fragment>
                   ))}
                 </Grid>
+
+
+                 {/*slots   */}
                 <Grid
                   container
                   spacing={1}
@@ -997,69 +951,13 @@ const Consultation = ({ searchData }) => {
                   alignItems={"center"}
                   mt={2}
                   maxWidth={"xl"}
-                >
-                  {/* {!availableDays.includes("all_Day") &&
-                  !availableDays.includes(appFormData?.Date) ? (
-                    <>
-                      {appFormData?.Date !== undefined && (
-                        <Typography>Doctor is not available</Typography>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      { (
-                        <>
-                          {times.map((time, index) => (
-                            <Button
-                              key={index}
-                              onClick={() => handleTimeClick(time)}
-                              sx={{
-                                padding: "10px",
-                                margin: "5px",
-                                border:
-                                  selectedTime === time
-                                    ? "2px solid blue"
-                                    : "2px solid lightgray",
-                                backgroundColor:
-                                  selectedTime === time ? "blue" : "white",
-                                color:
-                                  selectedTime === time ? "white" : "black",
-                                borderRadius: "5px",
-                                cursor: "pointer",
-                                mt: 2,
-                              }}
-                            >
-                              {time}
-                            </Button>
-                          ))}
-                        </>
-                      )}
-                    </>
-                  )} */}
-                  {/* {times.map((time, index) => (
-                    <Button
-                      key={index}
-                      onClick={() => handleTimeClick(time)}
-                      disabled={receivedData && Array.isArray(receivedData) && receivedData.some((data) => data.time === time)}
-                      sx={{
-                        padding: "10px",
-                        margin: "5px",
-                        border:
-                          selectedTime === time
-                            ? "2px solid blue"
-                            : "2px solid lightgray",
-                        backgroundColor:
-                          selectedTime === time ? "blue" : "white",
-                        color: selectedTime === time ? "white" : "black",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        mt: 2,
-                      }}
-                    >
-                      {time}
-                    </Button>
-                  ))} */}
-                  {times.map((time, index) => {
+                >  
+                  {error && (
+        <Typography color="error" variant="body2">
+          {error}
+        </Typography>
+      )}       
+                  { showTimeSlot && times.map((time, index) => {
                     const isDisabled =
                       receivedData &&
                       Array.isArray(receivedData) &&
@@ -1103,14 +1001,14 @@ const Consultation = ({ searchData }) => {
               mt: 1,
             }}
           >
-            <Button
-              variant="contained"
-              color="warning"
-              size="small"
-              onClick={handleAddAppoinment}
-            >
-              Add Appoinment
-            </Button>
+          { !error &&<Button
+            variant="contained"
+            color="warning"
+            size="small"
+            onClick={handleAddAppoinment}
+          >
+            Add Appoinment
+          </Button>}
           </Box>
         </DialogContent>
       </Dialog>

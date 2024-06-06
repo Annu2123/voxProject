@@ -4,18 +4,29 @@ import toast from "react-hot-toast";
 
 const token = localStorage.getItem("token");
 
-export const startAddDept = createAsyncThunk("addDept", async (formData) => {
+export const startAddDept = createAsyncThunk("addDept", async (formData,{rejectWithValue}) => {
   const Api = "https://api.voxprosolutions.com:8080/api/department_add";
   const data = formData
-  const response = await axios.post(Api,data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if(response.data.message === "Expired token"){
-    console.log('Token Expired')
+  try{
+
+    const response = await axios.post(Api,data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // if(response.data.message === "Expired token"){
+    //   console.log('Token Expired')
+    // }
+    return response.data;
+  }catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
   }
-  return response.data;
+  
 });
 
 export const startGetDeptList = createAsyncThunk("getDept", async () => {
@@ -67,8 +78,11 @@ const initialState = {
         })
         .addCase(startAddDept.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          toast.error('Something went wrong...', action.error.message)
+          const error = action.payload ? action.payload : action.error.message;
+          const errorMessages = error.split(',');
+          const firstError = errorMessages[0].trim();
+          state.error = firstError
+          toast.error(state.error)
         });
 
         builder

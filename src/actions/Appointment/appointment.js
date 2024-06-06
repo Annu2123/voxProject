@@ -63,7 +63,7 @@ export const appointmentDetails = createAsyncThunk("appointment_list_details", a
     }
   });
 
-  export const addAppoinment = createAsyncThunk("appointment_add", async (formData) => {
+  export const addAppoinment = createAsyncThunk("appointment_add", async (formData,{rejectWithValue}) => {
     const Api = "https://api.voxprosolutions.com:8080/api/appointment_add";
     try {
       const response = await axios.post(Api, formData, {
@@ -170,8 +170,11 @@ const initialState = {
         })
         .addCase(addAppoinment.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.payload ? action.payload : action.error.message;
-          toast.error(action.payload);
+          const error = action.payload ? action.payload : action.error.message;
+          const errorMessages = error.split(',')
+          const firstError = errorMessages[0].trim()
+          state.error = firstError
+          toast.error(firstError)
         });
 
         builder

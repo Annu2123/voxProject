@@ -42,8 +42,8 @@ const EditDoctor = () => {
   const [docName, setDocName] = useState(state ? state.name : "");
   const [docNumber, setDocNumber] = useState(state ? state.phone_num : "");
   const [docEmail, setDocEmail] = useState(state ? state.email_id : "");
-  const [docFromDate,setDocFromDate] = useState(state ? state.docFromDate :'');
-  const [docToDate,setDocToDate] = useState(state ? state.docToDate :'');
+  const [docFromDate,setDocFromDate] = useState(state ? state.start_date :'');
+  const [docToDate,setDocToDate] = useState(state ? state.end_date :'');
   const [docDepartment, setDocDepartment] = useState(
     state ? state.department : ""
   );

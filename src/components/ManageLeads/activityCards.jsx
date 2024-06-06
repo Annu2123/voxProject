@@ -15,7 +15,6 @@ const ActivityCards = () => {
   const [audio] = useState(new Audio())
   const [progress, setProgress] = useState(0)
   const { state } = location;
-  const [id,setId]=useState('')
   useEffect(() => {
     const formData = {
       phone_num: state.phone_num,
@@ -24,17 +23,20 @@ const ActivityCards = () => {
   }, [state.phone_num]);
   const data = useSelector((state) => state.manageLeadsSlice?.callActivityList);
 
-  const audioPlay = (recLink,id) => {
+  const audioPlay = (url) => {
     // setId(id)
     // const result=data?.find(ele =>ele.id == id)
-    if (isAudioPlaying  && result.id == id) {
-      audio.pause()
-      setIsAudioPlaying(false)
-    } else {
-      audio.src = recLink
-      audio.play()
-      setIsAudioPlaying(true)
-    }
+    // if (isAudioPlaying  && result.id == id) {
+    //   audio.pause()
+    //   setIsAudioPlaying(false)
+    // } else {
+    //   audio.src = recLink
+    //   audio.play()
+    //   setIsAudioPlaying(true)
+    // }
+    console.log("url",url)
+    window.open(url, '_blank')
+
   };
   useEffect(() => {
     const updateProgress = () => {
@@ -69,10 +71,10 @@ const ActivityCards = () => {
                 <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center' }}>
                   Rec:{' '}
                   <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-                    <IconButton onClick={() => audioPlay(data.rec_link,data.id)}>
-                      {isAudioPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+                    <IconButton onClick={() => audioPlay(data.rec_link)}>
+                      { <PlayArrowIcon />}
                     </IconButton >
-                    <LinearProgress variant="determinate" value={progress} sx={{ width: 100 }} />
+                    {/* <LinearProgress variant="determinate" value={progress} sx={{ width: 100 }} /> */}
                   </Box>
                 </Typography>
                 <Typography variant="subtitle2">Status:{'  '}{data.call_status}</Typography>

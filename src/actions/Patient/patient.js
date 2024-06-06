@@ -94,8 +94,12 @@ const initialState = {
         })
         .addCase(startAddPatient.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.payload ? action.payload : action.error.message;
-          toast.error(action.payload);
+          // state.error = action.payload ? action.payload : action.error.message;
+          const error = action.payload ? action.payload : action.error.message;
+          const errorMessages = error.split(',');
+          const firstError = errorMessages[0].trim();
+          state.error=firstError
+          toast.error(state.error);
         });
 
         builder

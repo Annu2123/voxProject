@@ -201,8 +201,17 @@ console.log("slotTpe",slotType)
         icon: "cancel"
     })
 }
+const formatTimeWithAM = (time) => {
+  const [hours, minutes] = time.split(":");
+  const hoursInt = parseInt(hours, 10);
+  const formattedHours = hoursInt % 12 || 12;
+  const ampm = hoursInt < 12 ? "AM" : "PM";
+  return `${formattedHours}:${minutes} ${ampm}`;
+};
   const handleTimeChange1 = (day, field) => (event) => {
     console.log("dayyy",day)
+    let time= formatTimeWithAM(event.target.value)
+    console.log("event valuuu",event.target.valueime)
     let newTimes = null;
     if (day !== "all_day") {
       newTimes = {
@@ -253,7 +262,13 @@ console.log("slotTpe",slotType)
     navigate('/dashboard')
     
   };
-
+  // const formatTimeWithAM = (time) => {
+  //   const [hours, minutes] = time.split(":")
+  //   const hoursInt = parseInt(hours, 10)
+  //   const formattedHours = hoursInt % 12 || 12
+  //   const ampm = hoursInt < 12 ? "AM" : "PM";
+  //   return `${formattedHours}:${minutes} ${ampm}`
+  // };
   const handleBack = () => {
     navigate(-1);
     setX({});
@@ -281,6 +296,7 @@ console.log("slotTpe",slotType)
   };
   console.log("timeslot",timeSlot)
   console.log("seleceddayd",selectedDays)
+//  console.log("ammmm", formatTimeWithAM())
   return (
     <Box>
       <Box
@@ -576,7 +592,7 @@ console.log("slotTpe",slotType)
                       type="time"
                       value={
                         Object.keys(selectedDays).includes("all_day") &&
-                        selectedDays["all_day"]["start_time"]
+                       selectedDays["all_day"]["start_time"]
                       }
                       onChange={handleTimeChange1("all_day", "start_time")}
                       // readOnly
@@ -592,7 +608,7 @@ console.log("slotTpe",slotType)
                       type="time"
                       value={
                         Object.keys(selectedDays).includes("all_day") &&
-                        selectedDays["all_day"]["end_time"]
+                      selectedDays["all_day"]["end_time"]
                       }
                       onChange={handleTimeChange1("all_day", "end_time")}
                       // readOnly

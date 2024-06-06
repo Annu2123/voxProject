@@ -264,7 +264,8 @@ const CallActivity = () => {
             alignItems: "center",
             gap: 2,
             mt: 4,
-            width: "30%", // Set width to 100%
+            width: "28%", 
+            height:"26%"
           }}
         >
           <TextField
@@ -276,8 +277,8 @@ const CallActivity = () => {
             variant="outlined"
             sx={{ width: "100%" }} // Set width to 100%
           >
-            <MenuItem value="date">Non</MenuItem>
-            <MenuItem value="number">Number</MenuItem>
+            <MenuItem value="date">None</MenuItem>
+            <MenuItem value="number" >Enter Number</MenuItem>
           </TextField>
         </Box>
 
@@ -287,12 +288,17 @@ const CallActivity = () => {
             type="tel"
             size="small"
             value={number}
+            placeholder="Enter Mobile Number..."
             onChange={(e) => setNumber(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
             inputProps={{
               step: 1, // 1 second step
+            }}
+            sx={{
+              width: "19rem", // Set width to 100%
+              height: "45px", // Set the desired height here
             }}
           />
         </Box>}

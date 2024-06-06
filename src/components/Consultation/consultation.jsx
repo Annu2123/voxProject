@@ -325,7 +325,7 @@ console.log("selectedDocter",selectedDoctor)
     },
     {
       label: "Date",
-      placeholder: "Date",
+      placeholder: "date",
       value: "",
       type: "date",
       // variant: "standard",
@@ -347,6 +347,7 @@ console.log("selectedDocter",selectedDoctor)
 
   const handleClose = () => {
     setOpen(false);
+    setAppFormData({})
     // window.location.reload();
   };
 
@@ -421,7 +422,7 @@ console.log("availabledays",availableDays)
     console.log("endtime", endTime);
     const times = [];
   
-    const increment = consultationInterval; // Ensure this is defined and accessible in scope
+    const increment = consultationInterval; 
     console.log('Generating times with:', startTime, endTime, consultationInterval);
   
     function parseTime24(timeStr) {
@@ -440,8 +441,6 @@ console.log("availabledays",availableDays)
   
     let hour = startHour;
     let minute = startMinute;
-  
-    // Ensure the end condition is correct
     while (hour < endHour || (hour === endHour && minute <= endMinute)) {
       const formattedTime = formatTime24(hour, minute);
       times.push(formattedTime);
@@ -457,13 +456,11 @@ console.log("availabledays",availableDays)
     setTimes(times);
   };
   
- let notAvailable=""
+
 //  update the appointment form 
 const [error, setError] = useState('')
 const handleChangeApp = (e) => {
-  console.log(e); // Corrected from 'event' to 'e'
   console.log("comes to handleChange first", times);
-  
   const { name, value, checked, type } = e.target;
   const newValue = type === "checkbox" ? checked : value;
 
@@ -476,15 +473,20 @@ const handleChangeApp = (e) => {
     setError('')
     setShowTimeSot(false);
     setTimes([]);
-    setSelectedDate("");
+
     setDepartmentSelected(value);
   }
 
   if (name === "Doctor_Name") {
     console.log("selected doctor name");
+    // setSelectedDate(getCurrentFormattedDate())
     setError('')
     setShowTimeSot(false);
     setTimes([]);
+  //  Object.keys(appFormData).length > 0 && setAppFormData({
+  //     ...appFormData,  
+  //     Date: "",        
+  //   });
     const selectedDoctor = doctorNames.find(
       (doctor) => doctor.name === value
     );
@@ -538,39 +540,43 @@ const handleChangeApp = (e) => {
     }
   }
 };
-
+const getCurrentDate = () => {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = today.getFullYear();
+  return `${year}-${month}-${day}`;
+};
+// useEffect(() => {
+//   if (selectedDoctor) {
+//     setSelectedDate(getCurrentDate());
+//   }
+// }, [selectedDoctor])
+  console.log("formdata",formData)
   console.log("dfghgf",appFormData)
-  // const [slotDate,setSlotDate]=useState('')
-  // const handelSlots=(date)=>{
-  //   setSlotDate(date)
-  //   var selectedDay = new Date(date)
-  //   .toLocaleString("en-us", { weekday: "short" })
-  //   .toLowerCase();
-  //   console.log("sleDay",selectedDay)
-    
-  // }
-  useEffect(() => {
-    const formData = {
-      doctor_id: selectedDoctorId,
-      date: selectedDate
-    };
+ 
+  // useEffect(() => {
+  //   const formData = {
+  //     doctor_id: selectedDoctorId,
+  //     date: selectedDate
+  //   };
 
-    if (selectedDoctorId && selectedDate) {
-      (async () => {
-        try {
-          const response = await axios.post('https://api.voxprosolutions.com:8080/api/appointment_solt', formData, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          console.log(response.data);
-          setBookedSlot(response.data);
-        } catch (err) {
-          console.log(err);
-        }
-      })();
-    }
-  }, [selectedDoctorId, selectedDate]); // Added selectedDate to dependencies
+  //   if (selectedDoctorId && selectedDate) {
+  //     (async () => {
+  //       try {
+  //         const response = await axios.post('https://api.voxprosolutions.com:8080/api/appointment_solt', formData, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem('token')}`
+  //           }
+  //         });
+  //         console.log(response.data);
+  //         setBookedSlot(response.data);
+  //       } catch (err) {
+  //         console.log(err);
+  //       }
+  //     })();
+  //   }
+  // }, [selectedDoctorId, selectedDate]); // Added selectedDate to dependencies
 
   useEffect(() => {
     console.log("bookedSlot:", bookedSlot);
@@ -586,21 +592,41 @@ const handleChangeApp = (e) => {
 
   const handleFormEmpty=()=>{
    setSelectedDoctorId('')
-    setFormData({})
-    setAppFormData({})
+    // setFormData({})
+    // setAppFormData({})
     setSelectedTime('')
     setSelectedDate("")
     setTimes([])
    
   }
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(':');
+    if (minutes.length === 2 ) {
+        return time;
+    }
+    const minutesNum = parseInt(minutes, 10);
+    let formattedMinutes = minutes;
+    // if (minutesNum > 3) {
+    //     formattedMinutes = '1' + minutes;
+    // }
+
+    // Remove the leading zero if it exists and minutes are not '00' or ends with '0'
+    if (formattedMinutes.startsWith('0') && formattedMinutes !== '00' && formattedMinutes[1] !== '0') {
+      formattedMinutes = formattedMinutes.slice(1);
+  }
+ 
+    return `${hours}:${formattedMinutes}`;
+};
   const handleAddAppoinment = () => {
+    console.log("selectedTime",selectedTime)
+    console.log("timmee",formatTime(selectedTime))
     const addApp = {
       doctor_id: selectedDoctorId,
       doctor_name: appFormData.Doctor_Name,
       department: appFormData.Department,
       patient_id: formData.id,
       date: appFormData.Date,
-      time: selectedTime,
+      time:formatTime(selectedTime),
       remarks: appFormData.Remarks,
     };
     dispatch(addAppoinment(addApp, handleFormEmpty))
@@ -608,7 +634,6 @@ const handleChangeApp = (e) => {
     .then((result) => {
       console.log('Appointment added:', result);
       handleFormEmpty()
-      setOpen(false)
     })
     .catch((error) => {
       console.error('Failed to add appointment:', error)
@@ -622,7 +647,7 @@ const getDayName = (date) => {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return days[date.getDay()];
 };
-
+console.log("appFormData",appFormData)
 console.log("appointment",appointment)
   return (
     <Box
@@ -963,7 +988,7 @@ console.log("appointment",appointment)
                       Array.isArray(receivedData) &&
                       receivedData.some((data) => {
                         // console.log('Checking time:', data.time, time);
-                        return data.time === time;
+                        return data.time ===formatTime(time);
                       });
                     return (
                       <Button
@@ -978,14 +1003,23 @@ console.log("appointment",appointment)
                               ? "2px solid blue"
                               : "2px solid lightgray",
                           backgroundColor:
-                            selectedTime === time ? "blue" : "white",
-                          color: selectedTime === time ? "white" : "black",
+                            isDisabled
+                              ? "gray"  // Color for disabled state indicating booked
+                              : selectedTime === time
+                                ? "blue"
+                                : "white",
+                          color:
+                            isDisabled
+                              ? "white" // Text color for disabled state
+                              : selectedTime === time
+                                ? "white"
+                                : "black",
                           borderRadius: "5px",
                           cursor: "pointer",
                           mt: 2,
                         }}
                       >
-                        {time}
+                        {formatTime(time)}
                       </Button>
                     );
                   })}

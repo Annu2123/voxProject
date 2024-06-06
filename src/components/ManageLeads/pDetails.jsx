@@ -12,6 +12,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { startGetRelgnList } from "../../actions/Religion/religion";
 import { startGetReferList } from "../../actions/ReferBy/referBy";
+import {
+  startAddPatient,
+  startUpdatePatient,
+} from "../../actions/Patient/patient";
 const referBy = () => {
   const dispatch = useDispatch();
 
@@ -38,6 +42,7 @@ const religion = () => {
 };
 
 const Pdetails = () => {
+  const dispatch=useDispatch()
   const location = useLocation()
   const {state} = location
   const [formData, setFormData] = useState({});
@@ -50,7 +55,8 @@ const Pdetails = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(formData);
+    console.log(formData);
+    dispatch(startUpdatePatient(formData))
   };
 
   const handleChange = (e) => {
@@ -62,7 +68,7 @@ const Pdetails = () => {
       [name]: newValue,
     }));
   };
-
+console.log("state",state)
   const p_form = [
     {
       label: "Phone Number",
@@ -175,7 +181,7 @@ const Pdetails = () => {
       formDataKey: "address",
     },
   ];
-
+console.log("pform",p_form)
   return (
     <Card sx={{ width: "100%" }}>
       <Box sx={{ p: 1, minHeight: "45px", backgroundColor: "#90e0ef" }}>

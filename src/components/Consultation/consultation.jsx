@@ -457,13 +457,20 @@ console.log("availabledays",availableDays)
     setTimes(times);
   };
   
- let notAvailable=""
+
 //  update the appointment form 
 const [error, setError] = useState('')
 const handleChangeApp = (e) => {
   console.log(e); // Corrected from 'event' to 'e'
   console.log("comes to handleChange first", times);
+  const getCurrentFormattedDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const year = String(today.getFullYear()).slice(-2); // Get last two digits of year
   
+    return `${day}/${month}/${year}`;
+  };
   const { name, value, checked, type } = e.target;
   const newValue = type === "checkbox" ? checked : value;
 
@@ -476,12 +483,13 @@ const handleChangeApp = (e) => {
     setError('')
     setShowTimeSot(false);
     setTimes([]);
-    setSelectedDate("");
+
     setDepartmentSelected(value);
   }
 
   if (name === "Doctor_Name") {
     console.log("selected doctor name");
+    // setSelectedDate(getCurrentFormattedDate())
     setError('')
     setShowTimeSot(false);
     setTimes([]);
@@ -538,7 +546,19 @@ const handleChangeApp = (e) => {
     }
   }
 };
-
+const getCurrentDate = () => {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = today.getFullYear();
+  return `${year}-${month}-${day}`;
+};
+useEffect(() => {
+  if (selectedDoctor) {
+    setSelectedDate(getCurrentDate());
+  }
+}, [selectedDoctor])
+  console.log("formdata",formData)
   console.log("dfghgf",appFormData)
   // const [slotDate,setSlotDate]=useState('')
   // const handelSlots=(date)=>{
@@ -549,28 +569,28 @@ const handleChangeApp = (e) => {
   //   console.log("sleDay",selectedDay)
     
   // }
-  useEffect(() => {
-    const formData = {
-      doctor_id: selectedDoctorId,
-      date: selectedDate
-    };
+  // useEffect(() => {
+  //   const formData = {
+  //     doctor_id: selectedDoctorId,
+  //     date: selectedDate
+  //   };
 
-    if (selectedDoctorId && selectedDate) {
-      (async () => {
-        try {
-          const response = await axios.post('https://api.voxprosolutions.com:8080/api/appointment_solt', formData, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          console.log(response.data);
-          setBookedSlot(response.data);
-        } catch (err) {
-          console.log(err);
-        }
-      })();
-    }
-  }, [selectedDoctorId, selectedDate]); // Added selectedDate to dependencies
+  //   if (selectedDoctorId && selectedDate) {
+  //     (async () => {
+  //       try {
+  //         const response = await axios.post('https://api.voxprosolutions.com:8080/api/appointment_solt', formData, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem('token')}`
+  //           }
+  //         });
+  //         console.log(response.data);
+  //         setBookedSlot(response.data);
+  //       } catch (err) {
+  //         console.log(err);
+  //       }
+  //     })();
+  //   }
+  // }, [selectedDoctorId, selectedDate]); // Added selectedDate to dependencies
 
   useEffect(() => {
     console.log("bookedSlot:", bookedSlot);
@@ -622,7 +642,7 @@ const getDayName = (date) => {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return days[date.getDay()];
 };
-
+console.log("appFormData",appFormData)
 console.log("appointment",appointment)
   return (
     <Box
@@ -904,7 +924,7 @@ console.log("appointment",appointment)
                             InputLabelProps={{
                               shrink: true,
                             }}
-                            value={appFormData[field.label] || ""}
+                            value={appFormData[field.label] || selectedDate}
                             // value={slotDate}
                             onChange={handleChangeApp}
                             // onChange={(e)=>{handelSlots(e.target.value)}}

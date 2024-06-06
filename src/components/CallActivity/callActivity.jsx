@@ -15,7 +15,7 @@ import CustomTable from "../Table/customTable";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { searchActivity,searchActivityNum } from "../../actions/CallActivity/callActivity";
+import { searchActivity, searchActivityNum } from "../../actions/CallActivity/callActivity";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "react-modal";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
@@ -75,19 +75,19 @@ const columns = [
     disablePadding: false,
     label: "Call Status",
   },
-  
+
 ];
 
 const CallActivity = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
- const[number,setNumber]=useState('')
+  const [number, setNumber] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentAudioUrl, setCurrentAudioUrl] = useState(null);
   const [audio, setAudio] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   // const classes = useStyles();
-  const [inputType, setInputType] = useState('date');
+  const [inputType, setInputType] = useState('non');
   const [numberValue, setNumberValue] = useState('');
   const getCurrentDateTime = () => {
     const now = new Date();
@@ -166,10 +166,10 @@ const CallActivity = () => {
   const handleSearch = () => {
     if (inputType === 'number') {
       const formData = {
-        phone_num: number 
+        phone_num: number
       };
       console.log('Number search:', formData);
-    
+
       dispatch(searchActivityNum(formData));
     } else if (inputType === 'date') {
       // Construct formData for date search
@@ -178,22 +178,22 @@ const CallActivity = () => {
         to_date: toDateTime,
       }
       console.log('Date search:', formData)
-     
+
       dispatch(searchActivity(formData))
     } else {
-     alert("invalide output")
+      alert("invalide output")
       console.log('Invalid input type')
     }
   }
-  
+
 
   const list = useSelector((state) => {
     return state?.callActivitySlice?.callList;
   });
   const handlePlay = (url) => {
-    console.log("url",url)
+    console.log("url", url)
     window.open(url, '_blank')
-  
+
   };
   const callActivityList = list?.map((call, i) => ({
     sl_no: i + 1,
@@ -209,12 +209,12 @@ const CallActivity = () => {
         variant="outlined"
         onClick={() => handlePlay(call.rec_link)}
       >
-       <PlayArrowIcon fontSize="small" />
+        <PlayArrowIcon fontSize="small" />
       </Button>
     ),
   }));
 
-  
+
 
   // const handlePause = () => {
   //   if (audio) {
@@ -241,7 +241,7 @@ const CallActivity = () => {
 
   return (
     <>
-    
+
       <Box
         sx={{
           display: "flex",
@@ -258,30 +258,45 @@ const CallActivity = () => {
         }}
       >
         <Box
-  sx={{
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 2,
-    mt: 4,
-    width: "30%", // Set width to 100%
-  }}
->
-  <TextField
-    select
-    // size="small"
-    label="Select Input Type"
-    value={inputType}
-    onChange={handleInputTypeChange}
-    variant="outlined"
-    sx={{ width: "100%" }} // Set width to 100%
-  >
-    <MenuItem value="date">Date</MenuItem>
-    <MenuItem value="number">Number</MenuItem>
-  </TextField>
-</Box>
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 2,
+            mt: 4,
+            width: "30%", // Set width to 100%
+          }}
+        >
+          <TextField
+            select
+            // size="small"
+            label="Search By Number"
+            value={inputType}
+            onChange={handleInputTypeChange}
+            variant="outlined"
+            sx={{ width: "100%" }} // Set width to 100%
+          >
+            <MenuItem value="date">Non</MenuItem>
+            <MenuItem value="number">Number</MenuItem>
+          </TextField>
+        </Box>
 
-        {inputType === "date" && <Box
+        {inputType === "number" && <Box>
+          <TextField
+            label="Number"
+            type="tel"
+            size="small"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              step: 1, // 1 second step
+            }}
+          />
+        </Box>}
+        <Box
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -313,8 +328,8 @@ const CallActivity = () => {
               step: 1, // 1 second step
             }}
           />
-        </Box>}
-       {inputType === "date" && <Box
+        </Box>
+        <Box
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -346,22 +361,8 @@ const CallActivity = () => {
               step: 1, // 1 second step
             }}
           />
-        </Box>}
-       {inputType === "number" && <Box>
-        <TextField
-            label="Number"
-            type="tel"
-            size="small"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{
-              step: 1, // 1 second step
-            }}
-          />
-        </Box>}
+        </Box>
+
         <Button
           size="small"
           variant="contained"
@@ -389,9 +390,9 @@ const CallActivity = () => {
           </Tooltip>
         </Box> */}
 
-        <Divider />
+      <Divider />
 
-        {/* <DialogContent>
+      {/* <DialogContent>
           <Box sx={{ display: "flex", justifyContent: "center", gap: 5 }}>
             <Button
               variant="contained"

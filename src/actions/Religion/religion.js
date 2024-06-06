@@ -4,15 +4,26 @@ import toast from "react-hot-toast";
 
 const token = localStorage.getItem("token");
 
-export const startAddRelgn = createAsyncThunk("addRelgn", async (formData) => {
+export const startAddRelgn = createAsyncThunk("addRelgn", async (formData,{rejectWithValue}) => {
   const Api = "https://api.voxprosolutions.com:8080/api/religion_add";
   const data = formData
-  const response = await axios.post(Api,data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+  try{
+
+    const response = await axios.post(Api,data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  }catch (error) {
+    if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {
+      const errorMessages = error.response.data.messages.errors;
+      const formattedErrors = Object.values(errorMessages).flat().join(', ');
+      return rejectWithValue(formattedErrors);
+    }
+    return rejectWithValue(error.message);
+  }
+ 
 });
 
 export const startGetRelgnList = createAsyncThunk("getDept", async () => {
@@ -58,8 +69,11 @@ const initialState = {
         })
         .addCase(startAddRelgn.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.error.message;
-          toast.error('Something went wrong...', action.error.message)
+          const error = action.payload ? action.payload : action.error.message;
+          const errorMessages = error.split(',');
+          const firstError = errorMessages[0].trim();
+          state.error = firstError
+          toast.error(state.error)
         });
 
         builder

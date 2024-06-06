@@ -114,6 +114,9 @@ export const updateDoc = createAsyncThunk("updateDoc", async (formData, { reject
         Authorization: `Bearer ${token}`,
       },
     });
+
+    // const { id } = formData;
+    // const updatedDoctor = await dispatch(getDoctorById(id)).unwrap();
     return response.data;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.messages && error.response.data.messages.errors) {

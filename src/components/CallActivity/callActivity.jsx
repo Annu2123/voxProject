@@ -9,16 +9,23 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+// import { makeStyles } from '@material-ui/core/styles';
 import React, { useEffect, useState } from "react";
 import CustomTable from "../Table/customTable";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { searchActivity } from "../../actions/CallActivity/callActivity";
+import { searchActivity,searchActivityNum } from "../../actions/CallActivity/callActivity";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "react-modal";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import toast from "react-hot-toast";
+// const useStyles = makeStyles((theme) => ({
+//   formControl: {
+//     margin: theme.spacing(1),
+//     minWidth: 120,
+//   },
+// }));
 const columns = [
   {
     id: "sl_no",
@@ -45,6 +52,12 @@ const columns = [
     label: "Call Date and Time",
   },
   {
+    id: "record",
+    align: "center",
+    disablePadding: false,
+    label: "Record",
+  },
+  {
     id: "duration",
     align: "center",
     disablePadding: false,
@@ -62,28 +75,28 @@ const columns = [
     disablePadding: false,
     label: "Call Status",
   },
-  {
-    id: "record",
-    align: "center",
-    disablePadding: false,
-    label: "Record",
-  },
+  
 ];
 
 const CallActivity = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+ const[number,setNumber]=useState('')
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentAudioUrl, setCurrentAudioUrl] = useState(null);
   const [audio, setAudio] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
+  // const classes = useStyles();
+  const [inputType, setInputType] = useState('date');
+  const [numberValue, setNumberValue] = useState('');
   const getCurrentDateTime = () => {
     const now = new Date();
     return now.toISOString().slice(0, 16);
   };
 
+  const handleInputTypeChange = (event) => {
+    setInputType(event.target.value);
+  };
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -151,17 +164,37 @@ const CallActivity = () => {
   // };
 
   const handleSearch = () => {
-    const formData = {
-      from_date: fromdateTime,
-      to_date: toDateTime,
-    };
-    dispatch(searchActivity(formData));
-  };
+    if (inputType === 'number') {
+      const formData = {
+        phone_num: number 
+      };
+      console.log('Number search:', formData);
+    
+      dispatch(searchActivityNum(formData));
+    } else if (inputType === 'date') {
+      // Construct formData for date search
+      const formData = {
+        from_date: fromdateTime,
+        to_date: toDateTime,
+      }
+      console.log('Date search:', formData)
+     
+      dispatch(searchActivity(formData))
+    } else {
+     alert("invalide output")
+      console.log('Invalid input type')
+    }
+  }
+  
 
   const list = useSelector((state) => {
     return state?.callActivitySlice?.callList;
   });
-
+  const handlePlay = (url) => {
+    console.log("url",url)
+    window.open(url, '_blank')
+  
+  };
   const callActivityList = list?.map((call, i) => ({
     sl_no: i + 1,
     agent_num: call.agent_num,
@@ -181,49 +214,34 @@ const CallActivity = () => {
     ),
   }));
 
-  const handlePlay = (url) => {
-    if (audio) {
-      audio.pause();
-    }
-    const newAudio = new Audio(url);
-    newAudio.play();
-    setAudio(newAudio);
-    setCurrentAudioUrl(url);
-    setIsModalOpen(true);
-    setIsPlaying(true);
+  
 
-    newAudio.onended = () => {
-      setIsModalOpen(false);
-      setIsPlaying(false);
-      setCurrentAudioUrl(null);
-    };
-  };
+  // const handlePause = () => {
+  //   if (audio) {
+  //     audio.pause();
+  //     setIsPlaying(false);
+  //   }
+  // };
 
-  const handlePause = () => {
-    if (audio) {
-      audio.pause();
-      setIsPlaying(false);
-    }
-  };
+  // const handleResume = () => {
+  //   if (audio) {
+  //     audio.play();
+  //     setIsPlaying(true);
+  //   }
+  // };
 
-  const handleResume = () => {
-    if (audio) {
-      audio.play();
-      setIsPlaying(true);
-    }
-  };
-
-  const closeModal = () => {
-    if (audio) {
-      audio.pause();
-    }
-    setIsModalOpen(false);
-    setIsPlaying(false);
-    setCurrentAudioUrl(null);
-  };
+  // const closeModal = () => {
+  //   if (audio) {
+  //     audio.pause();
+  //   }
+  //   setIsModalOpen(false);
+  //   setIsPlaying(false);
+  //   setCurrentAudioUrl(null);
+  // };
 
   return (
     <>
+    
       <Box
         sx={{
           display: "flex",
@@ -239,18 +257,31 @@ const CallActivity = () => {
           flexDirection: { xs: "column", md: "column " },
         }}
       >
-        {/* <TextField
-          label="Form date"
-          type="datetime-local"
-          size="small"
-          sx={{ width: { xs: "100%", md: "15%" } }}
-          value={formDate.replace(" ", "T")}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={handleFromDateChange}
-        /> */}
         <Box
+  sx={{
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    mt: 4,
+    width: "30%", // Set width to 100%
+  }}
+>
+  <TextField
+    select
+    // size="small"
+    label="Select Input Type"
+    value={inputType}
+    onChange={handleInputTypeChange}
+    variant="outlined"
+    sx={{ width: "100%" }} // Set width to 100%
+  >
+    <MenuItem value="date">Date</MenuItem>
+    <MenuItem value="number">Number</MenuItem>
+  </TextField>
+</Box>
+
+        {inputType === "date" && <Box
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -260,7 +291,7 @@ const CallActivity = () => {
           }}
         >
           <TextField
-            label="Form Date"
+            label="From Date"
             type="date"
             size="small"
             value={formDate}
@@ -270,7 +301,7 @@ const CallActivity = () => {
             }}
           />
           <TextField
-            label="Form Time"
+            label="From Time"
             type="time"
             size="small"
             value={formTime}
@@ -282,21 +313,8 @@ const CallActivity = () => {
               step: 1, // 1 second step
             }}
           />
-        </Box>
-
-        {/* <TextField
-          label="To Date"
-          size="small"
-          type="datetime-local"
-          value={toDate}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={handleToDateChange}
-          sx={{ width: { xs: "100%", md: "15%" } }}
-        /> */}
-
-        <Box
+        </Box>}
+       {inputType === "date" && <Box
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -306,7 +324,7 @@ const CallActivity = () => {
           }}
         >
           <TextField
-            label="Form Date"
+            label="To Date"
             type="date"
             size="small"
             value={toDate}
@@ -328,7 +346,22 @@ const CallActivity = () => {
               step: 1, // 1 second step
             }}
           />
-        </Box>
+        </Box>}
+       {inputType === "number" && <Box>
+        <TextField
+            label="Number"
+            type="tel"
+            size="small"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              step: 1, // 1 second step
+            }}
+          />
+        </Box>}
         <Button
           size="small"
           variant="contained"
@@ -344,7 +377,7 @@ const CallActivity = () => {
         <CustomTable columns={columns} rows={callActivityList} />
       </Box>
 
-      <Dialog open={isModalOpen}>
+      {/* <Dialog open={isModalOpen}>
         <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
           <DialogTitle variant="h6" sx={{ color: "#0077b6" }}>
             <b> Playing Audio </b>
@@ -354,11 +387,11 @@ const CallActivity = () => {
               <CloseIcon fontSize="small" />
             </Button>
           </Tooltip>
-        </Box>
+        </Box> */}
 
         <Divider />
 
-        <DialogContent>
+        {/* <DialogContent>
           <Box sx={{ display: "flex", justifyContent: "center", gap: 5 }}>
             <Button
               variant="contained"
@@ -371,8 +404,8 @@ const CallActivity = () => {
               Close
             </Button>
           </Box>
-        </DialogContent>
-      </Dialog>
+        </DialogContent> */}
+      {/* </Dialog> */}
     </>
   );
 };

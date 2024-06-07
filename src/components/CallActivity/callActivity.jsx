@@ -9,6 +9,11 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import dayjs from 'dayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Importing the named export AdapterDayjs
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // import { makeStyles } from '@material-ui/core/styles';
 import React, { useEffect, useState } from "react";
 import CustomTable from "../Table/customTable";
@@ -20,6 +25,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Modal from "react-modal";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import toast from "react-hot-toast";
+const currentDateAndTime = dayjs()
 // const useStyles = makeStyles((theme) => ({
 //   formControl: {
 //     margin: theme.spacing(1),
@@ -81,6 +87,7 @@ const columns = [
 const CallActivity = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [selectDate, setSelectDate] = useState(currentDateAndTime)
   const [number, setNumber] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentAudioUrl, setCurrentAudioUrl] = useState(null);
@@ -112,9 +119,9 @@ const CallActivity = () => {
     const seconds = String(now.getSeconds()).padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
   };
-  const [formDate, setFormDate] = useState(getCurrentDate());
+  const [formDate, setFormDate] = useState(currentDateAndTime);
   const [formTime, setFormTime] = useState(getCurrentTime());
-  const [toDate, setToDate] = useState(getCurrentDate());
+  const [toDate, setToDate] = useState(currentDateAndTime);
   const [toTime, setToTime] = useState(getCurrentTime());
   const [fromdateTime, formSetDateTime] = useState("");
   const [toDateTime, toSetDateTime] = useState("");
@@ -174,8 +181,8 @@ const CallActivity = () => {
     } else if (inputType === 'date') {
       // Construct formData for date search
       const formData = {
-        from_date: fromdateTime,
-        to_date: toDateTime,
+        from_date: formattedDateTime = dayjs(formDate).format('YYYY-MM-DD HH:mm:ss'),
+        to_date: formattedDateTime = dayjs(toDate).format('YYYY-MM-DD HH:mm:ss'),
       }
       console.log('Date search:', formData)
 
@@ -185,7 +192,10 @@ const CallActivity = () => {
       console.log('Invalid input type')
     }
   }
-
+// console.log(formDate)
+// const formattedDateTime = dayjs(formDate).format('YYYY-MM-DD HH:mm:ss')
+// console.log(formattedDateTime)
+// console.log(toDate)
 
   const list = useSelector((state) => {
     return state?.callActivitySlice?.callList;
@@ -240,7 +250,7 @@ const CallActivity = () => {
   // };
 
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
 
       <Box
         sx={{
@@ -257,15 +267,15 @@ const CallActivity = () => {
           flexDirection: { xs: "column", md: "column " },
         }}
       >
-        <Box
+        {/* <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
             gap: 2,
             mt: 4,
-            width: "28%", 
-            height:"26%"
+            width: "28%",
+            height: "26%"
           }}
         >
           <TextField
@@ -280,38 +290,33 @@ const CallActivity = () => {
             <MenuItem value="date">None</MenuItem>
             <MenuItem value="number" >Enter Number</MenuItem>
           </TextField>
-        </Box>
-
-        {inputType === "number" && <Box>
-          <TextField
-            label="Number"
-            type="tel"
-            size="small"
-            value={number}
-            placeholder="Enter Mobile Number..."
-            onChange={(e) => setNumber(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{
-              step: 1, // 1 second step
-            }}
-            sx={{
-              width: "19rem", // Set width to 100%
-              height: "45px", // Set the desired height here
-            }}
-          />
-        </Box>}
+        </Box> */}
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: 2,
+            gap: 4,
             mt: 4,
+            width: "50%", // Set the width to 100% to make it take up the full width
+            height: "100px", // Set the height to increase the size vertically
+         
+            
           }}
         >
-          <TextField
+          {/* <DatePicker/> */}
+          <DateTimePicker
+            label="FromDate"
+            value={formDate}
+            onChange={(date) => setFormDate(date)}
+            ampm={true} // Enable AM/PM selection
+            inputFormat="dd-MM-yyyy hh:mm a" // Custom input format
+            sx={{
+              width: "50%", // Set the width to 100% to fill the available space
+              height: "45px", // Set the desired height here
+            }}
+          />
+          {/* <TextField
             label="From Date"
             type="date"
             size="small"
@@ -320,31 +325,35 @@ const CallActivity = () => {
             InputLabelProps={{
               shrink: true,
             }}
-          />
+          /> */}
           <TextField
-            label="From Time"
-            type="time"
-            size="small"
-            value={formTime}
-            onChange={(e) => setFormTime(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
+            select
+            // size="small"
+            label="Option"
+            value={inputType}
+            onChange={handleInputTypeChange}
+            variant="outlined"
+            sx={{
+              width: "50%", // Set the width to 100% to fill the available space
+              height: "45px", // Set the desired height here
             }}
-            inputProps={{
-              step: 1, // 1 second step
-            }}
-          />
+          >
+            <MenuItem value="date">None</MenuItem>
+            <MenuItem value="number" >Enter Number</MenuItem>
+          </TextField>
         </Box>
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: 2,
-            mt: 4,
+            gap: 4,
+            mt: -2,
+            width: "50%", // Set the width to 100% to make it take up the full width
+            height: "100px", // Set the height to increase the size vertically
           }}
         >
-          <TextField
+          {/* <TextField
             label="To Date"
             type="date"
             size="small"
@@ -353,8 +362,20 @@ const CallActivity = () => {
             InputLabelProps={{
               shrink: true,
             }}
+          /> */}
+          {/* <DatePicker/> */}
+          <DateTimePicker
+            label="To Date"
+            value={toDate}
+            onChange={(date) => setToDate(date)}
+            ampm={true} // Enable AM/PM selection
+            inputFormat="dd-MM-yyyy hh:mm a" // Custom input format
+            sx={{
+              width: "48%", // Set the width to 100% to fill the available space
+              height: "45px", // Set the desired height here
+            }}
           />
-          <TextField
+          {/* <TextField
             label="Form Time"
             type="time"
             size="small"
@@ -366,7 +387,29 @@ const CallActivity = () => {
             inputProps={{
               step: 1, // 1 second step
             }}
-          />
+          /> */}
+          
+        {inputType === "number" && <Box>
+          <TextField
+  label="Enter Number"
+  type="text"
+  // size="small"
+  value={number}
+  placeholder="Enter Mobile Number..."
+  onChange={(e) => setNumber(e.target.value)}
+  InputLabelProps={{
+    shrink: true,
+  }}
+  inputProps={{
+    step: 1, // 1 second step
+  }}
+  sx={{
+    width: "100%", // Set the desired width here, for example, 70% of the available space
+    height: "45px", // Set the desired height here, for example, 60px
+  }}
+/>
+
+        </Box>}
         </Box>
 
         <Button
@@ -413,7 +456,7 @@ const CallActivity = () => {
           </Box>
         </DialogContent> */}
       {/* </Dialog> */}
-    </>
+    </LocalizationProvider>
   );
 };
 

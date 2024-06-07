@@ -8,7 +8,10 @@ import {
   searchPatient,
   startGetPatient,
 } from "../../actions/ManageLeads/manageLeads";
-
+import dayjs from 'dayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Importing the named export AdapterDayjs
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 const columns = [
   {
     id: "sl_no",
@@ -95,7 +98,7 @@ const ManageLeads = () => {
   }));
 
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box
         sx={{
           display: "flex",
@@ -111,6 +114,28 @@ const ManageLeads = () => {
           flexDirection: { xs: "column", md: "row" },
         }}
       >
+        <DateTimePicker
+            label="From Date"
+            // value={toDate}
+            // onChange={(date) => setToDate(date)}
+            ampm={true} // Enable AM/PM selection
+            inputFormat="dd-MM-yyyy hh:mm a" // Custom input format
+            sx={{
+              width: "20%", // Set the width to 100% to fill the available space
+              height: "45px", // Set the desired height here
+            }}
+          />
+           <DateTimePicker
+            label="To Date"
+            // value={toDate}
+            // onChange={(date) => setToDate(date)}
+            ampm={true} // Enable AM/PM selection
+            inputFormat="dd-MM-yyyy hh:mm a" // Custom input format
+            sx={{
+              width: "20%", // Set the width to 100% to fill the available space
+              height: "45px", // Set the desired height here
+            }}
+          />
         <TextField
           label="Choose Leads"
           select
@@ -146,7 +171,7 @@ const ManageLeads = () => {
       <Box sx={{ mt: 2 }}>
         <CustomTable columns={columns} rows={patientList} />
       </Box>
-    </>
+    </LocalizationProvider >
   );
 };
 

@@ -12,6 +12,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { format } from 'date-fns';
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import MailIcon from "@mui/icons-material/Mail";
 import CloseIcon from "@mui/icons-material/Close";
@@ -649,6 +650,20 @@ const getDayName = (date) => {
 };
 console.log("appFormData",appFormData)
 console.log("appointment",appointment)
+const DateFormatter = (date) => {
+  // Parse the input date string
+  const parsedDate = new Date(date);
+  // Format the date to dd-MM-yyyy
+  const formattedDate = format(parsedDate, 'dd-MM-yyyy');
+  return formattedDate;
+};
+function formatDate(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  return formattedDate;
+}
+console.log("selctedDoc",selectedDoctor)
   return (
     <Box
       sx={{
@@ -918,7 +933,7 @@ console.log("appointment",appointment)
                           md={3}
                           sx={{ display: "flex", justifyContent: "center" }}
                         >
-                          <TextField
+                          {/* <TextField
                             sx={{ width: "80%" }}
                             size="small"
                             type="date"
@@ -929,19 +944,39 @@ console.log("appointment",appointment)
                             InputLabelProps={{
                               shrink: true,
                             }}
-                            value={appFormData[field.label] || ""}
-                            // value={slotDate}
-                            onChange={handleChangeApp}
-                            // onChange={(e)=>{handelSlots(e.target.value)}}
+                            value={appFormData[field.label] || ""}                       
+                            onChange={handleChangeApp}                         
                             disabled={!departmentSelected}
                             InputProps={{
                               inputProps: {
                                 min: selectedDoctor?.start_date,
                                 max: selectedDoctor?.end_date,
-                              },
-                      
+                              },                     
                             }}
-                          />
+                          /> */}
+                           <TextField
+               
+                fullWidth
+                sx={{ width: "80%" }}
+                            size="small"
+                            type="date"
+                            
+                            variant={field.variant}
+                            label={field.label}
+                            placeholder={field.placeholder}
+                            name={field.label}
+                value={appFormData && appFormData[field.label] || ""}    
+                onChange={handleChangeApp}   
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  inputProps: {
+                    min: selectedDoctor.start_date ,
+                    max: selectedDoctor.end_date ,
+                  },
+                }}
+              />
                         </Grid>
                       ) : (
                         <Grid

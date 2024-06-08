@@ -18,6 +18,11 @@ import {
   DialogTitle,
   DialogContentText,
 } from "@mui/material";
+import dayjs from 'dayjs'
+import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Importing the named export AdapterDayjs
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import React, { useEffect, useState } from "react";
 import SearchField from "../Table/customSearch";
 import { useLocation, useNavigate } from "react-router";
@@ -28,6 +33,12 @@ import {
   removeDoctor,
   updateDoc,
 } from "../../actions/Doctor/doctor";
+const dayjsConvert = (timeString) => {
+  return dayjs(timeString, 'HH:mm');
+};
+const timeStringToDayjs = (timeString) => {
+  return dayjs(timeString, 'HH:mm');
+};
 import Swal from 'sweetalert2'
 const EditDoctor = () => {
   const location = useLocation();
@@ -35,15 +46,15 @@ const EditDoctor = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const { state } = location;
-  console.log("sdfgfds",location)
-  console.log("stae",state)
+  console.log("sdfgfds", location)
+  console.log("stae", state)
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [docId, setDocId] = useState(state ? state.id : "");
   const [docName, setDocName] = useState(state ? state.name : "");
   const [docNumber, setDocNumber] = useState(state ? state.phone_num : "");
   const [docEmail, setDocEmail] = useState(state ? state.email_id : "");
-  const [docFromDate,setDocFromDate] = useState(state ? state.start_date :'');
-  const [docToDate,setDocToDate] = useState(state ? state.end_date :'');
+  const [docFromDate, setDocFromDate] = useState(state ? state.start_date : '');
+  const [docToDate, setDocToDate] = useState(state ? state.end_date : '');
   const [docDepartment, setDocDepartment] = useState(
     state ? state.department : ""
   );
@@ -72,7 +83,7 @@ const EditDoctor = () => {
 
   ////console.log(timeSlot,'time');
   const [slotType, setSlotType] = useState();
-console.log("slotTpe",slotType)
+  console.log("slotTpe", slotType)
   // useEffect(() => {
   //   const xy =
   //     timeSlot && timeSlot !== null&& timeSlot !== undefined && timeSlot != [] && timeSlot[0]["day"] === "all_Day"
@@ -116,7 +127,7 @@ console.log("slotTpe",slotType)
           end_time: timeSlot[0]["time_slot_end"],
         };
       }
-      console.log("slotDat",slotData,'slot')
+      console.log("slotDat", slotData, 'slot')
       setSelectedDays(slotData);
     }
   }, [loading, timeSlot]);
@@ -187,43 +198,35 @@ console.log("slotTpe",slotType)
       });
     }
   };
-  const deletePopUP=()=>{
+  const deletePopUP = () => {
     Swal.fire({
-        title: "Deleted!",
-        text: ` Doctor deleted.`,
-        icon: "success"
-      })
-   }
-   const DeleteError = (error) => {
-    Swal.fire({
-        title: `${error}`,
-        text: ` cancel delete request.`,
-        icon: "cancel"
+      title: "Deleted!",
+      text: ` Doctor deleted.`,
+      icon: "success"
     })
-}
-const formatTimeWithAM = (time) => {
-  const [hours, minutes] = time.split(":");
-  const hoursInt = parseInt(hours, 10);
-  const formattedHours = hoursInt % 12 || 12;
-  const ampm = hoursInt < 12 ? "AM" : "PM";
-  return `${formattedHours}:${minutes} ${ampm}`;
-};
+  }
+  const DeleteError = (error) => {
+    Swal.fire({
+      title: `${error}`,
+      text: ` cancel delete request.`,
+      icon: "cancel"
+    })
+  }
   const handleTimeChange1 = (day, field) => (event) => {
-    console.log("dayyy",day)
-    let time= formatTimeWithAM(event.target.value)
-    console.log("event valuuu",event.target.valueime)
+    console.log("dayyy", day)
+    console.log("event valuuu", event.format("HH:mm"))
     let newTimes = null;
     if (day !== "all_day") {
       newTimes = {
         ...selectedDays,
         [day]: {
           ...selectedDays[day],
-          [field]: event.target.value,
+          [field]: event.format("HH:mm"),
         },
       };
     } else {
       newTimes = {
-        [day]: { ...selectedDays[day], [field]: event.target.value },
+        [day]: { ...selectedDays[day], [field]: event.format("HH:mm") },
       };
     }
     setSelectedDays(newTimes);
@@ -232,19 +235,19 @@ const formatTimeWithAM = (time) => {
   // console.log(selectedDays,'time')
 
   const handleUpdate = () => {
-    const timeData = {...selectedDays}
-    if(slotType === "selectDay"){
+    const timeData = { ...selectedDays }
+    if (slotType === "selectDay") {
       delete timeData.all_Day;
-    }else if(slotType === "all_day"){
-      delete timeData.mon 
+    } else if (slotType === "all_day") {
+      delete timeData.mon
       delete timeData.tue
-      delete timeData.wed 
+      delete timeData.wed
       delete timeData.thu
-      delete timeData.fri 
+      delete timeData.fri
       delete timeData.sat
       delete timeData.sun
     }
-    
+
     const formData = {
       id: docId,
       name: docName,
@@ -254,21 +257,15 @@ const formatTimeWithAM = (time) => {
       consultation_fee: fee,
       department: department,
       time_slot: timeData,
-      start_date:docFromDate ,
-      end_date:docToDate
+      start_date: docFromDate,
+      end_date: docToDate
     };
     ////console.log(formData,'formData')
     dispatch(updateDoc(formData))
     navigate('/dashboard')
-    
+
   };
-  // const formatTimeWithAM = (time) => {
-  //   const [hours, minutes] = time.split(":")
-  //   const hoursInt = parseInt(hours, 10)
-  //   const formattedHours = hoursInt % 12 || 12
-  //   const ampm = hoursInt < 12 ? "AM" : "PM";
-  //   return `${formattedHours}:${minutes} ${ampm}`
-  // };
+
   const handleBack = () => {
     navigate(-1);
     setX({});
@@ -294,44 +291,47 @@ const formatTimeWithAM = (time) => {
     setSlotType(value);
     setSelectedDays({});
   };
-  console.log("timeslot",timeSlot)
-  console.log("seleceddayd",selectedDays)
-//  console.log("ammmm", formatTimeWithAM())
+  console.log("timeslot", timeSlot)
+  console.log("seleceddayd", selectedDays)
+  //  console.log("ammmm", formatTimeWithAM())
+
+
   return (
-    <Box>
-      <Box
-        sx={{
-          width: "100%",
-          backgroundColor: "white",
-          minHeight: "70vh",
-          borderRadius: "9px",
-          mt: 2,
-          borderTop: "1px solid lightgray",
-        }}
-      >
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Box>
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            p: 1.5,
-            borderRadius: 2,
+            width: "100%",
+            backgroundColor: "white",
+            minHeight: "70vh",
+            borderRadius: "9px",
+            mt: 2,
+            borderTop: "1px solid lightgray",
           }}
         >
-          <Button
-            variant="contained"
-            size="small"
-            disableElevation
-            onClick={handleBack}
-            sx={{ mb: 1 }}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              p: 1.5,
+              borderRadius: 2,
+            }}
           >
-            back
-          </Button>
-          <Typography variant="h6" sx={{ color: "#0077b6" }}>
-            <b> Edit Doctor </b>
-          </Typography>
-        </Box>
-        <Divider />
-        {/* <Box
+            <Button
+              variant="contained"
+              size="small"
+              disableElevation
+              onClick={handleBack}
+              sx={{ mb: 1 }}
+            >
+              back
+            </Button>
+            <Typography variant="h6" sx={{ color: "#0077b6" }}>
+              <b> Edit Doctor </b>
+            </Typography>
+          </Box>
+          <Divider />
+          {/* <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -349,36 +349,36 @@ const formatTimeWithAM = (time) => {
           onSearch={handleSearch}
         />
       </Box> */}
-        <Box
-          sx={{ display: "flex", justifyContent: "flex-end", mt: 1, p: 1 }}
-          onClick={handleDeleteConfirmationOpen}
-        >
-          <Button variant="contained" color="error" size="small">
-            <DeleteIcon fontSize="small" />
-          </Button>
-        </Box>
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", mt: 1, p: 1 }}
+            onClick={handleDeleteConfirmationOpen}
+          >
+            <Button variant="contained" color="error" size="small">
+              <DeleteIcon fontSize="small" />
+            </Button>
+          </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            m: 1,
-            gap: 2,
-            flexDirection: { xs: "column", md: "row" },
-          }}
-        >
           <Box
             sx={{
-              minHeight: "100px",
-              width: { xs: "100%", md: "50%" },
-              backgroundColor: "#FAFAFA",
-              mt: 2,
-              borderRadius: "8px",
-              border: "1px solid lightgray",
+              display: "flex",
+              justifyContent: "space-between",
+              m: 1,
+              gap: 2,
+              flexDirection: { xs: "column", md: "row" },
             }}
           >
-            <Grid container spacing={2} sx={{ p: 2 }}>
-              {/* <Grid
+            <Box
+              sx={{
+                minHeight: "100px",
+                width: { xs: "100%", md: "50%" },
+                backgroundColor: "#FAFAFA",
+                mt: 2,
+                borderRadius: "8px",
+                border: "1px solid lightgray",
+              }}
+            >
+              <Grid container spacing={2} sx={{ p: 2 }}>
+                {/* <Grid
                 item
                 xs={12}
                 sx={{ display: "flex", justifyContent: "center" }}
@@ -392,123 +392,123 @@ const formatTimeWithAM = (time) => {
                   readOnly
                 />
               </Grid> */}
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <TextField
-                  label="Doctor Department*"
-                  sx={{ width: "60%" }}
-                  size="small"
-                  placeholder="Doctor ID"
-                  value={docDepartment}
-                  readOnly
-                  disabled
-                />
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <TextField
+                    label="Doctor Department*"
+                    sx={{ width: "60%" }}
+                    size="small"
+                    placeholder="Doctor ID"
+                    value={docDepartment}
+                    readOnly
+                    disabled
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <TextField
+                    label="Doctor Name*"
+                    sx={{ width: "60%" }}
+                    size="small"
+                    placeholder="Doctor Name"
+                    type="text"
+                    value={docName}
+                    readOnly
+                    disabled
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <TextField
+                    label="Doctor Mobile Number*"
+                    placeholder="Mobile Number"
+                    type="number"
+                    sx={{ width: "60%" }}
+                    size="small"
+                    value={docNumber}
+                    readOnly
+                    disabled
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <TextField
+                    label="Doctor Email ID*"
+                    placeholder="Email"
+                    type="email"
+                    sx={{ width: "60%" }}
+                    size="small"
+                    value={docEmail}
+                    readOnly
+                    disabled
+                  />
+                </Grid>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <TextField
-                  label="Doctor Name*"
-                  sx={{ width: "60%" }}
-                  size="small"
-                  placeholder="Doctor Name"
-                  type="text"
-                  value={docName}
-                  readOnly
-                  disabled
-                />
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <TextField
-                  label="Doctor Mobile Number*"
-                  placeholder="Mobile Number"
-                  type="number"
-                  sx={{ width: "60%" }}
-                  size="small"
-                  value={docNumber}
-                  readOnly
-                  disabled
-                />
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <TextField
-                  label="Doctor Email ID*"
-                  placeholder="Email"
-                  type="email"
-                  sx={{ width: "60%" }}
-                  size="small"
-                  value={docEmail}
-                  readOnly
-                  disabled
-                />
-              </Grid>
-            </Grid>
-            <Divider width="100%" height="10px" sx={{ mt: 2 }} />
+              <Divider width="100%" height="10px" sx={{ mt: 2 }} />
 
-            <Grid container spacing={2} sx={{ p: 2 }}>
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <TextField
-                  label="Time Interval(Ex : 30 mins)*"
-                  sx={{ width: "60%" }}
-                  size="small"
-                  placeholder="Please Enter Time Interval"
-                  type="text"
-                  value={interval}
-                  onChange={(e) => setInterval(e.target.value)}
-                />
+              <Grid container spacing={2} sx={{ p: 2 }}>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <TextField
+                    label="Time Interval(Ex : 30 mins)*"
+                    sx={{ width: "60%" }}
+                    size="small"
+                    placeholder="Please Enter Time Interval"
+                    type="text"
+                    value={interval}
+                    onChange={(e) => setInterval(e.target.value)}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <TextField
+                    label="Consultation Fee*"
+                    placeholder="please Enter Consultation Fee"
+                    type="number"
+                    sx={{ width: "60%" }}
+                    size="small"
+                    value={fee}
+                    onChange={(e) => setFee(e.target.value)}
+                  />
+                </Grid>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <TextField
-                  label="Consultation Fee*"
-                  placeholder="please Enter Consultation Fee"
-                  type="number"
-                  sx={{ width: "60%" }}
-                  size="small"
-                  value={fee}
-                  onChange={(e) => setFee(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            // <div>
-            //   <Typography>{selectedDays[day.value]}</Typography>
-            // </div>
+            </Box>
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              // <div>
+              //   <Typography>{selectedDays[day.value]}</Typography>
+              // </div>
 
-            <Box
-              sx={{
-                minHeight: "100px",
-                width: { xs: "100%", md: "50%" },
-                backgroundColor: "#FAFAFA",
-                mt: 2,
-                borderRadius: "8px",
-                border: "1px solid lightgray",
-              }}
-            >
-              {/* <Box
+              <Box
+                sx={{
+                  minHeight: "100px",
+                  width: { xs: "100%", md: "50%" },
+                  backgroundColor: "#FAFAFA",
+                  mt: 2,
+                  borderRadius: "8px",
+                  border: "1px solid lightgray",
+                }}
+              >
+                {/* <Box
             sx={{
               minHeight: "100px",
               width: { xs: "100%", md: "50%" },
@@ -518,73 +518,73 @@ const formatTimeWithAM = (time) => {
               border: "1px solid lightgray",
             }}
           > */}
-            <Box sx={{display:"flex",gap:2,ml:2,mt:1.5,mr:2}}>
-              <TextField
-                label="From Date"
-                fullWidth
-                type="date"
-                size="small"
-                value={docFromDate}
-                onChange={(e)=>setDocFromDate(e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <TextField
-                label="To Date"
-                fullWidth
-                type="date"
-                size="small"
-                value={docToDate}
-                onChange={(e)=>setDocToDate(e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Box>
-            {/* days selection */}
-            <Divider sx={{mt:1}}/>
-              <FormControl sx={{ p: 2 }}>
-                <FormLabel id="demo-controlled-radio-buttons-group">
-                  Select Working Hours*
-                </FormLabel>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="controlled-radio-buttons-group"
-                  value={slotType}
-                  // onChange={(e) => setSlotType(e.target.value)}
-                  onChange={handleSlotTypeChange}
-                >
-                  <FormControlLabel
-                    value="all_Day"
-                    control={<Radio />}
-                    label="All Days"
+                <Box sx={{ display: "flex", gap: 2, ml: 2, mt: 1.5, mr: 2 }}>
+                  <TextField
+                    label="From Date"
+                    fullWidth
+                    type="date"
+                    size="small"
+                    value={docFromDate}
+                    onChange={(e) => setDocFromDate(e.target.value)}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
-                  <FormControlLabel
-                    value="selectDay"
-                    control={<Radio />}
-                    label="Select Days"
+                  <TextField
+                    label="To Date"
+                    fullWidth
+                    type="date"
+                    size="small"
+                    value={docToDate}
+                    onChange={(e) => setDocToDate(e.target.value)}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
-                </RadioGroup>
-              </FormControl>
-            {/* </Box> */}
-              {slotType === "all_Day" && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    width: "100%",
-                    flexDirection: "column",
-                    gap: 1,
-                    p: 2,
-                    mt: -1,
-                  }}
-                >
-                  <Divider sx={{ mt: -1 }} />
-                  <Typography variant="body1">All Day</Typography>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <TextField
+                </Box>
+                {/* days selection */}
+                <Divider sx={{ mt: 1 }} />
+                <FormControl sx={{ p: 2 }}>
+                  <FormLabel id="demo-controlled-radio-buttons-group">
+                    Select Working Hours*
+                  </FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="controlled-radio-buttons-group"
+                    value={slotType}
+                    // onChange={(e) => setSlotType(e.target.value)}
+                    onChange={handleSlotTypeChange}
+                  >
+                    <FormControlLabel
+                      value="all_Day"
+                      control={<Radio />}
+                      label="All Days"
+                    />
+                    <FormControlLabel
+                      value="selectDay"
+                      control={<Radio />}
+                      label="Select Days"
+                    />
+                  </RadioGroup>
+                </FormControl>
+                {/* </Box> */}
+                {slotType === "all_Day" && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      width: "100%",
+                      flexDirection: "column",
+                      gap: 1,
+                      p: 2,
+                      mt: -1,
+                    }}
+                  >
+                    <Divider sx={{ mt: -1 }} />
+                    <Typography variant="body1">All Day</Typography>
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      {/* <TextField
                       label="Start Time"
                       sx={{ width: "40%" }}
                       size="small"
@@ -592,105 +592,128 @@ const formatTimeWithAM = (time) => {
                       type="time"
                       value={
                         Object.keys(selectedDays).includes("all_day") &&
-                       selectedDays["all_day"]["start_time"]
+                         selectedDays["all_day"]["start_time"]
                       }
                       onChange={handleTimeChange1("all_day", "start_time")}
                       // readOnly
                       InputLabelProps={{
                         shrink: true,
                       }}
-                    />
-                    <TextField
-                      label="End Time"
-                      sx={{ width: "40%" }}
-                      size="small"
-                      placeholder="End Time"
-                      type="time"
-                      value={
-                        Object.keys(selectedDays).includes("all_day") &&
-                      selectedDays["all_day"]["end_time"]
-                      }
-                      onChange={handleTimeChange1("all_day", "end_time")}
-                      // readOnly
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
+                    /> */}
+
+                      <TimePicker
+                        label="Start Time"
+                        value={
+                          timeStringToDayjs(selectedDays.all_day?.start_time)
+                        }
+
+                        onChange={handleTimeChange1('all_day', 'start_time')}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+
+                      <TimePicker
+                        label="End Time"
+                        value={
+                          timeStringToDayjs(selectedDays.all_day?.end_time)
+                        }
+
+                        onChange={handleTimeChange1('all_day', 'end_time')}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    </Box>
                   </Box>
-                </Box>
-              )}
+                )}
 
-              {slotType === "selectDay" && (
-                <Box sx={{ p: 2, mt: -2 }}>
-                  <Divider sx={{ mt: -1 }} />
-                  <FormGroup>
-                    {daysOfWeek?.map((day, index) => (
-                      <Grid container spacing={2} key={index}>
-                        <Grid item xs={2}>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={Object.keys(selectedDays).includes(
-                                  day?.value
-                                )}
-                                onChange={handleDayChange}
-                                value={day?.value}
-                              />
-                            }
-                            label={day?.day}
-                          />
-                        </Grid>
-                        {Object.keys(selectedDays).includes(day?.value) && (
-                          <Grid
-                            item
-                            container
-                            lg={8}
-                            md={12}
-                            spacing={1}
-                            sx={{ mt: { md: -2, lg: 0 }, ml: 1 }}
-                          >
-                            <Grid item xs={6}>
-                              <TextField
-                                label="From time"
-                                type="time"
-                                fullWidth
-                                size="small"
-                                value={selectedDays[day?.value]["start_time"]}
-                                onChange={handleTimeChange1(
-                                  day?.value,
-                                  "start_time"
-                                )}
-                                InputLabelProps={{ shrink: true }}
-                                inputProps={{ step: 300 }}
-                              />
-                            </Grid>
-                            <Grid item xs={6}>
-                              <TextField
-                                label="To time"
-                                type="time"
-                                fullWidth
-                                size="small"
-                                value={selectedDays[day?.value]["end_time"]}
-                                onChange={handleTimeChange1(
-                                  day?.value,
-                                  "end_time"
-                                )}
-                                InputLabelProps={{ shrink: true }}
-                                inputProps={{ step: 300 }}
-                              />
-                            </Grid>
+                {slotType === "selectDay" && (
+                  <Box sx={{ p: 2, mt: -2 }}>
+                    <Divider sx={{ mt: -1 }} />
+                    <FormGroup>
+                      {daysOfWeek?.map((day, index) => (
+                        <Grid container spacing={2} key={index}>
+                          <Grid item xs={2}>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={Object.keys(selectedDays).includes(
+                                    day?.value
+                                  )}
+                                  onChange={handleDayChange}
+                                  value={day?.value}
+                                />
+                              }
+                              label={day?.day}
+                            />
                           </Grid>
-                        )}
-                      </Grid>
-                    ))}
-                  </FormGroup>
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
+                          {Object.keys(selectedDays).includes(day?.value) && (
+                            <Grid
+                              item
+                              container
+                              lg={8}
+                              md={12}
+                              spacing={1}
+                              sx={{ mt: { md: -2, lg: 0 }, ml: 1 }}
+                            >
+                              <Grid item xs={6}>
+                                {/* <TextField
+                                  label="From time"
+                                  type="time"
+                                  fullWidth
+                                  size="small"
+                                  value={selectedDays[day?.value]["start_time"]}
+                                  onChange={handleTimeChange1(
+                                    day?.value,
+                                    "start_time"
+                                  )}
+                                  InputLabelProps={{ shrink: true }}
+                                  inputProps={{ step: 300 }}
+                                /> */}
+                                 <TimePicker
+                          label="From time"
+                          value={  timeStringToDayjs(selectedDays[day?.value]["start_time"])}
+                          onChange={handleTimeChange1(
+                            day?.value,
+                            "start_time"
+                          )}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
 
-        {/* <Grid container spacing={2} sx={{ p: 2 }}>
+                              </Grid>
+                              <Grid item xs={6}>
+                                {/* <TextField
+                                  label="To time"
+                                  type="time"
+                                  fullWidth
+                                  size="small"
+                                  value={selectedDays[day?.value]["end_time"]}
+                                  onChange={handleTimeChange1(
+                                    day?.value,
+                                    "end_time"
+                                  )}
+                                  InputLabelProps={{ shrink: true }}
+                                  inputProps={{ step: 300 }}
+                                /> */}
+                                <TimePicker
+                         label="To time"
+                         value={ timeStringToDayjs(selectedDays[day?.value]["end_time"])}
+                         onChange={handleTimeChange1(
+                           day?.value,
+                           "end_time"
+                         )}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                              </Grid>
+                            </Grid>
+                          )}
+                        </Grid>
+                      ))}
+                    </FormGroup>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
+
+          {/* <Grid container spacing={2} sx={{ p: 2 }}>
           <Grid item xs={6}>
             <TextField
               label="Doctor Id"
@@ -875,43 +898,44 @@ const formatTimeWithAM = (time) => {
           </Box>
         )} */}
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="success"
-            disableElevation
-            size="small"
-            onClick={handleUpdate}
-            sx={{ mb: 2 }}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            Update
-          </Button>
+            <Button
+              variant="contained"
+              color="success"
+              disableElevation
+              size="small"
+              onClick={handleUpdate}
+              sx={{ mb: 2 }}
+            >
+              Update
+            </Button>
+          </Box>
         </Box>
+        <Dialog
+          open={deleteConfirmationOpen}
+          onClose={handleDeleteConfirmationClose}
+        >
+          <DialogTitle>Delete Confirmation</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to remove the doctor?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteConfirmationClose}>Cancel</Button>
+            <Button onClick={handleDelete} color="error" autoFocus>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
-      <Dialog
-        open={deleteConfirmationOpen}
-        onClose={handleDeleteConfirmationClose}
-      >
-        <DialogTitle>Delete Confirmation</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to remove the doctor?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteConfirmationClose}>Cancel</Button>
-          <Button onClick={handleDelete} color="error" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+    </LocalizationProvider >
   );
 };
 

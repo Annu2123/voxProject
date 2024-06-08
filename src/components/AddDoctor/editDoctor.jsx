@@ -114,7 +114,7 @@ const EditDoctor = () => {
   useEffect(() => {
     if (!loading && timeSlot) {
       const slotData = {};
-      if (timeSlot[0]["day"] !== "all_day") {
+      if ( timeSlot && timeSlot.length > 0 && timeSlot[0]["day"] !== "all_day") {
         for (let i = 0; i < timeSlot.length; i++) {
           slotData[timeSlot[i]["day"]] = {
             start_time: timeSlot[i]["time_slot_start"],
@@ -667,15 +667,23 @@ const EditDoctor = () => {
                                   InputLabelProps={{ shrink: true }}
                                   inputProps={{ step: 300 }}
                                 /> */}
-                                 <TimePicker
-                          label="From time"
-                          value={  timeStringToDayjs(selectedDays[day?.value]["start_time"])}
-                          onChange={handleTimeChange1(
-                            day?.value,
-                            "start_time"
-                          )}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
+                                <TimePicker
+      label="From time"
+      value={timeStringToDayjs(selectedDays[day?.value]["start_time"])}
+      onChange={handleTimeChange1(day?.value, "start_time")}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          sx={{ height: "30px" }} // Adjust the height as needed
+        />
+      )}
+      PopperProps={{
+        sx: {
+          marginTop: "-8px", // Adjust the marginTop to position the TimePicker
+        },
+      }}
+    />
+                      
 
                               </Grid>
                               <Grid item xs={6}>

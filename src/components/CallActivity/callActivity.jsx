@@ -9,6 +9,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+
 import dayjs from 'dayjs'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Importing the named export AdapterDayjs
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
@@ -365,11 +366,12 @@ const CallActivity = () => {
           /> */}
           {/* <DatePicker/> */}
           <DateTimePicker
+          views={['year', 'day', 'hours', 'minutes', 'seconds']}
             label="To Date"
             value={toDate}
             onChange={(date) => setToDate(date)}
             ampm={true} // Enable AM/PM selection
-            inputFormat="dd-MM-yyyy hh:mm a" // Custom input format
+            inputFormat="dd-MM-yyyy hh:mm:ss a" // Custom input format
             sx={{
               width: "48%", // Set the width to 100% to fill the available space
               height: "45px", // Set the desired height here

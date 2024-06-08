@@ -12,7 +12,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import dayjs from 'dayjs'
+import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Importing the named export AdapterDayjs
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format } from 'date-fns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import MailIcon from "@mui/icons-material/Mail";
 import CloseIcon from "@mui/icons-material/Close";
@@ -36,7 +42,8 @@ import axios from "axios";
 
 const religion = () => {
   const dispatch = useDispatch();
-
+ 
+  // console.log("pationt",patientData)
   useEffect(() => {
     dispatch(startGetRelgnList());
   }, []);
@@ -46,7 +53,7 @@ const religion = () => {
   let r = relgnList?.map((r) => r.religion);
   return r?.length > 0 ? r : ["none"];
 };
-
+// const patientData = location?.state?.userData || []
 const referBy = () => {
   const dispatch = useDispatch();
 
@@ -75,20 +82,27 @@ const docList = () => {
 };
 
 const Consultation = ({ searchData }) => {
+  // const[patientData,setPatientData]=useState({})
+  const location = useLocation();
+  const {state} =location
+  // const patientData=(location?.state?.userData[0] || {})
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
-
+// console.log("statee",state)
+// console.log(patientData)
   const data = useSelector((state) => {
     return state.patientSlice?.findData;
   });
   const actualData = data && data[0];
 
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState( {});
   const [appFormData, setAppFormData] = useState({});
   // const [departmentSelected, setDepartmentSelected] = useState(false);
   const [open, setOpen] = useState(false);
-
+  // useEffect(() => {
+  //   // If patientData changes, update the formData accordingly
+  //   setFormData(patientData.length > 0 ? patientData[0] : {});
+  // }, [patientData]);
   useEffect(() => {
     if (actualData) {
       setFormData(actualData);
@@ -213,7 +227,7 @@ console.log("selectedDocter",selectedDoctor)
     {
       label: "Patient Name*",
       placeholder: "Patient Name",
-      value: actualData ? actualData.name : "",
+      value: actualData ? actualData.name  :"",
       type: "text",
       formDataKey: "name",
     },
@@ -349,6 +363,8 @@ console.log("selectedDocter",selectedDoctor)
   const handleClose = () => {
     setOpen(false);
     setAppFormData({})
+    setTimes([])
+    setError('')
     // window.location.reload();
   };
 
@@ -464,7 +480,7 @@ const handleChangeApp = (e) => {
   console.log("comes to handleChange first", times);
   const { name, value, checked, type } = e.target;
   const newValue = type === "checkbox" ? checked : value;
-
+console.log("newValue",newValue)
   setAppFormData((prevData) => ({
     ...prevData,
     [name]: newValue,
@@ -493,7 +509,7 @@ const handleChangeApp = (e) => {
     );
     setSelectedDoctorId(selectedDoctor ? selectedDoctor.id : "");
     setSelectedDoctorName(selectedDoctor ? selectedDoctor.name : "");
-  }
+   }
 
   if (name === "Date") {
     console.log("come to date");
@@ -607,11 +623,6 @@ const getCurrentDate = () => {
     }
     const minutesNum = parseInt(minutes, 10);
     let formattedMinutes = minutes;
-    // if (minutesNum > 3) {
-    //     formattedMinutes = '1' + minutes;
-    // }
-
-    // Remove the leading zero if it exists and minutes are not '00' or ends with '0'
     if (formattedMinutes.startsWith('0') && formattedMinutes !== '00' && formattedMinutes[1] !== '0') {
       formattedMinutes = formattedMinutes.slice(1);
   }
@@ -664,7 +675,22 @@ function formatDate(dateString) {
   return formattedDate;
 }
 console.log("selctedDoc",selectedDoctor)
+
+const getDefaultValue = (field) => {
+  if (formData && formData[field.formDataKey]) {
+    return formData[field.formDataKey];
+  } else {
+    // Check if there's a default value available in `userData` for this field
+    if (state?.userData[0] && field.formDataKey in state.userData[0]) {
+      return state.userData[0][field.formDataKey];
+    } else {
+      return "";
+    }
+  }
+};
+
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
     <Box
       sx={{
         width: "100%",
@@ -719,7 +745,7 @@ console.log("selctedDoc",selectedDoctor)
                         label={field.label}
                         placeholder={field.placeholder}
                         name={field.formDataKey}
-                        value={formData[field.formDataKey] || ""}
+                        value={getDefaultValue(field)}
                         onChange={handleChange}
                         select
                       >
@@ -748,7 +774,8 @@ console.log("selctedDoc",selectedDoctor)
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        value={formData[field.formDataKey] || ""}
+                        value={getDefaultValue(field)}
+
                         onChange={handleChange}
                       />
                     </Grid>
@@ -770,7 +797,7 @@ console.log("selctedDoc",selectedDoctor)
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        value={formData[field.formDataKey] || ""}
+                        value={getDefaultValue(field)}
                         onChange={handleChange}
                       />
                     </Grid>
@@ -791,7 +818,7 @@ console.log("selctedDoc",selectedDoctor)
                         label={field.label}
                         placeholder={field.placeholder}
                         name={field.formDataKey}
-                        value={formData[field.formDataKey] || ""}
+                        value={getDefaultValue(field)}
                         onChange={handleChange}
                       />
                     </Grid>
@@ -810,7 +837,7 @@ console.log("selctedDoc",selectedDoctor)
                         variant={field.variant}
                         placeholder={field.placeholder}
                         name={field.formDataKey}
-                        value={formData[field.formDataKey] || ""}
+                        value={getDefaultValue(field)}
                         InputProps={
                           field.formDataKey === "phone_num" && actualData
                             ? { readOnly: true }
@@ -828,7 +855,13 @@ console.log("selctedDoc",selectedDoctor)
       </Box>
 
     {/* Modal content */}
-      <Dialog open={open} maxWidth="xl" fullWidth>
+      <Dialog open={open} maxWidth="xl" fullWidth  
+      //  PaperProps={{
+      //   sx: { 
+      //     transform: "translateY(-20%)" // Adjust this value as needed to move the dialog higher
+      //   }
+      //}}
+      >
         <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
           <DialogTitle variant="h6" sx={{ color: "#0077b6" }}>
             <b> Appointment </b>
@@ -949,6 +982,7 @@ console.log("selctedDoc",selectedDoctor)
                             disabled={!departmentSelected}
                             InputProps={{
                               inputProps: {
+                                
                                 min: selectedDoctor?.start_date,
                                 max: selectedDoctor?.end_date,
                               },                     
@@ -959,8 +993,7 @@ console.log("selctedDoc",selectedDoctor)
                 fullWidth
                 sx={{ width: "80%" }}
                             size="small"
-                            type="date"
-                            
+                            type="date"                            
                             variant={field.variant}
                             label={field.label}
                             placeholder={field.placeholder}
@@ -970,13 +1003,51 @@ console.log("selctedDoc",selectedDoctor)
                 InputLabelProps={{
                   shrink: true,
                 }}
-                InputProps={{
-                  inputProps: {
-                    min: selectedDoctor.start_date ,
-                    max: selectedDoctor.end_date ,
-                  },
+                inputProps={{
+                  inputMode: 'numeric', // Ensures numeric input on mobile devices
+        pattern: '\\d{4}-\\d{2}-\\d{2}', // Enforces pattern matching for yyyy-MM-dd format
+        title: 'Please enter a date in the format yyyy-MM-dd', // Error message for pattern mismatch
+                  min: selectedDoctor.start_date ? format(new Date(selectedDoctor.start_date), 'yyyy-MM-dd') : '',
+                  max: selectedDoctor.end_date ? format(new Date(selectedDoctor.end_date), 'yyyy-MM-dd') : '',
                 }}
               />
+                {/* <DatePicker
+        label={field.label} */}
+        {/* // value={appFormData && appFormData[field.label] || null}
+        // onChange={(newValue) => handleChangeApp({ target: { name: field.label, value: newValue } })} */}
+        {/* renderInput={(params) => (
+          <TextField
+            {...params}
+            fullWidth
+            sx={{ width: "60%", height: "40px" }}  // Adjust the width and height as needed
+            size="small"
+            variant={field.variant}
+            placeholder={field.placeholder}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        )}
+        inputFormat="yyyy-MM-dd"
+        // minDate={selectedDoctor.start_date}
+        // maxDate={selectedDoctor.end_date}
+        PopperProps={{
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, -10], // Adjust the second value to move the popper higher
+              },
+            },
+          ],
+        }} */}
+        {/* sx={{ 
+          width: "60%",   // Adjust the width as needed
+          '& .MuiInputBase-root': {
+            height: '40px',  // Adjust the height as needed
+          },
+        }}
+      /> */}
                         </Grid>
                       ) : (
                         <Grid
@@ -1113,6 +1184,7 @@ console.log("selctedDoc",selectedDoctor)
         </Button>
       </Box>
     </Box>
+    </LocalizationProvider >
   );
 };
 

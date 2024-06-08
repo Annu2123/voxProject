@@ -34,6 +34,7 @@
     "react-router": "^6.22.3",
     "react-router-dom": "^6.22.3",
     "react-time-picker": "^7.0.0",
+    "socket.io-client": "^4.7.5",
     "styled-components": "^6.1.11",
     "sweetalert2": "^11.11.0",
     "webpack": "^5.91.0"

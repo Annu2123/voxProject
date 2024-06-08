@@ -147,8 +147,12 @@ const initialState = {
         })
         .addCase(searchPatient.rejected, (state, action) => {
           state.loading = true;
-          state.error = action.payload ? action.payload : action.error.message;
-          toast.error(action.payload);
+          const error = action.payload ? action.payload : action.error.message;
+          const errorMessages = error.split(',');
+          const firstError = errorMessages[0].trim();
+          state.error=firstError
+          console.log("state",state)
+          toast.error(state);
         });
   
     }

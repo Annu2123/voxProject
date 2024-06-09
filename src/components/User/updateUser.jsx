@@ -121,6 +121,7 @@ const UpdateUser = () => {
         borderRadius: "9px",
         mt: 2,
         borderTop: "1px solid lightgray",
+        
       }}
     >
       <Box
@@ -129,6 +130,7 @@ const UpdateUser = () => {
           justifyContent: "space-between",
           p: 1.5,
           borderRadius: 2,
+          backgroundColor: "#90e0ef",
         }}
       >
         <Button

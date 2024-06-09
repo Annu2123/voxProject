@@ -103,6 +103,7 @@ const User = () => {
           justifyContent: "space-between",
           p: 1.5,
           borderRadius: 2,
+          backgroundColor: "#90e0ef",
         }}
       >
         <Typography variant="h6" sx={{ color: "#0077b6" }}>

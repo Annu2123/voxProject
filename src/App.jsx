@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Modal,Grid, TextField, Button,Box, Typography } from "@mui/material";
+import { Modal,Grid, TextField, Button,Box, Typography ,IconButton } from "@mui/material";
 import Navbar from "./components/Appbar/appbar";
+import CloseIcon from '@mui/icons-material/Close'
 import axios from "axios";
 import { useDispatch } from "react-redux";
 function App() {
@@ -17,10 +18,24 @@ function App() {
   const handleSave = () => {
    setOpen(false)
   };
-
+const handlePopUp=()=>{
+  setOpen(true)
+}
   const handleViewDetails = () => {
-    navigate("/consultation", { state: { userData } })
-    setOpen(false)
+    if(userData.length > 0){
+      navigate("/consultation", { state: { userData } })
+      setOpen(false)
+    }else{
+      const userData=[
+        {name: patientName ,
+         phone_num: number,
+        alt_phone_num:alt_phone_num,
+        refered_by: refferd  
+        }
+      ]
+      navigate("/consultation", { state: { userData } })
+      setOpen(false)
+    }
   };
 
   
@@ -103,117 +118,133 @@ console.log(userData)
 console.log("number",number)
   return (
     <>
-   <Modal 
-  open={open} 
-  onClose={(event, reason) => {
-    if (reason !== 'backdropClick') {
-      setOpen(false);
-    }
-  }}
->
-  <Box 
-    sx={{ 
-      position: 'absolute', 
-      top: '50%', 
-      left: '50%', 
-      transform: 'translate(-50%, -50%)', 
-      backgroundColor: '#495363', 
-      padding: '20px', 
-      borderRadius: '10px', 
-      maxWidth: '400px', 
-      width: '100%' 
-    }}
-  >
-    <Typography variant="h5" align="center" gutterBottom>
-      Incoming
-    </Typography>
-    <Grid container spacing={2} alignItems="center">
-      <Grid item xs={6}>
-        <TextField
-          label="Patient Name"
-          value={userObject && userObject.name || ""}
-          onChange={(e) => setPatientName(e.target.value)}
-          fullWidth
-          margin="normal"
-          size="small"
-          sx={{ backgroundColor: 'white' }} 
-        />
-      </Grid>
-      <Grid item xs={6}>
-        <TextField
-          label="Phone Number"
-          value={userObject && userObject.phone_num || number}
-          onChange={(e) => setNumber(e.target.value)}
-          fullWidth
-          margin="normal"
-          size="small"
-          sx={{ backgroundColor: 'white' }} 
-        />
-      </Grid>
-    </Grid>
-    {/* <Grid container spacing={2} alignItems="center">
-      <Grid item xs={6}>
-        <TextField
-          label="Gender"
-          value={userObject && userObject.gender || ""}
-          onChange={(e) => setNumber(e.target.value)}
-          fullWidth
-          margin="normal"
-          size="small"
-          sx={{ backgroundColor: 'white' }} 
-        />
-      </Grid> */}
-      {/* <Grid item xs={6}>
-        <TextField
-          label="adhaar_No"
-          value={userObject && userObject.aadhar_num || ""}
-          onChange={(e) => setPatientName(e.target.value)}
-          fullWidth
-          margin="normal"
-          size="small"
-          sx={{ backgroundColor: 'white' }}
-        />
-      </Grid> */}
-    {/* </Grid> */}
-    <Grid container spacing={2} alignItems="center">
-      <Grid item xs={6}>
-        <TextField
-          label="AlterNative Number"
-          value={userObject && userObject.alt_phone_num  || ""}
-          onChange={(e) => setAltNum(e.target.value)}
-          fullWidth
-          margin="normal"
-          size="small"
-          sx={{ backgroundColor: 'white' }} 
-        />
-      </Grid>
-      <Grid item xs={6}>
-        <TextField
-          label="Refferd By"
-          value={userObject && userObject.refered_by || ""}
-          onChange={(e) =>setReffred(e.target.value)}
-          fullWidth
-          margin="normal"
-          size="small"
-          sx={{ backgroundColor: 'white' }}
-        />
-      </Grid>
-    </Grid>
-    <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-     {userData.length < 0 ? (<Button variant="contained" color="primary" onClick={handleSave} style={{ marginRight: '10px' }}>
-        Save
-      </Button>):
-      <Button variant="contained" color="primary" onClick={handleSave} style={{ marginRight: '10px' }}>
-        Update
-      </Button>}
-      <Button variant="contained" color="primary" onClick={handleViewDetails}>
-        View Details
-      </Button>
-    </Box>
-  </Box>
-</Modal>
+     <Modal
+      open={open}
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          setOpen(false);
+        }
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#dadff0',
+          backdropFilter: 'blur(10px)',
+          padding: '20px',
+          borderRadius: '10px',
+          maxWidth: '600px',
+          width: '100%',
+        }}
+      >
+        <IconButton
+          onClick={() => setOpen(false)}
+          sx={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography variant="h5" align="center" gutterBottom>
+          Incoming
+        </Typography>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={6}>
+            <TextField
+              label="Patient Name"
+              value={userObject && userObject.name || patientName}
+              onChange={(e) => setPatientName(e.target.value)}
+              fullWidth
+              margin="normal"
+              size="small"
+              sx={{ backgroundColor: 'white', borderRadius: '5px' }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Phone Number"
+              value={userObject && userObject.phone_num || number}
+              onChange={(e) => setNumber(e.target.value)}
+              fullWidth
+              margin="normal"
+              size="small"
+              sx={{ backgroundColor: 'white', borderRadius: '5px' }}
+            />
+          </Grid>
+        </Grid>
+        {/* Uncomment and update the following section if needed */}
+        {/* <Grid container spacing={2} alignItems="center">
+          <Grid item xs={6}>
+            <TextField
+              label="Gender"
+              value={userObject && userObject.gender || ""}
+              onChange={(e) => setNumber(e.target.value)}
+              fullWidth
+              margin="normal"
+              size="small"
+              sx={{ backgroundColor: 'white', borderRadius: '5px' }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="adhaar_No"
+              value={userObject && userObject.aadhar_num || ""}
+              onChange={(e) => setPatientName(e.target.value)}
+              fullWidth
+              margin="normal"
+              size="small"
+              sx={{ backgroundColor: 'white', borderRadius: '5px' }}
+            />
+          </Grid>
+        </Grid> */}
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={6}>
+            <TextField
+              label="Alternative Number"
+              value={userObject && userObject.alt_phone_num || alt_phone_num}
+              onChange={(e) => setAltNum(e.target.value)}
+              fullWidth
+              margin="normal"
+              size="small"
+              sx={{ backgroundColor: 'white', borderRadius: '5px' }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Referred By"
+              value={userObject && userObject.refered_by || refferd}
+              onChange={(e) => setReffred(e.target.value)}
+              fullWidth
+              margin="normal"
+              size="small"
+              sx={{ backgroundColor: 'white', borderRadius: '5px' }}
+            />
+          </Grid>
+        </Grid>
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          {userData.length < 0 ? (
+            <Button variant="contained" color="primary" onClick={handleSave} style={{ marginRight: '10px' }}>
+              Save
+            </Button>
+          ) : (
+            <Button variant="contained" color="primary" onClick={handleSave} style={{ marginRight: '10px' }}>
+              Update
+            </Button>
+          )}
+          <Button variant="contained" color="primary" onClick={handleViewDetails}>
+            Appointment
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
 
-      {token && <Navbar />}
+
+      {token && <Navbar handlePopUp={handlePopUp}/>}
       
     </>
   );

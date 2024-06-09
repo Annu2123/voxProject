@@ -81,7 +81,7 @@ const docList = () => {
   return r;
 };
 
-const Consultation = ({ searchData }) => {
+const Consultation = ({ searchData,phoneNumber }) => {
   // const[patientData,setPatientData]=useState({})
   const location = useLocation();
   const {state} =location
@@ -107,13 +107,13 @@ console.log("statee",state)
   useEffect(() => {
     if (actualData) {
       setFormData(actualData);
-    } else if (state.userData.length > 0) {
+    } else if (state?.userData?.length > 0) {
       setFormData(state.userData[0]);
     } else if (actualData === undefined) {
       toast.error("Not found!");
-      setFormData({ phone_num: searchData });
+      setFormData({ phone_num: searchData ? searchData : phoneNumber });
     }
-  }, [actualData, state?.userData, searchData]);
+  }, [actualData, state?.userData,searchData,phoneNumber]);
 
   useEffect(() => {
     if (location.userData && location.userData.length > 0) {
@@ -374,7 +374,7 @@ console.log("selectedDocter",selectedDoctor)
     // window.location.reload();
   };
 
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedTime, setSelectedTime] = useState("");
 
   // let times = generateTimes();
 
@@ -520,7 +520,7 @@ console.log("newValue",newValue)
   if (name === "Date") {
     console.log("come to date");
     setSelectedDate(value);
-    
+    // setError("")
     var selectedDay = new Date(value)
       .toLocaleString("en-us", { weekday: "short" })
       .toLowerCase();
@@ -648,11 +648,12 @@ const getCurrentDate = () => {
       remarks: appFormData.Remarks,
     };
     console.log("Add",addApp)
-    dispatch(addAppoinment(addApp, handleFormEmpty))
+    dispatch(addAppoinment(addApp))
     .unwrap()
     .then((result) => {
       console.log('Appointment added:', result);
       handleFormEmpty()
+      setError("")
     })
     .catch((error) => {
       console.error('Failed to add appointment:', error)
@@ -1178,7 +1179,7 @@ console.log("times",times)
               mt: 1,
             }}
           >
-          { !error &&<Button
+          { !error && selectedTime.length > 0 && <Button
             variant="contained"
             color="warning"
             size="small"
@@ -1206,7 +1207,7 @@ console.log("times",times)
           size="small"
           onClick={handleSubmit}
         >
-          {actualData ? "Update Patient" :(state.userData.length > 0 ? "Update Patient" :"Add Patient")}
+          {actualData ? "Update Patient" :(state?.userData?.length > 0 ? "Update Patient" :"Add Patient")}
         </Button>
 
         <Button
@@ -1216,7 +1217,7 @@ console.log("times",times)
           size="small"
           onClick={() => handleOpen(formData)}
           disabled={
-            !(actualData || state?.userData.length > 0 || Object.keys(formData).length > 0)
+            !(actualData || state?.userData?.length > 0 || Object.keys(formData).length > 0)
           }>
           Appointment
         </Button>

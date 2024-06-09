@@ -33,6 +33,22 @@ const ConnectPatient = () => {
   const [searchType, setSearchType] = React.useState("");
   const [searchData, setSearchData] = React.useState('');
 
+  const handleDial=()=>{
+    const formData ={
+      key:"phone_num",
+      value:phoneNumber
+    }
+    console.log("dialpadd",formData)
+      dispatch(searchPatient(formData))
+      .unwrap()
+      .then((result) => {
+        console.log('patient Find Successfull:', result);
+        setOpen(false)
+      })
+      .catch((error) => {
+        console.error('Failed to Find Pateint:', error)
+      })
+  }
   const handleOpen = () => {
     setOpen(true);
   };
@@ -143,8 +159,12 @@ const ConnectPatient = () => {
               alignItems: "center",
               minHeight: "30px",
               flexDirection: { xs: "column", md: "row" },
+              backgroundColor: "#90e0ef",
             }}
           >
+             {/* <Typography variant="subtitle1" color="#023e8a">
+              <b>Doctor List</b>
+            </Typography> */}
             <Typography
               variant="subtitle2"
               sx={{
@@ -154,7 +174,9 @@ const ConnectPatient = () => {
                 borderRadius: "8px",
                 justifyContent: "center",
                 mt: 1,
+               
               }}
+              color="#023e8a"
             >
               Search
             </Typography>
@@ -213,6 +235,7 @@ const ConnectPatient = () => {
               justifyContent: "center",
               alignItems: "center",
               height: "30px",
+              backgroundColor: "#90e0ef",
             }}
           >
             <Typography
@@ -224,7 +247,9 @@ const ConnectPatient = () => {
                 borderRadius: "8px",
                 justifyContent: "center",
                 mt: 1,
+               
               }}
+                color="#023e8a"
             >
               Omni Channel
             </Typography>
@@ -325,6 +350,7 @@ const ConnectPatient = () => {
                   size="small"
                   disableElevation
                   variant="contained"
+                  onClick={handleDial}
                 >
                   Dial
                 </Button>
@@ -425,7 +451,7 @@ const ConnectPatient = () => {
 
       {/* <PatientDetails /> */}
       <Box sx={{ mt: 1 }}>
-        <Consultation  searchData={searchData}/>
+        <Consultation  searchData={searchData} phoneNumber={phoneNumber}/>
       </Box>
     </Box>
   );

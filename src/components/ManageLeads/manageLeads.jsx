@@ -8,6 +8,7 @@ import {
   searchPatient,
   startGetPatient,
 } from "../../actions/ManageLeads/manageLeads";
+import CallIcon from '@mui/icons-material/Call'
 import dayjs from 'dayjs'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Importing the named export AdapterDayjs
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
@@ -83,7 +84,21 @@ const ManageLeads = () => {
 
   const patientList = list?.map((pl, i) => ({
     sl_no: i + 1,
-    phone: pl.phone_num,
+     phone: 
+    (
+      <>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => handleCall(pl.phone_num)}
+          style={{ marginRight: 8,marginLeft: -4  }}
+        >
+          <CallIcon fontSize="small" />
+        </Button>
+        {pl.phone_num}
+      </>
+    ),
+    
     name: pl.name,
     doc_name: pl.refered_by,
     options: (
@@ -144,6 +159,7 @@ const ManageLeads = () => {
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
         >
+           <MenuItem value="none">None</MenuItem>
           <MenuItem value="phone_num">Phone Number</MenuItem>
         </TextField>
 

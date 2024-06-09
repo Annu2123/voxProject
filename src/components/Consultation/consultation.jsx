@@ -88,7 +88,7 @@ const Consultation = ({ searchData }) => {
   // const patientData=(location?.state?.userData[0] || {})
   const navigate = useNavigate();
   const dispatch = useDispatch();
-// console.log("statee",state)
+console.log("statee",state)
 // console.log(patientData)
   const data = useSelector((state) => {
     return state.patientSlice?.findData;
@@ -101,18 +101,24 @@ const Consultation = ({ searchData }) => {
   const [open, setOpen] = useState(false);
   // useEffect(() => {
   //   // If patientData changes, update the formData accordingly
-  //   setFormData(patientData.length > 0 ? patientData[0] : {});
-  // }, [patientData]);
+  //   setFormData(state.userData.length > 0 ? state?.userData[0] : {});
+  // }, [state]);
+  console.log("formDatatat",formData)
   useEffect(() => {
     if (actualData) {
       setFormData(actualData);
+    } else if (state.userData.length > 0) {
+      setFormData(state.userData[0]);
     } else if (actualData === undefined) {
       toast.error("Not found!");
       setFormData({ phone_num: searchData });
     }
-  }, [actualData]);
+  }, [actualData, state?.userData, searchData]);
+
   useEffect(() => {
-    setFormData({});
+    if (location.userData && location.userData.length > 0) {
+      setFormData(location.userData[0]);
+    }
   }, [location]);
 
   const [departments, setDepartments] = useState([]);
@@ -641,6 +647,7 @@ const getCurrentDate = () => {
       time:formatTime(selectedTime),
       remarks: appFormData.Remarks,
     };
+    console.log("Add",addApp)
     dispatch(addAppoinment(addApp, handleFormEmpty))
     .unwrap()
     .then((result) => {
@@ -662,25 +669,28 @@ const getDayName = (date) => {
 console.log("appFormData",appFormData)
 console.log("appointment",appointment)
 const DateFormatter = (date) => {
-  // Parse the input date string
   const parsedDate = new Date(date);
-  // Format the date to dd-MM-yyyy
   const formattedDate = format(parsedDate, 'dd-MM-yyyy');
   return formattedDate;
 };
-function formatDate(dateString) {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  return formattedDate;
-}
+const formatDate = (dateString) => {
+  try {
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  } catch (error) {
+    console.error('Invalid date format:', dateString);
+    return '';
+  }
+};
 console.log("selctedDoc",selectedDoctor)
 
 const getDefaultValue = (field) => {
   if (formData && formData[field.formDataKey]) {
     return formData[field.formDataKey];
   } else {
-    // Check if there's a default value available in `userData` for this field
     if (state?.userData[0] && field.formDataKey in state.userData[0]) {
       return state.userData[0][field.formDataKey];
     } else {
@@ -688,7 +698,37 @@ const getDefaultValue = (field) => {
     }
   }
 };
+// Function to convert 24-hour time to 12-hour format with AM/PM
+const convertTime = (time24) => {
+  if (typeof time24 === 'undefined' || time24 === null) {
+    console.error('Invalid time format:', time24);
+    return '';
+  }
+  time24 = String(time24)
+  if (time24 === "11:023") {
+    time24 = "11:23";
+  }
 
+  const [hourStr, minuteStr] = time24.split(':');
+  if (typeof hourStr === 'undefined' || typeof minuteStr === 'undefined') {
+    console.error('Invalid time format:', time24);
+    return '';
+  }
+
+  const hour = parseInt(hourStr, 10);
+  const minute = parseInt(minuteStr, 10);
+
+  if (isNaN(hour) || isNaN(minute)) {
+    console.error('Invalid hour or minute:', time24);
+    return '';
+  }
+
+  const period = hour < 12 ? 'AM' : 'PM'
+  const adjustedHour = hour % 12 || 12
+
+  return `${adjustedHour}:${minute.toString().padStart(2, '0')} ${period}`
+};
+console.log("times",times)
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
     <Box
@@ -1004,9 +1044,6 @@ const getDefaultValue = (field) => {
                   shrink: true,
                 }}
                 inputProps={{
-                  inputMode: 'numeric', // Ensures numeric input on mobile devices
-        pattern: '\\d{4}-\\d{2}-\\d{2}', // Enforces pattern matching for yyyy-MM-dd format
-        title: 'Please enter a date in the format yyyy-MM-dd', // Error message for pattern mismatch
                   min: selectedDoctor.start_date ? format(new Date(selectedDoctor.start_date), 'yyyy-MM-dd') : '',
                   max: selectedDoctor.end_date ? format(new Date(selectedDoctor.end_date), 'yyyy-MM-dd') : '',
                 }}
@@ -1111,13 +1148,13 @@ const getDefaultValue = (field) => {
                           backgroundColor:
                             isDisabled
                               ? "gray"  // Color for disabled state indicating booked
-                              : selectedTime === time
+                              : (selectedTime === time)
                                 ? "blue"
                                 : "white",
                           color:
                             isDisabled
                               ? "white" // Text color for disabled state
-                              : selectedTime === time
+                              :(selectedTime === time)
                                 ? "white"
                                 : "black",
                           borderRadius: "5px",
@@ -1125,7 +1162,7 @@ const getDefaultValue = (field) => {
                           mt: 2,
                         }}
                       >
-                        {formatTime(time)}
+                        {convertTime (formatTime(time))}
                       </Button>
                     );
                   })}
@@ -1169,7 +1206,7 @@ const getDefaultValue = (field) => {
           size="small"
           onClick={handleSubmit}
         >
-          {actualData ? "Update Patient" : "Add Patient"}
+          {actualData ? "Update Patient" :(state.userData.length > 0 ? "Update Patient" :"Add Patient")}
         </Button>
 
         <Button
@@ -1178,8 +1215,9 @@ const getDefaultValue = (field) => {
           color="success"
           size="small"
           onClick={() => handleOpen(formData)}
-          disabled={!actualData|| Object.keys(formData).length === 0}
-        >
+          disabled={
+            !(actualData || state?.userData.length > 0 || Object.keys(formData).length > 0)
+          }>
           Appointment
         </Button>
       </Box>

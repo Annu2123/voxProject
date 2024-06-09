@@ -170,7 +170,7 @@ const initialState = {
         })
         .addCase(addAppoinment.rejected, (state, action) => {
           state.loading = true;
-          const error = action.payload ? action.payload : action.error.message;
+          const error = action.payload ? action.payload : action.error.messages;
           const errorMessages = error.split(',')
           const firstError = errorMessages[0].trim()
           state.error = firstError

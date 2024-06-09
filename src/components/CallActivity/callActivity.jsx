@@ -187,7 +187,7 @@ const CallActivity = () => {
       }
       console.log('Date search:', formData)
 
-      dispatch(searchActivity(formData))
+      // dispatch(searchActivity(formData))
     } else {
       alert("invalide output")
       console.log('Invalid input type')
@@ -307,6 +307,7 @@ const CallActivity = () => {
         >
           {/* <DatePicker/> */}
           <DateTimePicker
+            views={['year', 'day', 'hours', 'minutes', 'seconds']}
             label="FromDate"
             value={formDate}
             onChange={(date) => setFormDate(date)}
@@ -330,17 +331,17 @@ const CallActivity = () => {
           <TextField
             select
             // size="small"
-            label="Option"
+            label="Alternate Search"
             value={inputType}
             onChange={handleInputTypeChange}
             variant="outlined"
             sx={{
-              width: "50%", // Set the width to 100% to fill the available space
-              height: "45px", // Set the desired height here
+              width: "50%", 
+              height: "45px", 
             }}
           >
             <MenuItem value="date">None</MenuItem>
-            <MenuItem value="number" >Enter Number</MenuItem>
+            <MenuItem value="number" > Number</MenuItem>
           </TextField>
         </Box>
         <Box
@@ -350,8 +351,8 @@ const CallActivity = () => {
             alignItems: "center",
             gap: 4,
             mt: -2,
-            width: "50%", // Set the width to 100% to make it take up the full width
-            height: "100px", // Set the height to increase the size vertically
+            width: "50%", 
+            height: "100px",
           }}
         >
           {/* <TextField
@@ -370,11 +371,11 @@ const CallActivity = () => {
             label="To Date"
             value={toDate}
             onChange={(date) => setToDate(date)}
-            ampm={true} // Enable AM/PM selection
-            inputFormat="dd-MM-yyyy hh:mm:ss a" // Custom input format
+            ampm={true} 
+            inputFormat="dd-MM-yyyy hh:mm:ss a" 
             sx={{
-              width: "48%", // Set the width to 100% to fill the available space
-              height: "45px", // Set the desired height here
+              width: "48%", 
+              height: "45px", 
             }}
           />
           {/* <TextField
@@ -393,7 +394,7 @@ const CallActivity = () => {
           
         {inputType === "number" && <Box>
           <TextField
-  label="Enter Number"
+  label="Enter Your Number"
   type="text"
   // size="small"
   value={number}

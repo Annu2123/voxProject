@@ -11,8 +11,10 @@ function App() {
   const [number, setNumber] = useState('');
   const [userData,setUserData]=useState([])
   const [userObject,setUserObject]=useState({})
+  const[refferd,setReffred]=useState("")
+  const[alt_phone_num,setAltNum]=useState("")
+  const[patientName,setPatientName]=useState("")
   const handleSave = () => {
-
    setOpen(false)
   };
 
@@ -63,8 +65,10 @@ function App() {
             const extractedObject = {
               aadhar_num: user.aadhar_num,          
               city:  user.city,            
-              gender: user.gender,          
-              name:  user.name,
+              gender: user.gender,             
+                alt_phone_num:user.alt_phone_num ,                 
+              name:  user.name,           
+              refered_by:  user.refered_by,           
               nationality:  user.nationality,
               phone_num:  user.phone_num,                       
             }
@@ -91,7 +95,7 @@ function App() {
       console.log(err)
      }
      
-    }, 1000);
+    }, 10000);
 
     return () => clearInterval(timer);
   }, []);
@@ -101,9 +105,11 @@ console.log("number",number)
     <>
    <Modal 
   open={open} 
-  onClose={() => setOpen(false)}
-  
-  disableBackdropClick={true}
+  onClose={(event, reason) => {
+    if (reason !== 'backdropClick') {
+      setOpen(false);
+    }
+  }}
 >
   <Box 
     sx={{ 
@@ -111,7 +117,7 @@ console.log("number",number)
       top: '50%', 
       left: '50%', 
       transform: 'translate(-50%, -50%)', 
-      backgroundColor: '#efedf5', 
+      backgroundColor: '#495363', 
       padding: '20px', 
       borderRadius: '10px', 
       maxWidth: '400px', 
@@ -124,9 +130,9 @@ console.log("number",number)
     <Grid container spacing={2} alignItems="center">
       <Grid item xs={6}>
         <TextField
-          label="Number"
-          value={userObject && userObject.phone_num || number}
-          onChange={(e) => setNumber(e.target.value)}
+          label="Patient Name"
+          value={userObject && userObject.name || ""}
+          onChange={(e) => setPatientName(e.target.value)}
           fullWidth
           margin="normal"
           size="small"
@@ -135,9 +141,9 @@ console.log("number",number)
       </Grid>
       <Grid item xs={6}>
         <TextField
-          label="name"
-          value={userObject && userObject.name || ""}
-          onChange={(e) => setName(e.target.value)}
+          label="Phone Number"
+          value={userObject && userObject.phone_num || number}
+          onChange={(e) => setNumber(e.target.value)}
           fullWidth
           margin="normal"
           size="small"
@@ -145,7 +151,7 @@ console.log("number",number)
         />
       </Grid>
     </Grid>
-    <Grid container spacing={2} alignItems="center">
+    {/* <Grid container spacing={2} alignItems="center">
       <Grid item xs={6}>
         <TextField
           label="Gender"
@@ -156,25 +162,25 @@ console.log("number",number)
           size="small"
           sx={{ backgroundColor: 'white' }} 
         />
-      </Grid>
-      <Grid item xs={6}>
+      </Grid> */}
+      {/* <Grid item xs={6}>
         <TextField
           label="adhaar_No"
           value={userObject && userObject.aadhar_num || ""}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setPatientName(e.target.value)}
           fullWidth
           margin="normal"
           size="small"
           sx={{ backgroundColor: 'white' }}
         />
-      </Grid>
-    </Grid>
+      </Grid> */}
+    {/* </Grid> */}
     <Grid container spacing={2} alignItems="center">
       <Grid item xs={6}>
         <TextField
-          label="Nationality"
-          value={userObject && userObject.nationality || ""}
-          onChange={(e) => setOtherField1(e.target.value)}
+          label="AlterNative Number"
+          value={userObject && userObject.alt_phone_num  || ""}
+          onChange={(e) => setAltNum(e.target.value)}
           fullWidth
           margin="normal"
           size="small"
@@ -183,9 +189,9 @@ console.log("number",number)
       </Grid>
       <Grid item xs={6}>
         <TextField
-          label="city"
-          value={userObject && userObject.city || ""}
-          onChange={(e) => setOtherField2(e.target.value)}
+          label="Refferd By"
+          value={userObject && userObject.refered_by || ""}
+          onChange={(e) =>setReffred(e.target.value)}
           fullWidth
           margin="normal"
           size="small"
@@ -194,9 +200,12 @@ console.log("number",number)
       </Grid>
     </Grid>
     <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-      <Button variant="contained" color="primary" onClick={handleSave} style={{ marginRight: '10px' }}>
+     {userData.length < 0 ? (<Button variant="contained" color="primary" onClick={handleSave} style={{ marginRight: '10px' }}>
         Save
-      </Button>
+      </Button>):
+      <Button variant="contained" color="primary" onClick={handleSave} style={{ marginRight: '10px' }}>
+        Update
+      </Button>}
       <Button variant="contained" color="primary" onClick={handleViewDetails}>
         View Details
       </Button>

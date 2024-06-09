@@ -25,7 +25,8 @@ import TtyIcon from '@mui/icons-material/Tty';
 import PeopleIcon from '@mui/icons-material/People';
 import BoyIcon from '@mui/icons-material/Boy';
 import { Toaster } from "react-hot-toast";
-import { Avatar, Menu, MenuItem, Switch, Tooltip } from "@mui/material";
+import {Button,Avatar, Menu, MenuItem, Switch, Tooltip, Link } from "@mui/material";
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 import Logout from "@mui/icons-material/Logout";
 import { useSelector } from "react-redux";
 
@@ -100,7 +101,7 @@ const Drawer = styled(MuiDrawer, {
 
 
 
-export default function Navbar() {
+export default function Navbar({handlePopUp}) {
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
@@ -131,14 +132,14 @@ export default function Navbar() {
         route: "consultation_settings",
       },
       {
-        icon:<PeopleIcon sx={{ color: "black" }}/>,
-        title:"Users",
-        route:"users",
+        icon: <PeopleIcon sx={{ color: "black" }} />,
+        title: "Users",
+        route: "users",
       },
       {
-        icon:<TtyIcon sx={{ color: "black" }}/>,
-        title:"Call Activity",
-        route:"call_activity",
+        icon: <TtyIcon sx={{ color: "black" }} />,
+        title: "Call Activity",
+        route: "call_activity",
       }
     ];
   } else if (role === 'user') {
@@ -159,14 +160,14 @@ export default function Navbar() {
         route: "manage_patient",
       },
       {
-        icon:<TtyIcon sx={{ color: "black" }}/>,
-        title:"Call Activity",
-        route:"call_activity",
+        icon: <TtyIcon sx={{ color: "black" }} />,
+        title: "Call Activity",
+        route: "call_activity",
       },
       {
-        icon:<BoyIcon sx={{ color: "black" }}/>,
-        title:"Vist Activity",
-        route:"visit_activity",
+        icon: <BoyIcon sx={{ color: "black" }} />,
+        title: "Vist Activity",
+        route: "visit_activity",
       },
     ];
   }
@@ -187,7 +188,7 @@ export default function Navbar() {
     localStorage.removeItem('fname');
     localStorage.removeItem('lname');
     localStorage.removeItem('roles');
-    localStorage.removeItem('email_id' );
+    localStorage.removeItem('email_id');
     localStorage.removeItem('telephone_ext');
     sessionStorage.removeItem('msg_queue_id');
     navigate("/signIn");
@@ -205,7 +206,9 @@ export default function Navbar() {
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
-
+const handleClick=()=>{
+  handlePopUp()
+}
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
       <CssBaseline />
@@ -232,11 +235,11 @@ export default function Navbar() {
             }}
           >
             <MenuIcon />
-            
+
           </IconButton>
-            <Box sx={{width:"200px"}}>
-            <Typography variant="subtitle1" sx={{color:"black"}}>KOSHYS Hospital</Typography>
-            </Box>
+          <Box sx={{ width: "200px" }}>
+            <Typography variant="subtitle1" sx={{ color: "black" }}>KOSHYS Hospital</Typography>
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -247,33 +250,48 @@ export default function Navbar() {
           >
             {role === 'user' && (
               <>
-              <Typography
-              variant="subtitle2"
-              sx={{
-                display: "flex",
-                backgroundColor: checked ? "#00b4d8" : "red",
-                fontWeight: "bold",
-                width: "60px",
-                borderRadius: "8px",
-                justifyContent: "center",
-                mt: 1,
-                color: "white",
-              }}
-            >
-              {checked ? "Online" : "Offline"}
-            </Typography>
-            <Switch
-              checked={checked}
-              onChange={handleChange}
-              inputProps={{ "aria-label": "controlled" }}
-            />
-            </>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    display: "flex",
+                    backgroundColor: checked ? "#00b4d8" : "red",
+                    fontWeight: "bold",
+                    width: "60px",
+                    borderRadius: "8px",
+                    justifyContent: "center",
+                    mt: 1,
+                    color: "white",
+                  }}
+                >
+                  {checked ? "Online" : "Offline"}
+                </Typography>
+                <Switch
+                  checked={checked}
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              </>
             )}
+            <Button
+       onClick={handleClick}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          // ml: 2,
+          textDecoration: 'none',
+          color: '#00b4d8',
+        }}
+        startIcon={<AddCircleIcon sx={{ color: '#00b4d8' }} />}
+      >
+        <Typography variant="body2" sx={{ color: '#00b4d8' }}>
+          Add Doctor
+        </Typography>
+      </Button>
             <Tooltip title="Account settings">
               <IconButton
                 onClick={handleProfileClick}
                 size="small"
-                // sx={{ ml: 2 }}
+                sx={{ ml: 2 }}
                 aria-controls={profileOpen ? "account-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={profileOpen ? "true" : undefined}

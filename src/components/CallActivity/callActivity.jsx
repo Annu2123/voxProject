@@ -252,7 +252,6 @@ const CallActivity = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-
       <Box
         sx={{
           display: "flex",
@@ -298,7 +297,7 @@ const CallActivity = () => {
             flexDirection: "row",
             alignItems: "center",
             gap: 4,
-            mt: 4,
+            mt: 1,
             width: "50%", // Set the width to 100% to make it take up the full width
             height: "100px", // Set the height to increase the size vertically
          

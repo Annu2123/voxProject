@@ -127,6 +127,8 @@ const ManageLeads = () => {
           width: "100%",
           borderRadius: "8px",
           flexDirection: { xs: "column", md: "row" },
+          // backgroundColor: "#90e0ef",
+        //  transparent:""
         }}
       >
         <DateTimePicker

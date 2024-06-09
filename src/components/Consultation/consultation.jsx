@@ -43,7 +43,7 @@ import axios from "axios";
 const religion = () => {
   const dispatch = useDispatch();
  
-  // console.log("pationt",patientData)
+  // //console.log("pationt",patientData)
   useEffect(() => {
     dispatch(startGetRelgnList());
   }, []);
@@ -77,7 +77,7 @@ const docList = () => {
     return state?.doctorSlice?.list;
   });
   let r = docList?.map((r) => r);
-  //console.log(r);
+  ////console.log(r);
   return r;
 };
 
@@ -88,8 +88,8 @@ const Consultation = ({ searchData,phoneNumber }) => {
   // const patientData=(location?.state?.userData[0] || {})
   const navigate = useNavigate();
   const dispatch = useDispatch();
-console.log("statee",state)
-// console.log(patientData)
+//console.log("statee",state)
+// //console.log(patientData)
   const data = useSelector((state) => {
     return state.patientSlice?.findData;
   });
@@ -103,7 +103,7 @@ console.log("statee",state)
   //   // If patientData changes, update the formData accordingly
   //   setFormData(state.userData.length > 0 ? state?.userData[0] : {});
   // }, [state]);
-  console.log("formDatatat",formData)
+  //console.log("formDatatat",formData)
   useEffect(() => {
     if (actualData) {
       setFormData(actualData);
@@ -138,8 +138,8 @@ console.log("statee",state)
   const docList = useSelector((state) => {
     return state?.doctorSlice?.list;
   });
-  console.log("doctor list",docList)
-console.log("selectedoID",selectedDoctorId)
+  //console.log("doctor list",docList)
+//console.log("selectedoID",selectedDoctorId)
 useEffect(()=>{
   if(selectedDoctorId){
     const result=docList?.find((ele)=>{
@@ -149,7 +149,7 @@ useEffect(()=>{
   }
 },[selectedDoctorId])
 
-console.log("selectedDocter",selectedDoctor)
+//console.log("selectedDocter",selectedDoctor)
   const [times, setTimes] = useState([]);
   const appData = useSelector((state) => state?.appointmentSlice?.slots);
 
@@ -160,7 +160,7 @@ console.log("selectedDocter",selectedDoctor)
           doctor_id: selectedDoctorId,
           date: selectedDate,
         };
-        // console.log('Fetching data with:', fd);
+        // //console.log('Fetching data with:', fd);
         await dispatch(startGetAppoinmentSlot(fd));
       }
     };
@@ -169,13 +169,13 @@ console.log("selectedDocter",selectedDoctor)
   const [receivedData, setReceivedData] = useState("");
   useEffect(() => {
     if (appData) {
-      // console.log(appData)
+      // //console.log(appData)
       setReceivedData(appData);
     }
   }, [appData]);
 
   useEffect(() => {
-    console.log('Times array updated:', times);
+    //console.log('Times array updated:', times);
   }, [times]);
 
 // finding doctors department
@@ -361,10 +361,10 @@ console.log("selectedDocter",selectedDoctor)
 
   const handleOpen = (data) => {
     // setAppFormData(data);
-    // //console.log(data);
+    // ////console.log(data);
     setOpen(true);
   };
-  //console.log(appFormData, "hi");
+  ////console.log(appFormData, "hi");
 
   const handleClose = () => {
     setOpen(false);
@@ -420,19 +420,19 @@ console.log("selectedDocter",selectedDoctor)
       setAvailableDays([]);
     }
   }, [timeSlot]);
-console.log("timeslot",timeSlot)
-console.log("availabledays",availableDays)
-  // console.log(appData?appData:"")
+//console.log("timeslot",timeSlot)
+//console.log("availabledays",availableDays)
+  // //console.log(appData?appData:"")
   // no used appoinntment list using date
   useEffect(() => {
-    console.log("232242")
+    //console.log("232242")
     let fetchData = async () => {
       if (selectedDoctorId && selectedDate) {
         const fd = {
           doctor_id: selectedDoctorId,
           date: selectedDate,
         };
-        console.log(fd);
+        //console.log(fd);
         await dispatch(startGetAppoinmentSlot(fd));
       }
     };
@@ -461,14 +461,17 @@ console.log("availabledays",availableDays)
   
     const { hours: startHour, minutes: startMinute } = parseTime24(startTime);
     const { hours: endHour, minutes: endMinute } = parseTime24(endTime);
-  
+    console.log("startHour : "+startHour+" start_m:"+startMinute+"");
+    console.log("endHour : "+endHour+" end_m:"+endMinute+"");
     let hour = startHour;
     let minute = startMinute;
     while (hour < endHour || (hour === endHour && minute <= endMinute)) {
       const formattedTime = formatTime24(hour, minute);
+    console.log("formattedTime",formattedTime)
       times.push(formattedTime);
-  
-      minute += increment;
+       
+      minute += Number(increment);
+      console.log("incrementeMinuts",minute)
       if (minute >= 60) {
         hour += 1;
         minute %= 60;
@@ -483,10 +486,10 @@ console.log("availabledays",availableDays)
 //  update the appointment form 
 const [error, setError] = useState('')
 const handleChangeApp = (e) => {
-  console.log("comes to handleChange first", times);
+  // //console.log("comes to handleChange first", times);
   const { name, value, checked, type } = e.target;
   const newValue = type === "checkbox" ? checked : value;
-console.log("newValue",newValue)
+// //console.log("newValue",newValue)
   setAppFormData((prevData) => ({
     ...prevData,
     [name]: newValue,
@@ -501,7 +504,7 @@ console.log("newValue",newValue)
   }
 
   if (name === "Doctor_Name") {
-    console.log("selected doctor name");
+    //console.log("selected doctor name");
     // setSelectedDate(getCurrentFormattedDate())
     setError('')
     setShowTimeSot(false);
@@ -518,14 +521,14 @@ console.log("newValue",newValue)
    }
 
   if (name === "Date") {
-    console.log("come to date");
+    //console.log("come to date");
     setSelectedDate(value);
     // setError("")
     var selectedDay = new Date(value)
       .toLocaleString("en-us", { weekday: "short" })
       .toLowerCase();
-    console.log(selectedDay);
-    console.log("aa1");
+    //console.log(selectedDay);
+    //console.log("aa1");
 
     if (availableDays.includes("all_day")) {
       generateTimes(
@@ -537,7 +540,7 @@ console.log("newValue",newValue)
       );
       setShowTimeSot(true);
     } else if (availableDays.includes(selectedDay)) {
-      console.log("inside ")
+      //console.log("inside ")
       setError('')
       let startTime = "00:00";
       let endTime = "00:00";
@@ -548,11 +551,11 @@ console.log("newValue",newValue)
           break;
         }
       }
-      console.log("not all day");
+      //console.log("not all day");
       generateTimes(selectedDay, startTime, endTime, appData, consultationInterval);
       setShowTimeSot(true);
     } else {
-      console.log("error in slots");
+      //console.log("error in slots");
       // toast.error(
       //   "Doctor is not available on this selected day",
       //   "availableDays of Doctor is " + availableDays.join(" ,")
@@ -575,8 +578,8 @@ const getCurrentDate = () => {
 //     setSelectedDate(getCurrentDate());
 //   }
 // }, [selectedDoctor])
-  console.log("formdata",formData)
-  console.log("dfghgf",appFormData)
+  //console.log("formdata",formData)
+  //console.log("dfghgf",appFormData)
  
   // useEffect(() => {
   //   const formData = {
@@ -592,21 +595,21 @@ const getCurrentDate = () => {
   //             Authorization: `Bearer ${localStorage.getItem('token')}`
   //           }
   //         });
-  //         console.log(response.data);
+  //         //console.log(response.data);
   //         setBookedSlot(response.data);
   //       } catch (err) {
-  //         console.log(err);
+  //         //console.log(err);
   //       }
   //     })();
   //   }
   // }, [selectedDoctorId, selectedDate]); // Added selectedDate to dependencies
 
   useEffect(() => {
-    console.log("bookedSlot:", bookedSlot);
+    //console.log("bookedSlot:", bookedSlot);
   }, [bookedSlot]); // New useEffect to log bookedSlot whenever it changes
-  console.log(appFormData)
+  //console.log(appFormData)
   useEffect(() => {
-    //console.log(selectedDoctorId);
+    ////console.log(selectedDoctorId);
     const id = {
       id: selectedDoctorId,
     };
@@ -636,8 +639,8 @@ const getCurrentDate = () => {
     return `${hours}:${formattedMinutes}`;
 };
   const handleAddAppoinment = () => {
-    console.log("selectedTime",selectedTime)
-    console.log("timmee",formatTime(selectedTime))
+    //console.log("selectedTime",selectedTime)
+    //console.log("timmee",formatTime(selectedTime))
     const addApp = {
       doctor_id: selectedDoctorId,
       doctor_name: appFormData.Doctor_Name,
@@ -647,11 +650,11 @@ const getCurrentDate = () => {
       time:formatTime(selectedTime),
       remarks: appFormData.Remarks,
     };
-    console.log("Add",addApp)
+    //console.log("Add",addApp)
     dispatch(addAppoinment(addApp))
     .unwrap()
     .then((result) => {
-      console.log('Appointment added:', result);
+      //console.log('Appointment added:', result);
       handleFormEmpty()
       setError("")
     })
@@ -667,8 +670,8 @@ const getDayName = (date) => {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return days[date.getDay()];
 };
-console.log("appFormData",appFormData)
-console.log("appointment",appointment)
+//console.log("appFormData",appFormData)
+//console.log("appointment",appointment)
 const DateFormatter = (date) => {
   const parsedDate = new Date(date);
   const formattedDate = format(parsedDate, 'dd-MM-yyyy');
@@ -686,7 +689,7 @@ const formatDate = (dateString) => {
     return '';
   }
 };
-console.log("selctedDoc",selectedDoctor)
+//console.log("selctedDoc",selectedDoctor)
 
 const getDefaultValue = (field) => {
   if (formData && formData[field.formDataKey]) {
@@ -729,7 +732,7 @@ const convertTime = (time24) => {
 
   return `${adjustedHour}:${minute.toString().padStart(2, '0')} ${period}`
 };
-console.log("times",times)
+//console.log("times",times)
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
     <Box
@@ -1131,7 +1134,7 @@ console.log("times",times)
                       receivedData &&
                       Array.isArray(receivedData) &&
                       receivedData.some((data) => {
-                        // console.log('Checking time:', data.time, time);
+                        // //console.log('Checking time:', data.time, time);
                         return data.time ===formatTime(time);
                       });
                     return (

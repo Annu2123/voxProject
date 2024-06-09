@@ -284,7 +284,7 @@ const handleClick=()=>{
         startIcon={<AddCircleIcon sx={{ color: '#00b4d8' }} />}
       >
         <Typography variant="body2" sx={{ color: '#00b4d8' }}>
-          Add Doctor
+          Add Patient
         </Typography>
       </Button>
             <Tooltip title="Account settings">

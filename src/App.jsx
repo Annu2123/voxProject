@@ -151,7 +151,7 @@ console.log("number",number)
           <CloseIcon />
         </IconButton>
         <Typography variant="h5" align="center" gutterBottom>
-          Incoming
+         Patient Details
         </Typography>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={6}>

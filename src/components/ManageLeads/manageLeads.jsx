@@ -78,10 +78,15 @@ const ManageLeads = () => {
     dispatch(startGetPatient());
   }
 
+  const handleCall=(pl)=>{
+    console.log("calll")
+    console.log(pl)
+    navigate("/consultation",{ state: pl })
+  }
   const list = useSelector((state) => {
     return state?.manageLeadsSlice?.patientList;
   });
-
+// console.log("patinr",list)
   const patientList = list?.map((pl, i) => ({
     sl_no: i + 1,
      phone: 
@@ -90,7 +95,7 @@ const ManageLeads = () => {
         <Button
           size="small"
           variant="outlined"
-          onClick={() => handleCall(pl.phone_num)}
+          onClick={() => handleCall(pl)}
           style={{ marginRight: 8,marginLeft: -4  }}
         >
           <CallIcon fontSize="small" />

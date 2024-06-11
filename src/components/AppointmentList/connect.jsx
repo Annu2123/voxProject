@@ -23,7 +23,8 @@ import SmsIcon from "@mui/icons-material/Sms";
 import Whatsapp from "../Whatsapp/whatsapp";
 import { useDispatch, useSelector } from "react-redux";
 import { searchPatient } from "../../actions/Patient/patient";
-
+import axios from "axios";
+import toast from "react-hot-toast";
 const ConnectPatient = () => {
   const dispatch = useDispatch()
   const [checked, setChecked] = React.useState(false);
@@ -33,21 +34,37 @@ const ConnectPatient = () => {
   const [searchType, setSearchType] = React.useState("");
   const [searchData, setSearchData] = React.useState('');
 
-  const handleDial=()=>{
+  const handleDial=async()=>{
+    const emailId=localStorage.getItem("email_id")
     const formData ={
-      key:"phone_num",
-      value:phoneNumber
+      Email_id:emailId,
+     phone_no:phoneNumber
+    // Email_id: "itmanager@koshyshospital.com",
+    // Phone_no: "9686911183"
     }
-    console.log("dialpadd",formData)
-      dispatch(searchPatient(formData))
-      .unwrap()
-      .then((result) => {
-        console.log('patient Find Successfull:', result);
-        setOpen(false)
+    console.log("formData",formData)
+    try{
+      const response=await axios.post("https://api.voxprosolutions.com:8080/api/patient_call",formData,{
+        headers: {
+       Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
       })
-      .catch((error) => {
-        console.error('Failed to Find Pateint:', error)
-      })
+      console.log("response,data",response.data)
+      toast.success(response.data.Message)
+    }catch(err){
+      console.log("error")
+      console.log(err)
+    }
+    // console.log("dialpadd",formData)
+    //   dispatch(searchPatient(formData))
+    //   .unwrap()
+    //   .then((result) => {
+    //     console.log('patient Find Successfull:', result);
+    //     setOpen(false)
+    //   })
+    //   .catch((error) => {
+    //     console.error('Failed to Find Pateint:', error)
+    //   })
   }
   const handleOpen = () => {
     setOpen(true);
@@ -76,11 +93,15 @@ const ConnectPatient = () => {
   };
 
   const handleFind =()=>{
-    const formData ={
-      key:searchType,
-      value:searchData
+    if(searchType){
+      const formData ={
+        key:searchType,
+        value:searchData
+      }
+      dispatch(searchPatient(formData))
+    }else{
+      toast.error("Please select type Search")
     }
-    dispatch(searchPatient(formData))
   }
 
   return (
@@ -281,7 +302,7 @@ const ConnectPatient = () => {
               sx={{ backgroundColor: "#39ff5a" }}
               disableElevation
               onClick={handleWhatsappOpen}
-              // disabled
+              disabled
             >
               <WhatsAppIcon fontSize="small" />
             </Button>
@@ -291,7 +312,7 @@ const ConnectPatient = () => {
               sx={{ backgroundColor: "#ff5d5d" }}
               disableElevation
               onClick={handleOpen}
-              // disabled
+              disabled
             >
               <MailOutlineIcon fontSize="small" />
             </Button>
